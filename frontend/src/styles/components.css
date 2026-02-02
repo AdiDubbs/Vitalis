@@ -1,0 +1,456 @@
+
+.panel-card {
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(255, 255, 255, 0.045);
+}
+
+.panel-card-deeper.panel-card-deeper {
+  background: var(--surface);
+}
+
+.hero-card {
+  background: var(--surface);
+}
+
+.stat {
+  padding: 0.75rem 0.9rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.stat-number {
+  font-size: 1.4rem;
+}
+
+.card-metric {
+  padding: 0.75rem;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.overview-card {
+  min-height: 184px;
+  display: flex;
+  align-items: stretch;
+}
+
+.overview-step-card {
+  flex: 1;
+  min-height: 130px;
+  cursor: pointer;
+  border: 1px solid var(--panel-card-border);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.overview-step-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.overview-step-card.is-active {
+  border-color: var(--mantine-color-cyan-5);
+  background-color: var(--surface-elevated);
+}
+
+.overview-step-arrow {
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.overview-step-detail {
+  border-color: var(--panel-card-border);
+  background: var(--panel-card-bg-deeper);
+  box-shadow: var(--shadow-md);
+}
+
+.overview-label {
+  letter-spacing: 0.05em;
+}
+
+.tab-card-trigger {
+  width: 100%;
+  text-align: left;
+}
+
+.tab-card {
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.tab-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+.tab-card.is-active,
+.tab-card[data-active="true"],
+button.tab-card.is-active {
+  border-color: var(--mantine-color-cyan-4);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
+}
+
+.tech-pill {
+  background: var(--tech-pill-bg);
+  border-color: var(--tech-pill-border);
+  color: var(--tech-pill-color);
+}
+
+.panel-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--panel-card-border);
+}
+
+.panel-tab.panel-tab {
+  flex: 1;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: transform 0.2s ease, color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.panel-tab:hover {
+  color: var(--text-primary);
+}
+
+.panel-tab[data-active] {
+  background: var(--accent);
+  color: var(--mantine-color-white);
+}
+
+.pipeline-item {
+  position: relative;
+  overflow: visible;
+}
+
+.pipeline-item::after {
+  content: "";
+  position: absolute;
+  left: 28px;
+  top: calc(100% + 2px);
+  width: 2px;
+  height: 14px;
+  background: var(--panel-card-border);
+}
+
+.pipeline-item:last-of-type::after {
+  display: none;
+}
+
+.model-tile {
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.model-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.step-pill {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--mantine-color-cyan-9);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--mantine-color-body);
+}
+
+.btn-hover-lift {
+  transition: transform 0.3s ease;
+}
+
+.btn-hover-lift:hover {
+  transform: scale(1.03);
+}
+
+.theme-invert {
+  filter: brightness(0.85) contrast(1.1);
+  transition: filter 0.3s ease;
+}
+
+.nav-link {
+  font-weight: 600;
+  color: #e4edeb;
+}
+
+.results-risk-badge {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.results-test-card {
+  border-color: var(--panel-card-border);
+}
+
+[data-tone="critical"],
+.tone-critical {
+  color: var(--color-red-muted);
+}
+
+[data-severity="critical"].badge-critical,
+.badge-critical.badge-critical {
+  background: var(--color-red-muted);
+  color: #1a1414;
+}
+
+.alert-critical.mantine-Alert-root {
+  background: color-mix(in srgb, var(--color-red-muted) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-red-muted) 45%, transparent);
+  color: var(--color-red-muted);
+}
+
+.alert-critical .mantine-Alert-title,
+.alert-critical .mantine-Alert-icon {
+  color: var(--color-red-muted);
+}
+
+.badge-evidence {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: color-mix(in srgb, var(--surface-elevated) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.badge-evidence-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+}
+
+.badge-evidence-separator {
+  opacity: 0.5;
+}
+
+.badge-evidence-text {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.badge-evidence-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.badge-evidence[data-contribution="positive"] .badge-evidence-value {
+  color: var(--accent);
+}
+
+.badge-evidence[data-contribution="negative"] .badge-evidence-value {
+  color: var(--color-red-muted);
+}
+
+.badge-evidence-objective {
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+}
+
+.badge-evidence-objective .badge-evidence-label {
+  color: color-mix(in srgb, var(--accent) 70%, white);
+}
+
+.badge-evidence-patient {
+  background: color-mix(in srgb, var(--color-red-muted) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-red-muted) 34%, transparent);
+}
+
+.badge-evidence-patient .badge-evidence-label {
+  color: color-mix(in srgb, var(--color-red-muted) 70%, white);
+}
+
+.badge-compact {
+  text-transform: none;
+  opacity: 0.85;
+}
+
+.modal-panel {
+  background-color: var(--surface);
+  border: 1px solid var(--panel-card-border);
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-panel-header {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--panel-card-border);
+}
+
+.modal-panel-title {
+  color: var(--mantine-color-gray-0);
+  font-weight: 600;
+}
+
+.modal-panel-close {
+  color: var(--mantine-color-gray-3);
+}
+
+.modal-panel-close:hover {
+  background-color: var(--surface-elevated);
+}
+
+.modal-panel-body {
+  background-color: var(--surface);
+}
+
+.results-red-flag-card {
+  border-color: var(--mantine-color-red-8);
+  border-left: 4px solid var(--mantine-color-red-8);
+}
+
+.symptom-search-wrapper {
+  border-radius: var(--mantine-radius-md);
+}
+
+.symptom-search-wrapper:focus-within {
+  border-radius: var(--mantine-radius-md);
+  box-shadow: 0 2px 8px rgba(34, 139, 230, 0.2);
+}
+
+.symptom-search-input:focus {
+  border-color: var(--mantine-color-cyan-4);
+}
+
+.case-summary-float {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 200px;
+  max-width: calc(100vw - 3rem);
+  transition: width 300ms ease, box-shadow 300ms ease;
+  z-index: 100;
+  box-shadow: var(--shadow-md);
+}
+
+.case-summary-float[data-expanded="true"] {
+  width: 320px;
+}
+
+.case-summary-header {
+  cursor: pointer;
+}
+
+.case-summary-symptom-list {
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.nav-buttons button {
+  transition: all 0.2s ease;
+}
+
+.nav-buttons button:hover {
+  background-color: var(--surface-elevated);
+}
+
+.interactive-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
+}
+
+.interactive-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.panel-card {
+  transition: box-shadow 0.2s ease;
+}
+
+.panel-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.imaging-accordion .mantine-Accordion-item {
+  background-color: var(--surface);
+}
+
+
+.results-diagnosis-rank-1 {
+  border-left: 4px solid var(--mantine-color-teal-5);
+}
+
+.results-diagnosis-rank-2,
+.results-diagnosis-rank-3 {
+  border-left: 2px solid var(--mantine-color-cyan-6);
+  opacity: 0.95;
+}
+
+.results-diagnosis-rank-4,
+.results-diagnosis-rank-5 {
+  border-left: 2px solid var(--mantine-color-gray-6);
+  opacity: 0.85;
+}
+
+.results-diagnosis-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.results-diagnosis-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.results-evidence-high-contribution {
+  font-weight: 700;
+  border-width: 2px;
+}
+
+.results-section-header-icon {
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .mantine-Stepper-stepDescription {
+    display: none;
+  }
+
+  .panel-card.panel-card {
+    padding: 1rem;
+    box-shadow: var(--shadow-md);
+  }
+
+  .panel-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .results-main {
+    order: 1;
+  }
+
+  .results-sidebar {
+    order: 2;
+  }
+
+  .results-evidence-badge {
+    font-size: 0.65rem;
+    padding: 6px 12px;
+  }
+}

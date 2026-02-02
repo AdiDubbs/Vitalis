@@ -1,0 +1,2303 @@
+_metadata:
+  description: Consolidated disease database with diagnostic criteria, likelihood
+    ratios, and prevalence
+  version: '1.0'
+  last_updated: '2025-01-29'
+  sources:
+    disease_criteria: disease_database.yaml
+    likelihood_ratios: lr_store_evidence_based.json
+    prevalence: priors_data.yaml
+    exclusions: exclusions.yaml
+  lr_sources:
+    pneumonia:
+    - Ebell et al. 2020 - Accuracy of Signs and Symptoms for CAP (Academic Emergency
+      Medicine)
+    - PMC6527561 - Clinical features for diagnosis of pneumonia (Scientific Reports
+      2019)
+    meningitis:
+    - PMC5827054 - Accuracy of meningeal signs in early detection of meningitis
+    - PMC6732499 - Sensitivity and specificity of meningeal signs
+    - PMC3548367 - Appraisal of Kernig's and Brudzinski's sign
+    appendicitis:
+    - Alvarado Score meta-analysis - 19 studies, >4700 patients
+    - ScienceDirect - Diagnostic accuracy of Alvarado score components
+    uti:
+    - 'PMC2883276 - The Diagnosis of UTI: A Systematic Review'
+    - JAMA 2002 - Does this woman have an acute uncomplicated UTI?
+    pulmonary_embolism:
+    - PIOPED Study data
+    - Wells Criteria validation studies
+    - 'PMC5940642 - Acute PE: Focus on Clinical Picture'
+diseases:
+  PNEUMONIA:
+    full_name: Pneumonia
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_cough
+      - imaging_xray_positive_for_pneumonia
+      negative_features:
+      - imaging_xray_normal
+    recommended_tests:
+    - test_id: imaging_xray_chest
+      display_name: Chest X-ray
+      category: Imaging
+      priority: 1
+    - test_id: lab_cbc_wbc
+      display_name: Blood Test (CBC for White Blood Cells)
+      category: Blood Work
+      priority: 2
+    - test_id: physical_exam_crackles
+      display_name: Physical Exam (Auscultation)
+      category: Physical Exam
+      priority: 2
+    likelihood_ratios:
+      fever: 2.5
+      sym_cough: 2.0
+      sym_shortness_of_breath: 2.0
+      sym_chest_pain: 1.5
+      pleuritic_pain: 2.0
+      tachycardia: 2.8
+      tachypnea: 3.5
+      crackles: 2.4
+      egophony: 6.2
+      dullness_percussion: 2.6
+      hemoptysis: 1.5
+      runny_nose: 0.7
+      neutrophilia: 3.0
+      wbc_high: 2.5
+      productive_cough: 2.5
+      respiratory_rate_gte_20: 3.5
+    prevalence:
+      default:
+        0-4: 1000
+        5-17: 500
+        18-29: 300
+        30-44: 400
+        45-64: 600
+        65+: 1000
+  INFLUENZA:
+    full_name: Influenza
+    diagnostic_criteria:
+      mandatory_features:
+      - fever
+      - sym_cough
+      - body_aches
+      negative_features:
+      - lab_flu_test_negative
+    recommended_tests:
+    - test_id: lab_flu_test
+      display_name: Rapid Influenza Test
+      category: Lab Test
+      priority: 1
+    likelihood_ratios:
+      fever: 2.7
+      sym_cough: 2.5
+      fatigue: 2.0
+      runny_nose: 2.5
+      sym_headache: 2.0
+      lab_flu_test_positive: 50.0
+      body_aches: 3.5
+      pharyngitis: 2.0
+    prevalence:
+      default:
+        0-4: 5000
+        5-17: 6000
+        18-29: 4000
+        30-44: 3000
+        45-64: 2000
+        65+: 3000
+  ASTHMA:
+    full_name: Asthma
+    diagnostic_criteria:
+      mandatory_features:
+      - wheezing
+      - sym_shortness_of_breath
+      negative_features:
+      - lab_spirometry_normal_post_bronchodilator
+    recommended_tests:
+    - test_id: lab_spirometry
+      display_name: Spirometry (Lung Function Test)
+      category: Pulmonary Function
+      priority: 1
+    likelihood_ratios:
+      sym_cough: 1.8
+      sym_shortness_of_breath: 3.0
+      tachypnea: 2.5
+      wheezing: 3.5
+      eosinophilia: 2.0
+      orthopnea: 1.5
+      dry_cough: 2.5
+    prevalence:
+      male:
+        0-4: 5000
+        5-17: 8000
+        18-29: 6000
+        30-44: 5000
+        45-64: 4000
+        65+: 3000
+      female:
+        0-4: 4000
+        5-17: 7000
+        18-29: 6500
+        30-44: 5500
+        45-64: 4500
+        65+: 3500
+      default: 5000
+  ACS:
+    full_name: Acute Coronary Syndrome (ACS)
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_chest_pain
+      - signals_ecg_ischemia_positive
+      negative_features:
+      - lab_troponin_normal_serial
+      - signals_ecg_normal
+    recommended_tests:
+    - test_id: signals_ecg_ischemia
+      display_name: 12-Lead ECG/EKG
+      category: Cardiac Signals
+      priority: 1
+    - test_id: lab_troponin
+      display_name: Blood Test (Troponin Level)
+      category: Blood Work
+      priority: 1
+    likelihood_ratios:
+      sym_shortness_of_breath: 2.0
+      sym_chest_pain: 3.5
+      pleuritic_pain: 0.5
+      exertional: 3.8
+      diaphoresis: 2.5
+      radiation_left_arm: 4.0
+      history_of_diabetes: 1.6
+      smoker: 1.4
+      dyslipidemia: 2.5
+      troponin_highly_elevated: 50.0
+      troponin_moderately_elevated: 10.0
+      heartburn: 0.8
+      troponin_slightly_elevated: 3.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 0
+        18-29: 10
+        30-44: 50
+        45-64: 300
+        65+: 600
+      female:
+        0-4: 0
+        5-17: 0
+        18-29: 5
+        30-44: 30
+        45-64: 150
+        65+: 400
+      default: 100
+  UTI:
+    full_name: Urinary Tract Infection (UTI)
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_dysuria
+      - lab_urinalysis_positive_for_nitrites_or_leukocytes
+      negative_features:
+      - lab_urinalysis_normal
+    recommended_tests:
+    - test_id: lab_urinalysis
+      display_name: Urinalysis
+      category: Lab Test
+      priority: 1
+    likelihood_ratios:
+      fever: 1.5
+      sym_dysuria: 2.0
+      sym_urinary_frequency: 1.8
+      urinary_urgency: 1.5
+      hematuria: 2.0
+      sym_flank_pain: 1.6
+      costovertebral_angle_tenderness: 1.7
+      vaginal_discharge: 0.3
+      positive_urine_culture: 10.0
+    prevalence:
+      male:
+        0-4: 500
+        5-17: 1000
+        18-29: 1000
+        30-44: 800
+        45-64: 1000
+        65+: 1500
+      female:
+        0-4: 1000
+        5-17: 2000
+        18-29: 3000
+        30-44: 2500
+        45-64: 2000
+        65+: 3000
+      default: 1500
+  APPENDICITIS:
+    full_name: Appendicitis
+    diagnostic_criteria:
+      mandatory_features:
+      - rlq_pain
+      - imaging_ct_abdomen_positive_for_appendicitis
+      negative_features:
+      - imaging_ct_abdomen_normal
+    recommended_tests:
+    - test_id: imaging_ct_abdomen
+      display_name: CT Scan of the Abdomen
+      category: Imaging
+      priority: 1
+    - test_id: lab_cbc_wbc
+      display_name: Blood Test (CBC for White Blood Cells)
+      category: Blood Work
+      priority: 2
+    likelihood_ratios:
+      fever: 1.5
+      rlq_pain: 8.0
+      rebound_tenderness: 3.0
+      pain_migration: 3.2
+      anorexia: 2.0
+      guarding: 3.5
+      sym_nausea_vomiting: 1.5
+      sym_abdominal_pain: 2.0
+      neutrophilia: 3.0
+      wbc_high: 2.5
+      guarding_rlq: 4.0
+      rovsing_sign: 3.5
+      psoas_sign: 3.0
+      obturator_sign: 2.5
+    prevalence:
+      default:
+        0-4: 50
+        5-17: 200
+        18-29: 150
+        30-44: 100
+        45-64: 80
+        65+: 60
+  PE:
+    full_name: Pulmonary Embolism (PE)
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_shortness_of_breath
+      - imaging_ctpa_positive_for_pe
+      negative_features:
+      - lab_d_dimer_normal
+      - imaging_ctpa_normal
+    recommended_tests:
+    - test_id: imaging_ctpa
+      display_name: CT Pulmonary Angiogram (CTPA)
+      category: Imaging
+      priority: 1
+    - test_id: lab_d_dimer
+      display_name: Blood Test (D-dimer)
+      category: Blood Work
+      priority: 2
+    likelihood_ratios:
+      sym_shortness_of_breath: 3.5
+      sym_chest_pain: 3.0
+      pleuritic_pain: 3.5
+      tachycardia: 2.5
+      tachypnea: 3.0
+      leg_swelling_unilateral: 2.5
+      calf_pain: 2.0
+      hemoptysis: 2.5
+      syncope: 3.0
+      diaphoresis: 1.5
+      smoker: 1.5
+      ddimer_high: 10.0
+      ddimer_normal: 0.05
+      troponin_moderately_elevated: 3.0
+      recent_immobilization: 2.5
+      recent_surgery: 2.5
+      previous_dvt_pe: 3.0
+      active_cancer: 2.5
+      tachycardia_chol: 2.5
+      respiratory_rate_gte_20: 3.0
+      elevated_jvp: 2.0
+      troponin_slightly_elevated: 2.0
+    prevalence:
+      default:
+        0-4: 0
+        5-17: 10
+        18-29: 50
+        30-44: 100
+        45-64: 200
+        65+: 300
+  COPD:
+    full_name: Chronic Obstructive Pulmonary Disease (COPD)
+    diagnostic_criteria:
+      mandatory_features:
+      - hist_smoking
+      - lab_spirometry_fev1_fvc_ratio_low
+      negative_features: []
+    recommended_tests:
+    - test_id: lab_spirometry
+      display_name: Spirometry (Lung Function Test)
+      category: Pulmonary Function
+      priority: 1
+    likelihood_ratios:
+      sym_cough: 2.2
+      sym_shortness_of_breath: 3.0
+      tachypnea: 2.5
+      crackles: 1.5
+      smoker: 3.5
+      wheezing: 2.5
+      productive_cough: 2.0
+      orthopnea: 2.0
+      persistent_cough_gt_3w: 2.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 0
+        18-29: 50
+        30-44: 200
+        45-64: 1000
+        65+: 2000
+      female:
+        0-4: 0
+        5-17: 0
+        18-29: 40
+        30-44: 150
+        45-64: 800
+        65+: 1500
+      default: 500
+  HEART_FAILURE:
+    full_name: Heart Failure
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_shortness_of_breath
+      - lab_bnp_elevated
+      negative_features:
+      - lab_bnp_normal
+    recommended_tests:
+    - test_id: lab_bnp
+      display_name: Blood Test (BNP Level)
+      category: Blood Work
+      priority: 1
+    - test_id: imaging_echocardiogram
+      display_name: Echocardiogram (Ultrasound of the Heart)
+      category: Imaging
+      priority: 2
+    likelihood_ratios:
+      sym_shortness_of_breath: 3.5
+      tachycardia: 2.5
+      tachypnea: 2.5
+      crackles: 3.0
+      fatigue: 2.0
+      sym_weight_gain: 2.5
+      exertional: 2.5
+      history_of_diabetes: 1.8
+      edema_legs_ckd: 3.0
+      hyponatremia: 2.0
+      hypoalbuminemia: 2.0
+      lab_bnp_elevated: 15.0
+      orthopnea: 4.5
+      s3_gallop: 6.0
+      elevated_jvp: 5.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 10
+        18-29: 50
+        30-44: 100
+        45-64: 500
+        65+: 1500
+      female:
+        0-4: 0
+        5-17: 10
+        18-29: 40
+        30-44: 80
+        45-64: 400
+        65+: 1200
+      default: 500
+  TB:
+    full_name: Tuberculosis (TB)
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_cough
+      - lab_sputum_afb_positive
+      negative_features:
+      - lab_sputum_afb_negative_serial
+    recommended_tests:
+    - test_id: imaging_xray_chest
+      display_name: Chest X-ray (looking for cavitations)
+      category: Imaging
+      priority: 1
+    - test_id: lab_sputum_afb
+      display_name: Sputum Smear (AFB Stain)
+      category: Lab Test
+      priority: 1
+    likelihood_ratios:
+      fever: 2.0
+      sym_cough: 2.5
+      anorexia: 2.0
+      hemoptysis: 3.2
+      sym_weight_loss: 3.0
+      lymphocytosis: 2.5
+      productive_cough: 2.5
+      night_sweats: 3.5
+      sym_night_sweats: 4.0
+      palpable_lymphadenopathy: 2.5
+      unexplained_weight_loss: 3.0
+      persistent_cough_gt_3w: 4.0
+    prevalence:
+      default:
+        0-4: 50
+        5-17: 100
+        18-29: 200
+        30-44: 300
+        45-64: 400
+        65+: 500
+  CHRONIC_KIDNEY_DISEASE:
+    full_name: Chronic Kidney Disease (CKD)
+    diagnostic_criteria:
+      mandatory_features:
+      - lab_gfr_low_persistent
+      negative_features: []
+    recommended_tests:
+    - test_id: lab_gfr
+      display_name: Blood Test (eGFR)
+      category: Blood Work
+      priority: 1
+    - test_id: lab_urinalysis_protein
+      display_name: Urinalysis (for protein)
+      category: Lab Test
+      priority: 2
+    likelihood_ratios:
+      fatigue: 2.0
+      history_of_diabetes: 1.5
+      edema_legs_ckd: 2.5
+      hyperuricemia: 2.0
+      uremia: 6.0
+      hypocalcemia: 3.0
+      hyperkalemia: 5.0
+      egfr_low: 10.0
+      hyperphosphatemia: 4.0
+      pruritus_ckd: 3.0
+      nocturia_ckd: 2.0
+    prevalence:
+      male:
+        0-4: 10
+        5-17: 20
+        18-29: 50
+        30-44: 100
+        45-64: 500
+        65+: 1000
+      female:
+        0-4: 10
+        5-17: 20
+        18-29: 50
+        30-44: 100
+        45-64: 400
+        65+: 800
+      default: 300
+  DIABETES:
+    full_name: Diabetes
+    diagnostic_criteria:
+      mandatory_features:
+      - lab_hba1c_high
+      negative_features: []
+    recommended_tests:
+    - test_id: lab_hba1c
+      display_name: Blood Test (HbA1c)
+      category: Blood Work
+      priority: 1
+    - test_id: lab_fasting_glucose
+      display_name: Blood Test (Fasting Plasma Glucose)
+      category: Blood Work
+      priority: 2
+    likelihood_ratios:
+      sym_urinary_frequency: 2.0
+      fatigue: 1.5
+      sym_weight_loss: 1.4
+      diabetes_uncontrolled: 20.0
+      polyuria: 4.0
+      polydipsia: 4.0
+  ADHD:
+    full_name: Attention Deficit Hyperactivity Disorder (ADHD)
+    diagnostic_criteria:
+      mandatory_features:
+      - hist_inattention_persistent
+      - hist_hyperactivity_impulsivity_persistent
+      negative_features: []
+    recommended_tests:
+    - test_id: clinical_assessment_adhd
+      display_name: Clinical Assessment (DSM-5 Criteria)
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      inattention_adhd: 8.0
+      hyperactivity_adhd: 7.0
+    prevalence:
+      male:
+        0-4: 50
+        5-17: 12000
+        18-29: 6000
+        30-44: 3000
+        45-64: 1000
+        65+: 500
+      female:
+        0-4: 30
+        5-17: 6000
+        18-29: 3000
+        30-44: 1500
+        45-64: 500
+        65+: 200
+      default: 4000
+  ALZHEIMERS_DISEASE:
+    full_name: Alzheimer's Disease
+    diagnostic_criteria:
+      mandatory_features:
+      - cognitive_decline_progressive
+      negative_features:
+      - evidence_of_other_dementia_causes
+    recommended_tests:
+    - test_id: clinical_assessment_cognitive
+      display_name: Cognitive Testing (e.g., MMSE, MoCA)
+      category: Clinical Evaluation
+      priority: 1
+    - test_id: imaging_pet_amyloid
+      display_name: Amyloid PET Scan
+      category: Imaging
+      priority: 2
+    likelihood_ratios:
+      memory_impairment_ad: 3.5
+      abnormal_csf_ad: 10.0
+      cognitive_decline: 5.0
+      personality_change: 2.5
+      sleep_disturbance_ad: 2.0
+      language_difficulty_ad: 3.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 0
+        18-29: 0
+        30-44: 0
+        45-64: 100
+        65+: 5000
+      female:
+        0-4: 0
+        5-17: 0
+        18-29: 0
+        30-44: 0
+        45-64: 150
+        65+: 6000
+      default: 2000
+    exclusions:
+      age_lt: 30
+  HIV_AIDS:
+    full_name: HIV/AIDS
+    diagnostic_criteria:
+      mandatory_features:
+      - lab_hiv_test_positive
+      negative_features: []
+    recommended_tests:
+    - test_id: lab_hiv_antibody_antigen
+      display_name: Blood Test (HIV 4th Gen)
+      category: Lab Test
+      priority: 1
+    likelihood_ratios:
+      fever: 2.5
+      fatigue: 1.8
+      sym_weight_loss: 4.7
+      cd4_low: 15.0
+      leukopenia: 3.0
+      night_sweats: 2.5
+      rash_hiv: 3.0
+      sym_night_sweats: 3.5
+      palpable_lymphadenopathy: 3.0
+    prevalence:
+      default:
+        0-4: 50
+        5-17: 100
+        18-29: 500
+        30-44: 1000
+        45-64: 500
+        65+: 200
+  GERD:
+    full_name: Gastroesophageal Reflux Disease (GERD)
+    diagnostic_criteria:
+      mandatory_features:
+      - heartburn
+      negative_features: []
+    recommended_tests:
+    - test_id: clinical_trial_ppi
+      display_name: Trial of Proton Pump Inhibitors (PPIs)
+      category: Therapeutic Trial
+      priority: 1
+    - test_id: imaging_endoscopy
+      display_name: Upper Endoscopy (EGD)
+      category: Imaging
+      priority: 2
+    likelihood_ratios:
+      sym_cough: 1.2
+      sym_chest_pain: 1.4
+      heartburn: 8.0
+      dry_cough: 2.0
+    prevalence:
+      default:
+        0-4: 100
+        5-17: 200
+        18-29: 500
+        30-44: 1000
+        45-64: 1500
+        65+: 2000
+  BIPOLAR_DISORDER:
+    full_name: Bipolar Disorder
+    diagnostic_criteria:
+      mandatory_features:
+      - hist_manic_or_hypomanic_episode
+      negative_features: []
+    recommended_tests:
+    - test_id: clinical_assessment_psychiatric
+      display_name: Psychiatric Evaluation
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      sym_low_mood: 5.0
+      manic_episodes_bd: 15.0
+      hallucinations_scz: 2.0
+      delusions_scz: 3.0
+    prevalence:
+      default:
+        0-4: 0
+        5-17: 200
+        18-29: 1000
+        30-44: 1200
+        45-64: 800
+        65+: 400
+  AUTISM_SPECTRUM_DISORDER:
+    full_name: Autism Spectrum Disorder (ASD)
+    diagnostic_criteria:
+      mandatory_features:
+      - hist_social_communication_deficits
+      - hist_restricted_repetitive_behaviors
+      negative_features: []
+    recommended_tests:
+    - test_id: clinical_assessment_developmental
+      display_name: Developmental Assessment
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      social_deficit_asd: 8.0
+      mchat_positive_asd: 16.6
+      repetitive_behaviors_asd: 7.0
+    prevalence:
+      male:
+        0-4: 2000
+        5-17: 2500
+        18-29: 2000
+        30-44: 1500
+        45-64: 1000
+        65+: 500
+      female:
+        0-4: 500
+        5-17: 600
+        18-29: 500
+        30-44: 400
+        45-64: 300
+        65+: 200
+      default: 1000
+  CHLAMYDIA:
+    full_name: Chlamydia
+    diagnostic_criteria:
+      mandatory_features:
+      - lab_chlamydia_naat_positive
+      negative_features: []
+    recommended_tests:
+    - test_id: lab_naat_urine_swab
+      display_name: NAAT Test (Urine or Swab)
+      category: Lab Test
+      priority: 1
+    likelihood_ratios:
+      sym_dysuria: 2.5
+      vaginal_discharge: 2.5
+      naat_positive_chlam: 30.0
+    prevalence:
+      default:
+        0-4: 0
+        5-17: 500
+        18-29: 2000
+        30-44: 1000
+        45-64: 500
+        65+: 200
+  GONORRHEA:
+    full_name: Gonorrhea
+    diagnostic_criteria:
+      mandatory_features:
+      - lab_gonorrhea_naat_positive
+      negative_features: []
+    recommended_tests:
+    - test_id: lab_naat_urine_swab
+      display_name: NAAT Test (Urine or Swab)
+      category: Lab Test
+      priority: 1
+    likelihood_ratios:
+      sym_dysuria: 2.5
+      vaginal_discharge: 2.5
+      naat_positive_gono: 50.0
+    prevalence:
+      default:
+        0-4: 0
+        5-17: 200
+        18-29: 1500
+        30-44: 1000
+        45-64: 500
+        65+: 200
+  KAWASAKI_DISEASE:
+    full_name: Kawasaki Disease
+    diagnostic_criteria:
+      mandatory_features:
+      - fever
+      - conjunctivitis
+      - rash_hiv
+      negative_features: []
+    recommended_tests:
+    - test_id: imaging_echocardiogram_kawasaki
+      display_name: Echocardiogram (to check for coronary aneurysms)
+      category: Imaging
+      priority: 1
+    likelihood_ratios:
+      fever: 5.0
+      conjunctivitis: 6.0
+      rash_hiv: 4.0
+    prevalence:
+      default:
+        0-4: 200
+        5-17: 100
+        18-29: 10
+        30-44: 0
+        45-64: 0
+        65+: 0
+    exclusions:
+      age_gt: 18
+  SEPTIC_ARTHRITIS:
+    full_name: Septic Arthritis
+    diagnostic_criteria:
+      mandatory_features:
+      - lab_joint_fluid_culture_positive
+      negative_features:
+      - lab_joint_fluid_crystals_present
+    recommended_tests:
+    - test_id: procedure_arthrocentesis
+      display_name: Arthrocentesis (Joint Fluid Aspiration)
+      category: Procedure
+      priority: 1
+    likelihood_ratios:
+      fever: 3.2
+      neutrophilia: 3.0
+      wbc_high: 2.0
+      joint_pain_acute: 3.0
+      joint_swelling: 4.0
+      monoarticular: 4.5
+      hot_swollen_joint: 6.0
+      monoarthritis: 5.0
+      swelling_knee: 4.0
+      skin_warmth: 3.0
+      abrupt_onset_hours: 3.0
+    prevalence:
+      default:
+        0-4: 20
+        5-17: 50
+        18-29: 100
+        30-44: 150
+        45-64: 200
+        65+: 300
+  DIVERTICULITIS:
+    full_name: Diverticulitis
+    diagnostic_criteria:
+      mandatory_features:
+      - llq_pain
+      - imaging_ct_abdomen_positive_for_diverticulitis
+      negative_features:
+      - imaging_ct_abdomen_normal
+    recommended_tests:
+    - test_id: imaging_ct_abdomen
+      display_name: CT Scan of the Abdomen
+      category: Imaging
+      priority: 1
+    likelihood_ratios:
+      fever: 1.9
+      rebound_tenderness: 2.5
+      sym_abdominal_pain: 2.0
+      llq_pain: 4.2
+      wbc_high: 2.2
+    prevalence:
+      default:
+        0-4: 0
+        5-17: 0
+        18-29: 10
+        30-44: 50
+        45-64: 200
+        65+: 400
+  SICKLE_CELL_CRISIS:
+    full_name: Sickle Cell Crisis (Vaso-occlusive)
+    diagnostic_criteria:
+      mandatory_features:
+      - hist_sickle_cell_disease
+      - acute_pain_crisis
+      negative_features: []
+    recommended_tests:
+    - test_id: lab_cbc_reticulocyte
+      display_name: Blood Test (CBC with Reticulocyte Count)
+      category: Blood Work
+      priority: 1
+    likelihood_ratios:
+      fever: 1.5
+      sym_jaundice: 2.5
+      severe_pain_sickle: 5.0
+      dactylitis: 6.0
+      sym_chest_pain: 3.0
+    prevalence:
+      default:
+        0-4: 200
+        5-17: 300
+        18-29: 200
+        30-44: 150
+        45-64: 100
+        65+: 50
+  SINUSITIS:
+    full_name: Sinusitis (Sinus Infection)
+    diagnostic_criteria:
+      mandatory_features:
+      - runny_nose
+      - facial_pain
+      negative_features: []
+    recommended_tests:
+    - test_id: clinical_diagnosis
+      display_name: Clinical Diagnosis (No imaging usually required)
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      fever: 1.5
+      sym_cough: 1.3
+      fatigue: 1.4
+      runny_nose: 4.5
+      sym_headache: 3.0
+      facial_pain: 8.0
+      ear_pain: 2.0
+      retro_orbital_pain: 2.0
+      loss_of_smell_taste: 2.0
+    prevalence:
+      default: 8000
+  MIGRAINE:
+    full_name: Migraine
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_headache
+      negative_features: []
+    recommended_tests:
+    - test_id: clinical_assessment_neuro
+      display_name: Neurological Exam
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      photophobia: 3.0
+      sym_headache: 4.0
+      facial_pain: 2.0
+      sym_nausea_vomiting: 2.0
+      sensitivity_light: 4.0
+      retro_orbital_pain: 2.0
+    prevalence:
+      default: 6000
+  MONONUCLEOSIS:
+    full_name: Infectious Mononucleosis (Mono)
+    diagnostic_criteria:
+      mandatory_features:
+      - fatigue
+      - pharyngitis
+      negative_features:
+      - lab_monospot_negative
+    recommended_tests:
+    - test_id: lab_monospot
+      display_name: Monospot Test
+      category: Lab Test
+      priority: 1
+    likelihood_ratios:
+      fever: 2.5
+      fatigue: 3.5
+      lymphocytosis: 5.0
+      lab_monospot_positive: 40.0
+      body_aches: 2.5
+      rash_hiv: 2.0
+      pharyngitis: 4.0
+      palpable_lymphadenopathy: 4.0
+    prevalence:
+      default: 500
+  GASTROENTERITIS:
+    full_name: Viral Gastroenteritis (Stomach Flu)
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_nausea_vomiting
+      - sym_diarrhea
+      negative_features: []
+    recommended_tests:
+    - test_id: clinical_diagnosis
+      display_name: Clinical Diagnosis (Hydration monitoring)
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      fever: 1.5
+      anorexia: 2.0
+      sym_nausea_vomiting: 4.0
+      sym_vomiting: 3.0
+      sym_diarrhea: 4.5
+      sym_abdominal_pain: 2.5
+    prevalence:
+      default: 15000
+  COMMON_COLD:
+    full_name: Common Cold (Upper Respiratory Infection)
+    diagnostic_criteria:
+      mandatory_features:
+      - runny_nose
+      - sym_cough
+      negative_features:
+      - fever
+    recommended_tests:
+    - test_id: clinical_diagnosis
+      display_name: Self-care / Symptomatic relief
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      fever: 1.2
+      sym_cough: 3.5
+      runny_nose: 5.0
+      sneezing: 3.0
+      pharyngitis: 2.5
+    prevalence:
+      default: 20000
+  ANXIETY_DISORDER:
+    full_name: Anxiety Disorder
+    diagnostic_criteria:
+      mandatory_features:
+      - excessive_worry
+      negative_features: []
+    recommended_tests:
+    - test_id: clinical_assessment_psych
+      display_name: GAD-7 Screening Tool
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      sym_shortness_of_breath: 1.8
+      sym_chest_pain: 1.5
+      tachycardia: 2.0
+      excessive_worry: 10.0
+      sym_palpitations: 2.5
+      diaphoresis: 1.5
+      sleep_disturbance_ad: 2.5
+      tachycardia_chol: 2.0
+    prevalence:
+      default: 8000
+  NEPHROLITHIASIS:
+    full_name: Kidney Stones (Nephrolithiasis)
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_flank_pain
+      negative_features: []
+    recommended_tests:
+    - test_id: imaging_ct_kua
+      display_name: CT KUB (Kidneys, Ureters, Bladder)
+      category: Imaging
+      priority: 1
+    likelihood_ratios:
+      sym_dysuria: 2.0
+      hematuria: 5.0
+      sym_flank_pain: 8.0
+      costovertebral_angle_tenderness: 3.0
+      dark_urine: 2.0
+    prevalence:
+      default: 1000
+  CHOLECYSTITIS:
+    full_name: Acute Cholecystitis (Gallstones)
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_abdominal_pain
+      - sym_nausea_vomiting
+      negative_features: []
+    recommended_tests:
+    - test_id: imaging_ultrasound_ruq
+      display_name: Abdominal Ultrasound (RUQ)
+      category: Imaging
+      priority: 1
+    likelihood_ratios:
+      fever: 2.0
+      guarding: 3.0
+      sym_jaundice: 2.5
+      sym_nausea_vomiting: 3.0
+      sym_abdominal_pain: 3.0
+      liver_enzyme_elevated: 2.5
+    prevalence:
+      default: 2000
+  OTITIS_MEDIA:
+    full_name: Otitis Media (Ear Infection)
+    diagnostic_criteria:
+      mandatory_features:
+      - ear_pain
+      negative_features: []
+    recommended_tests:
+    - test_id: clinical_exam_otoscope
+      display_name: Otoscopy (Ear Exam)
+      category: Physical Exam
+      priority: 1
+    likelihood_ratios:
+      fever: 1.5
+      ear_pain: 8.0
+    prevalence:
+      default: 3000
+  OTHER_UNCERTAIN_DIAGNOSIS:
+    full_name: Uncertain / Unmodeled Condition
+    diagnostic_criteria:
+      mandatory_features: []
+      negative_features: []
+    recommended_tests:
+    - test_id: referral_specialist
+      display_name: Referral to Specialist (Diagnosis Unclear)
+      category: Clinical Evaluation
+      priority: 1
+    prevalence:
+      default: 5000
+  AMYOTROPHIC_LATERAL_SCLEROSIS:
+    full_name: Amyotrophic Lateral Sclerosis (ALS)
+    diagnostic_criteria:
+      mandatory_features:
+      - unilateral_weakness
+      negative_features:
+      - evidence_of_spine_pathology
+    recommended_tests:
+    - test_id: diagnostic_emg_ncs
+      display_name: Electromyography (EMG) & Nerve Conduction Studies
+      category: Procedure
+      priority: 1
+    likelihood_ratios:
+      difficulty_speaking: 4.0
+      ascending_weakness_gbs: 2.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 0
+        18-29: 1
+        30-44: 5
+        45-64: 20
+        65+: 30
+      female:
+        0-4: 0
+        5-17: 0
+        18-29: 1
+        30-44: 4
+        45-64: 15
+        65+: 25
+      default: 10
+  ANKLE_FRACTURE:
+    full_name: Ankle Fracture
+    diagnostic_criteria:
+      mandatory_features:
+      - recent_ankle_trauma
+      - imaging_fracture_positive
+      negative_features:
+      - imaging_fracture_normal
+    recommended_tests:
+    - test_id: imaging_xray_ankle
+      display_name: X-Ray Ankle
+      category: Imaging
+      priority: 1
+    likelihood_ratios:
+      recent_ankle_trauma: 10.0
+      malleolar_tenderness: 8.0
+      inability_bear_weight: 6.0
+      swelling_ankle: 3.0
+      deformity_ankle: 15.0
+      ecchymosis_ankle: 4.0
+    prevalence:
+      default:
+        0-4: 50
+        5-17: 200
+        18-29: 300
+        30-44: 250
+        45-64: 200
+        65+: 300
+  BELL_S_PALSY:
+    full_name: Bell's Palsy
+    diagnostic_criteria:
+      mandatory_features:
+      - unilateral_facial_weakness
+      negative_features:
+      - imaging_mri_brain_stroke_positive
+    recommended_tests:
+    - test_id: clinical_assessment_neuro
+      display_name: Neurological Exam (Cranial Nerves)
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      unilateral_weakness: 1.0
+      unilateral_facial_weakness: 10.0
+      difficulty_speaking: 2.0
+    prevalence:
+      default:
+        0-4: 10
+        5-17: 20
+        18-29: 30
+        30-44: 40
+        45-64: 50
+        65+: 60
+  BRAIN_TUMOR:
+    full_name: Brain Tumor
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_headache
+      - imaging_mri_brain_tumor_positive
+      negative_features:
+      - imaging_mri_brain_normal
+    recommended_tests:
+    - test_id: imaging_mri_brain
+      display_name: MRI Brain (with contrast)
+      category: Imaging
+      priority: 1
+    likelihood_ratios:
+      sym_headache: 1.2
+      unilateral_weakness: 2.8
+      personality_change: 3.0
+      difficulty_speaking: 3.0
+      seizures: 4.0
+    prevalence:
+      default:
+        0-4: 20
+        5-17: 30
+        18-29: 40
+        30-44: 50
+        45-64: 70
+        65+: 100
+  BREAST_CANCER:
+    full_name: Breast Cancer
+    diagnostic_criteria:
+      mandatory_features:
+      - breast_lump
+      - imaging_mammogram_positive
+      negative_features:
+      - imaging_mammogram_normal
+    recommended_tests:
+    - test_id: imaging_mammogram
+      display_name: Mammography
+      category: Imaging
+      priority: 1
+    - test_id: procedure_biopsy_breast
+      display_name: Breast Biopsy
+      category: Procedure
+      priority: 2
+    likelihood_ratios:
+      breast_lump: 7.0
+      nipple_discharge: 4.0
+      skin_dimpling_breast: 8.0
+      axillary_lymphadenopathy: 5.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 0
+        18-29: 1
+        30-44: 2
+        45-64: 5
+        65+: 10
+      female:
+        0-4: 0
+        5-17: 0
+        18-29: 10
+        30-44: 50
+        45-64: 200
+        65+: 400
+      default: 100
+  CATHETER_ASSOCIATED_UTI:
+    full_name: Catheter-Associated UTI
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_dysuria
+      - fever
+      negative_features:
+      - lab_urine_culture_negative
+    recommended_tests:
+    - test_id: lab_urine_culture
+      display_name: Urine Culture & Sensitivity
+      category: Lab Test
+      priority: 1
+    likelihood_ratios:
+      sym_dysuria: 2.5
+      positive_urine_culture: 10.0
+    prevalence:
+      default:
+        0-4: 50
+        5-17: 100
+        18-29: 200
+        30-44: 300
+        45-64: 400
+        65+: 600
+  CHOLERA:
+    full_name: Cholera
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_diarrhea
+      - sym_nausea_vomiting
+      negative_features:
+      - lab_stool_culture_negative
+    recommended_tests:
+    - test_id: lab_stool_culture_cholera
+      display_name: Stool Culture (V. cholerae)
+      category: Lab Test
+      priority: 1
+    likelihood_ratios:
+      sym_vomiting: 5.0
+      sym_diarrhea: 3.0
+      rice_water_stool: 15.0
+    prevalence:
+      default:
+        0-4: 10
+        5-17: 20
+        18-29: 30
+        30-44: 30
+        45-64: 20
+        65+: 10
+  COLORECTAL_CANCER:
+    full_name: Colorectal Cancer
+    diagnostic_criteria:
+      mandatory_features:
+      - rectal_bleeding
+      negative_features:
+      - imaging_colonoscopy_normal
+    recommended_tests:
+    - test_id: procedure_colonoscopy
+      display_name: Colonoscopy
+      category: Procedure
+      priority: 1
+    likelihood_ratios:
+      sym_weight_loss: 2.0
+      bloody_diarrhea_uc: 2.0
+      microcytic_anemia: 2.0
+      sym_constipation: 2.0
+      rectal_bleeding: 5.0
+      change_bowel_habit: 4.0
+      iron_deficiency_anemia: 3.0
+      unexplained_weight_loss: 2.5
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 0
+        18-29: 5
+        30-44: 20
+        45-64: 100
+        65+: 300
+      female:
+        0-4: 0
+        5-17: 0
+        18-29: 5
+        30-44: 15
+        45-64: 80
+        65+: 250
+      default: 100
+  CROHNS_DISEASE:
+    full_name: Crohn's Disease
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_abdominal_pain
+      - sym_diarrhea
+      negative_features:
+      - imaging_colonoscopy_normal
+    recommended_tests:
+    - test_id: procedure_colonoscopy
+      display_name: Colonoscopy with Biopsy
+      category: Procedure
+      priority: 1
+    - test_id: imaging_cte
+      display_name: CT Enterography
+      category: Imaging
+      priority: 2
+    likelihood_ratios:
+      rlq_pain: 1.5
+      sym_weight_loss: 2.5
+      sym_diarrhea: 2.0
+      perianal_disease: 15.0
+      fecal_calprotectin_high_uc: 5.0
+      bloody_diarrhea_uc: 2.0
+      rectal_bleeding: 2.5
+      change_bowel_habit: 2.5
+    prevalence:
+      default:
+        0-4: 10
+        5-17: 50
+        18-29: 100
+        30-44: 150
+        45-64: 100
+        65+: 50
+  DENGUE_FEVER:
+    full_name: Dengue Fever
+    diagnostic_criteria:
+      mandatory_features:
+      - fever
+      - rash_hiv
+      negative_features:
+      - lab_dengue_serology_negative
+    recommended_tests:
+    - test_id: lab_dengue_serology
+      display_name: Dengue NS1 / IgM Serology
+      category: Lab Test
+      priority: 1
+    likelihood_ratios:
+      fever: 3.0
+      sym_headache: 2.5
+      thrombocytopenia_deng: 6.0
+      leukopenia: 3.0
+      body_aches: 3.0
+      bleeding: 4.0
+      rash_hiv: 3.5
+      retro_orbital_pain: 5.0
+    prevalence:
+      default:
+        0-4: 50
+        5-17: 100
+        18-29: 150
+        30-44: 150
+        45-64: 100
+        65+: 50
+  DEPRESSION_MAJOR:
+    full_name: Depression (Major Depressive Disorder)
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_low_mood
+      negative_features:
+      - hist_manic_episode
+    recommended_tests:
+    - test_id: clinical_assessment_phq9
+      display_name: PHQ-9 Depression Screen
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      anorexia: 2.0
+      fatigue: 3.5
+      sym_weight_gain: 2.0
+      sym_weight_loss: 2.0
+      excessive_worry: 3.0
+      sym_low_mood: 10.0
+      anhedonia: 8.0
+      vitamin_d_deficiency: 1.5
+      sleep_disturbance_ad: 3.0
+    prevalence:
+      default: 7000
+  EBOLA:
+    full_name: Ebola (Virus Disease)
+    diagnostic_criteria:
+      mandatory_features:
+      - fever
+      negative_features:
+      - lab_ebola_pcr_negative
+    recommended_tests:
+    - test_id: lab_ebola_pcr
+      display_name: Ebola PCR Test
+      category: Lab Test
+      priority: 1
+    likelihood_ratios:
+      fever: 4.0
+      sym_headache: 2.0
+      exposure_ebola: 10.0
+      bleeding: 8.0
+    prevalence:
+      default:
+        0-4: 1
+        5-17: 1
+        18-29: 1
+        30-44: 1
+        45-64: 1
+        65+: 1
+  ENDOMETRIOSIS:
+    full_name: Endometriosis
+    diagnostic_criteria:
+      mandatory_features:
+      - dysmenorrhea_endo
+      negative_features: []
+    recommended_tests:
+    - test_id: imaging_ultrasound_pelvic
+      display_name: Pelvic Ultrasound
+      category: Imaging
+      priority: 1
+    - test_id: procedure_laparoscopy
+      display_name: Diagnostic Laparoscopy
+      category: Procedure
+      priority: 2
+    likelihood_ratios:
+      dyspareunia_endo: 3.0
+      dysmenorrhea_endo: 4.0
+    prevalence:
+      male: 0
+      female:
+        0-4: 0
+        5-17: 50
+        18-29: 2000
+        30-44: 3000
+        45-64: 1000
+        65+: 100
+      default: 500
+    exclusions:
+      sex: MALE
+  FIBROMYALGIA:
+    full_name: Fibromyalgia
+    diagnostic_criteria:
+      mandatory_features:
+      - widespread_pain_fm
+      - fatigue
+      negative_features:
+      - lab_esr_elevated
+    recommended_tests:
+    - test_id: clinical_assessment_fm
+      display_name: Clinical Assessment of Tender Points
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      fatigue: 2.5
+      widespread_pain_fm: 3.1
+      body_aches: 2.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 20
+        18-29: 200
+        30-44: 400
+        45-64: 600
+        65+: 400
+      female:
+        0-4: 0
+        5-17: 50
+        18-29: 500
+        30-44: 1000
+        45-64: 1500
+        65+: 1000
+      default: 500
+  GLAUCOMA:
+    full_name: Glaucoma
+    diagnostic_criteria:
+      mandatory_features:
+      - visual_field_loss
+      negative_features:
+      - exam_iop_normal
+    recommended_tests:
+    - test_id: exam_tonometry
+      display_name: Tonometry (Eye Pressure)
+      category: Physical Exam
+      priority: 1
+    likelihood_ratios:
+      elevated_iop: 10.0
+      visual_field_loss: 15.0
+    prevalence:
+      default:
+        0-4: 0
+        5-17: 10
+        18-29: 50
+        30-44: 100
+        45-64: 500
+        65+: 1000
+  GOUT:
+    full_name: Gout
+    diagnostic_criteria:
+      mandatory_features:
+      - podagra
+      negative_features:
+      - lab_uric_acid_normal
+    recommended_tests:
+    - test_id: lab_uric_acid
+      display_name: Serum Uric Acid
+      category: Lab Test
+      priority: 1
+    - test_id: procedure_joint_aspiration
+      display_name: Joint Aspiration (Crystals)
+      category: Procedure
+      priority: 2
+    likelihood_ratios:
+      hyperuricemia: 8.0
+      joint_pain_acute: 3.5
+      joint_swelling: 4.0
+      monoarticular: 5.0
+      first_mtp_involvement: 8.0
+      joint_pain: 3.0
+      hot_swollen_joint: 5.0
+      monoarthritis: 4.5
+      podagra: 10.0
+      tophi: 15.0
+      abrupt_onset_hours: 4.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 10
+        18-29: 50
+        30-44: 200
+        45-64: 500
+        65+: 800
+      female:
+        0-4: 0
+        5-17: 5
+        18-29: 20
+        30-44: 100
+        45-64: 300
+        65+: 500
+      default: 200
+  GRAVES_DISEASE:
+    full_name: Graves' Disease
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_palpitations
+      - heat_intolerance_graves
+      negative_features:
+      - lab_tsh_normal
+    recommended_tests:
+    - test_id: lab_thyroid_panel
+      display_name: Thyroid Panel (TSH, T3, T4)
+      category: Blood Work
+      priority: 1
+    likelihood_ratios:
+      sym_weight_loss: 2.7
+      sym_palpitations: 3.0
+      heat_intolerance_graves: 2.5
+      exophthalmos: 5.5
+      tsh_low: 6.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 10
+        18-29: 50
+        30-44: 100
+        45-64: 80
+        65+: 50
+      female:
+        0-4: 0
+        5-17: 20
+        18-29: 100
+        30-44: 200
+        45-64: 150
+        65+: 100
+      default: 100
+  GUILLAIN_BARRE_SYNDROME:
+    full_name: Guillain-Barre Syndrome
+    diagnostic_criteria:
+      mandatory_features:
+      - ascending_weakness_gbs
+      negative_features: []
+    recommended_tests:
+    - test_id: procedure_lumbar_puncture
+      display_name: Lumbar Puncture (CSF Analysis)
+      category: Procedure
+      priority: 1
+    likelihood_ratios:
+      ascending_weakness_gbs: 12.0
+      areflexia_gbs: 10.0
+    prevalence:
+      default:
+        0-4: 1
+        5-17: 5
+        18-29: 10
+        30-44: 20
+        45-64: 30
+        65+: 40
+  HASHIMOTOS_THYROIDITIS:
+    full_name: Hashimoto's Thyroiditis
+    diagnostic_criteria:
+      mandatory_features:
+      - fatigue
+      - cold_intolerance_hashi
+      negative_features:
+      - lab_tsh_normal
+    recommended_tests:
+    - test_id: lab_thyroid_antibodies
+      display_name: Thyroid Antibody Panel (TPO)
+      category: Blood Work
+      priority: 1
+    likelihood_ratios:
+      fatigue: 2.5
+      sym_weight_gain: 4.0
+      cold_intolerance_hashi: 1.8
+      tpo_antibodies_positive: 8.0
+      tsh_high: 5.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 200
+        18-29: 1000
+        30-44: 2000
+        45-64: 1000
+        65+: 500
+      female:
+        18-29: 8000
+        30-44: 10000
+        45-64: 8000
+        65+: 4000
+      default: 5000
+  HEPATITIS_C:
+    full_name: Hepatitis C
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_jaundice
+      negative_features:
+      - lab_hcv_antibody_negative
+    recommended_tests:
+    - test_id: lab_hcv_antibody
+      display_name: Hepatitis C Antibody Test
+      category: Blood Work
+      priority: 1
+    likelihood_ratios:
+      anorexia: 1.5
+      sym_jaundice: 7.5
+      hcv_rna_positive: 41.0
+      liver_enzyme_elevated: 5.0
+      dark_urine: 3.0
+    prevalence:
+      default:
+        0-4: 10
+        5-17: 50
+        18-29: 200
+        30-44: 500
+        45-64: 1000
+        65+: 500
+  HUNTINGTONS_DISEASE:
+    full_name: Huntington's Disease
+    diagnostic_criteria:
+      mandatory_features:
+      - chorea_hd
+      negative_features: []
+    recommended_tests:
+    - test_id: lab_genetic_testing_hd
+      display_name: Genetic Testing (HTT CAG Repeat)
+      category: Lab Test
+      priority: 1
+    likelihood_ratios:
+      chorea_rf: 5.0
+      personality_change: 4.0
+      chorea_hd: 15.0
+    prevalence:
+      default:
+        0-4: 0
+        5-17: 0
+        18-29: 5
+        30-44: 20
+        45-64: 50
+        65+: 20
+  IRON_DEFICIENCY_ANEMIA:
+    full_name: Iron-Deficiency Anemia
+    diagnostic_criteria:
+      mandatory_features:
+      - fatigue
+      - pallor_iron
+      negative_features:
+      - lab_ferritin_normal
+    recommended_tests:
+    - test_id: lab_iron_panel
+      display_name: Iron Studies (Ferritin, TIBC)
+      category: Blood Work
+      priority: 1
+    likelihood_ratios:
+      fatigue: 4.0
+      pallor_iron: 4.5
+      microcytic_anemia: 6.0
+      low_ferritin: 41.0
+      thrombocytosis: 2.0
+      pica: 6.0
+    prevalence:
+      male:
+        0-4: 500
+        5-17: 1000
+        18-29: 500
+        30-44: 400
+        45-64: 600
+        65+: 800
+      female:
+        0-4: 1000
+        5-17: 2000
+        18-29: 3000
+        30-44: 2500
+        45-64: 2000
+        65+: 1500
+      default: 1000
+  KNEE_FRACTURE:
+    full_name: Knee Fracture
+    diagnostic_criteria:
+      mandatory_features:
+      - recent_knee_trauma
+      - imaging_fracture_positive
+      negative_features:
+      - imaging_fracture_normal
+    recommended_tests:
+    - test_id: imaging_xray_knee
+      display_name: X-Ray Knee
+      category: Imaging
+      priority: 1
+    likelihood_ratios:
+      inability_bear_weight: 6.0
+      recent_knee_trauma: 8.0
+      inability_bear_weight_knee: 6.0
+      deformity_knee: 10.0
+      fibular_head_tenderness: 6.0
+      knee_flex_lt_90: 4.0
+    prevalence:
+      default:
+        0-4: 50
+        5-17: 200
+        18-29: 300
+        30-44: 250
+        45-64: 200
+        65+: 300
+  LUNG_CANCER:
+    full_name: Lung Cancer
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_cough
+      - sym_weight_loss
+      negative_features:
+      - imaging_ct_chest_normal
+    recommended_tests:
+    - test_id: imaging_ct_chest
+      display_name: CT Chest
+      category: Imaging
+      priority: 1
+    - test_id: procedure_bronchoscopy
+      display_name: Bronchoscopy/Biopsy
+      category: Procedure
+      priority: 2
+    likelihood_ratios:
+      sym_cough: 1.5
+      hemoptysis: 2.8
+      sym_weight_loss: 2.5
+      smoker: 3.0
+      unexplained_weight_loss: 3.0
+      persistent_cough_gt_3w: 3.5
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 0
+        18-29: 5
+        30-44: 20
+        45-64: 200
+        65+: 500
+      female:
+        0-4: 0
+        5-17: 0
+        18-29: 5
+        30-44: 15
+        45-64: 150
+        65+: 400
+      default: 200
+  LYMPHOMA:
+    full_name: Lymphoma
+    diagnostic_criteria:
+      mandatory_features:
+      - palpable_lymphadenopathy
+      - sym_night_sweats
+      negative_features: []
+    recommended_tests:
+    - test_id: procedure_ln_biopsy
+      display_name: Lymph Node Excision Biopsy
+      category: Procedure
+      priority: 1
+    likelihood_ratios:
+      sym_weight_loss: 2.3
+      night_sweats: 3.0
+      sym_night_sweats: 3.5
+      palpable_lymphadenopathy: 5.0
+      unexplained_weight_loss: 3.0
+      axillary_lymphadenopathy: 3.0
+    prevalence:
+      default:
+        0-4: 10
+        5-17: 20
+        18-29: 50
+        30-44: 100
+        45-64: 200
+        65+: 300
+  MENISCAL_TEAR:
+    full_name: Meniscal Tear
+    diagnostic_criteria:
+      mandatory_features:
+      - joint_line_tenderness
+      negative_features:
+      - imaging_mri_knee_normal
+    recommended_tests:
+    - test_id: imaging_mri_knee
+      display_name: MRI Knee
+      category: Imaging
+      priority: 1
+    likelihood_ratios:
+      crepitus: 2.5
+      mcmurray_positive: 8.0
+      joint_line_tenderness: 6.0
+      locking_knee: 7.0
+      recent_knee_trauma: 4.0
+      swelling_knee: 3.0
+    prevalence:
+      default:
+        0-4: 0
+        5-17: 100
+        18-29: 200
+        30-44: 300
+        45-64: 400
+        65+: 300
+  MULTIPLE_MYELOMA:
+    full_name: Multiple Myeloma
+    diagnostic_criteria:
+      mandatory_features:
+      - bone_pain_mm
+      negative_features:
+      - lab_spep_normal
+    recommended_tests:
+    - test_id: lab_spep
+      display_name: Serum Protein Electrophoresis (SPEP)
+      category: Blood Work
+      priority: 1
+    likelihood_ratios:
+      bone_pain_mm: 3.5
+      monoclonal_protein: 15.0
+      hypercalcemia: 4.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 0
+        18-29: 0
+        30-44: 10
+        45-64: 50
+        65+: 100
+      female:
+        0-4: 0
+        5-17: 0
+        18-29: 0
+        30-44: 8
+        45-64: 40
+        65+: 80
+      default: 50
+  OSTEOARTHRITIS:
+    full_name: Osteoarthritis
+    diagnostic_criteria:
+      mandatory_features:
+      - chronic_joint_pain
+      negative_features: []
+    recommended_tests:
+    - test_id: imaging_xray_joint
+      display_name: X-Ray of Affected Joint
+      category: Imaging
+      priority: 1
+    likelihood_ratios:
+      joint_pain_acute: 2.0
+      joint_pain: 2.5
+      chronic_joint_pain: 4.0
+      bony_enlargement: 5.0
+      crepitus: 4.0
+      chronic_back_pain: 2.5
+      joint_line_tenderness: 2.0
+      morning_stiffness_lt_30min: 3.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 10
+        18-29: 50
+        30-44: 200
+        45-64: 1000
+        65+: 2000
+      female:
+        0-4: 0
+        5-17: 10
+        18-29: 60
+        30-44: 250
+        45-64: 1200
+        65+: 2500
+      default: 1000
+  OSTEOPOROSIS:
+    full_name: Osteoporosis
+    diagnostic_criteria:
+      mandatory_features:
+      - previous_fracture
+      negative_features:
+      - imaging_dexa_normal
+    recommended_tests:
+    - test_id: imaging_dexa
+      display_name: DEXA Scan (Bone Density)
+      category: Imaging
+      priority: 1
+    likelihood_ratios:
+      smoker: 2.1
+      previous_fracture: 4.5
+      low_bmd: 10.0
+      kyphosis: 3.0
+      vitamin_d_deficiency: 4.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 0
+        18-29: 5
+        30-44: 20
+        45-64: 200
+        65+: 800
+      female:
+        0-4: 0
+        5-17: 0
+        18-29: 10
+        30-44: 50
+        45-64: 500
+        65+: 2000
+      default: 500
+  PARKINSONS_DISEASE:
+    full_name: Parkinson's Disease
+    diagnostic_criteria:
+      mandatory_features:
+      - tremor_pd
+      negative_features: []
+    recommended_tests:
+    - test_id: clinical_assessment_neuro
+      display_name: Neurological Exam (Movement Disorder)
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      bradykinesia: 4.5
+      hyposmia_pd: 6.0
+      tremor_pd: 5.0
+      rigidity: 4.0
+      cognitive_decline: 2.0
+      sym_constipation: 2.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 0
+        18-29: 0
+        30-44: 10
+        45-64: 100
+        65+: 500
+      female:
+        0-4: 0
+        5-17: 0
+        18-29: 0
+        30-44: 8
+        45-64: 80
+        65+: 400
+      default: 200
+    exclusions:
+      age_lt: 20
+  POLYCYSTIC_OVARY_SYNDROME:
+    full_name: Polycystic Ovary Syndrome (PCOS)
+    diagnostic_criteria:
+      mandatory_features:
+      - irregular_menses_pcos
+      negative_features: []
+    recommended_tests:
+    - test_id: imaging_ultrasound_pelvic
+      display_name: Pelvic Ultrasound
+      category: Imaging
+      priority: 1
+    - test_id: lab_hormone_panel
+      display_name: Hormone Panel (Testosterone, LH/FSH)
+      category: Blood Work
+      priority: 2
+    likelihood_ratios:
+      sym_weight_gain: 2.0
+      pcos_ovaries_ultrasound: 5.0
+      amh_high_pcos: 6.0
+      irregular_menses_pcos: 4.0
+      hirsutism_pcos: 4.0
+    prevalence:
+      male: 0
+      female:
+        0-4: 0
+        5-17: 500
+        18-29: 2000
+        30-44: 3000
+        45-64: 1000
+        65+: 100
+      default: 500
+    exclusions:
+      sex: MALE
+  PROSTATE_CANCER:
+    full_name: Prostate Cancer
+    diagnostic_criteria:
+      mandatory_features:
+      - psa_high
+      negative_features:
+      - lab_psa_normal
+    recommended_tests:
+    - test_id: lab_psa
+      display_name: PSA (Prostate Specific Antigen)
+      category: Blood Work
+      priority: 1
+    - test_id: procedure_prostate_biopsy
+      display_name: Prostate Biopsy
+      category: Procedure
+      priority: 2
+    likelihood_ratios:
+      psa_high: 10.0
+      nocturia_ckd: 3.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 0
+        18-29: 0
+        30-44: 10
+        45-64: 100
+        65+: 500
+      female: 0
+      default: 100
+    exclusions:
+      sex: FEMALE
+  RHEUMATIC_FEVER:
+    full_name: Rheumatic Fever
+    diagnostic_criteria:
+      mandatory_features:
+      - fever
+      - joint_pain
+      negative_features: []
+    recommended_tests:
+    - test_id: lab_aso_titer
+      display_name: ASO Titer
+      category: Blood Work
+      priority: 1
+    likelihood_ratios:
+      fever: 2.0
+      migratory_arthritis_rf: 5.0
+      chorea_rf: 10.0
+      inflammation_generic: 2.5
+      chorea_hd: 8.0
+      joint_pain: 3.5
+    prevalence:
+      default:
+        0-4: 50
+        5-17: 200
+        18-29: 100
+        30-44: 50
+        45-64: 20
+        65+: 10
+  SARCOIDOSIS:
+    full_name: Sarcoidosis
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_cough
+      - sym_shortness_of_breath
+      negative_features: []
+    recommended_tests:
+    - test_id: imaging_xray_chest
+      display_name: Chest X-ray
+      category: Imaging
+      priority: 1
+    - test_id: lab_ace_level
+      display_name: Serum ACE Level
+      category: Blood Work
+      priority: 2
+    likelihood_ratios:
+      hypercalcemia: 3.0
+    prevalence:
+      default:
+        0-4: 0
+        5-17: 10
+        18-29: 50
+        30-44: 100
+        45-64: 150
+        65+: 100
+  SCHIZOPHRENIA:
+    full_name: Schizophrenia
+    diagnostic_criteria:
+      mandatory_features:
+      - hallucinations_scz
+      negative_features: []
+    recommended_tests:
+    - test_id: clinical_assessment_psychiatric
+      display_name: Comprehensive Psychiatric Evaluation
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      anhedonia: 3.0
+      social_deficit_asd: 2.0
+      hallucinations_scz: 8.0
+      delusions_scz: 8.0
+    prevalence:
+      default:
+        0-4: 0
+        5-17: 50
+        18-29: 500
+        30-44: 400
+        45-64: 200
+        65+: 100
+  SJOGRENS_SYNDROME:
+    full_name: Sjogren's Syndrome
+    diagnostic_criteria:
+      mandatory_features:
+      - fatigue
+      negative_features:
+      - lab_ana_negative
+    recommended_tests:
+    - test_id: lab_autoimmune_panel
+      display_name: Autoimmune Panel (ANA, SSA/SSB)
+      category: Blood Work
+      priority: 1
+    likelihood_ratios:
+      rheumatoid_factor_positive: 4.0
+      ana_positive: 6.0
+      joint_pain: 2.5
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 5
+        18-29: 20
+        30-44: 50
+        45-64: 100
+        65+: 80
+      female:
+        0-4: 0
+        5-17: 10
+        18-29: 50
+        30-44: 200
+        45-64: 500
+        65+: 400
+      default: 100
+  STROKE:
+    full_name: Acute Ischemic Stroke
+    diagnostic_criteria:
+      mandatory_features:
+      - unilateral_weakness
+      negative_features:
+      - imaging_ct_head_normal
+    recommended_tests:
+    - test_id: imaging_ct_head
+      display_name: CT Head (Non-contrast)
+      category: Imaging
+      priority: 1
+    likelihood_ratios:
+      altered_mental_status: 3.0
+      unilateral_weakness: 6.5
+      unilateral_facial_weakness: 3.0
+      history_of_diabetes: 1.4
+      dyslipidemia: 2.0
+      difficulty_speaking: 5.0
+      seizures: 2.5
+      dizziness: 2.0
+      language_difficulty_ad: 5.0
+      confusion: 4.0
+      incontinence: 2.5
+    prevalence:
+      male:
+        0-4: 10
+        5-17: 20
+        18-29: 50
+        30-44: 100
+        45-64: 500
+        65+: 1000
+      female:
+        0-4: 10
+        5-17: 20
+        18-29: 40
+        30-44: 80
+        45-64: 400
+        65+: 800
+      default: 300
+  SYPHILIS:
+    full_name: Syphilis
+    diagnostic_criteria:
+      mandatory_features:
+      - chancre_syph
+      negative_features:
+      - lab_rpr_negative
+    recommended_tests:
+    - test_id: lab_rpr
+      display_name: RPR / VDRL Test
+      category: Blood Work
+      priority: 1
+    likelihood_ratios:
+      chancre_syph: 10.0
+      rash_hiv: 3.0
+    prevalence:
+      default:
+        0-4: 0
+        5-17: 50
+        18-29: 200
+        30-44: 300
+        45-64: 200
+        65+: 100
+  SYSTEMIC_LUPUS_ERYTHEMATOSUS:
+    full_name: Lupus (Systemic Lupus Erythematosus)
+    diagnostic_criteria:
+      mandatory_features:
+      - joint_pain
+      - rash_hiv
+      negative_features:
+      - lab_ana_negative
+    recommended_tests:
+    - test_id: lab_ana
+      display_name: Antinuclear Antibody (ANA)
+      category: Blood Work
+      priority: 1
+    likelihood_ratios:
+      ana_positive: 10.0
+      rash_hiv: 4.0
+      joint_pain: 3.0
+    prevalence:
+      male:
+        0-4: 0
+        5-17: 10
+        18-29: 50
+        30-44: 100
+        45-64: 80
+        65+: 50
+      female:
+        0-4: 0
+        5-17: 50
+        18-29: 200
+        30-44: 300
+        45-64: 200
+        65+: 100
+      default: 100
+  ULCERATIVE_COLITIS:
+    full_name: Ulcerative Colitis
+    diagnostic_criteria:
+      mandatory_features:
+      - bloody_diarrhea_uc
+      negative_features:
+      - imaging_colonoscopy_normal
+    recommended_tests:
+    - test_id: procedure_colonoscopy
+      display_name: Colonoscopy
+      category: Procedure
+      priority: 1
+    likelihood_ratios:
+      sym_diarrhea: 2.0
+      llq_pain: 1.5
+      fecal_calprotectin_high_uc: 5.0
+      bloody_diarrhea_uc: 4.0
+      rectal_bleeding: 3.5
+    prevalence:
+      default:
+        0-4: 10
+        5-17: 50
+        18-29: 100
+        30-44: 150
+        45-64: 100
+        65+: 50
+  WRIST_SCAPHOID_FRACTURE:
+    full_name: Wrist Fracture (Scaphoid)
+    diagnostic_criteria:
+      mandatory_features:
+      - foosh
+      - imaging_fracture_positive
+      negative_features:
+      - imaging_fracture_normal
+    recommended_tests:
+    - test_id: imaging_xray_wrist_scaphoid
+      display_name: X-Ray Wrist (Scaphoid View)
+      category: Imaging
+      priority: 1
+    likelihood_ratios:
+      foosh: 8.0
+      snuffbox_tenderness: 10.0
+      pain_thumb_axial_load: 8.0
+      swelling_wrist: 3.0
+      deformity_wrist: 5.0
+    prevalence:
+      default:
+        0-4: 20
+        5-17: 100
+        18-29: 200
+        30-44: 150
+        45-64: 100
+        65+: 150
+  TENSION_HEADACHE:
+    full_name: Tension Headache
+    diagnostic_criteria:
+      mandatory_features:
+      - sym_headache
+      negative_features: []
+    recommended_tests:
+    - test_id: clinical_diagnosis
+      display_name: Clinical Diagnosis (Exclusion of secondary causes)
+      category: Clinical Evaluation
+      priority: 1
+    likelihood_ratios:
+      sym_headache: 4.5
+    prevalence:
+      default: 10000

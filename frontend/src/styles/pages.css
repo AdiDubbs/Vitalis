@@ -1,0 +1,22 @@
+
+.hero-copy h1 {
+  letter-spacing: -0.02em;
+}
+
+.diagnosis-symptoms-section {
+  min-height: calc((100vh - 72px - 56px - 64px) * 0.7);
+}
+
+.hero-illustration {
+  width: min(420px, 90vw);
+  margin: 0 auto;
+}
+
+.hero-illustration :where(img) {
+  width: 100%;
+  height: auto;
+}
+
+.hero-illustration--compact {
+  width: min(360px, 85vw);
+}

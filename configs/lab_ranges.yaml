@@ -1,0 +1,353 @@
+version: "1.0"
+description: "Standard laboratory test reference ranges and associated clinical features"
+last_updated: "2026-02-01"
+
+# Reference ranges for lab tests
+# Each test has: min/max values, units, and feature IDs for high/low results
+ranges:
+  # Complete Blood Count (CBC)
+  wbc:
+    min: 4.0
+    max: 10.0
+    unit: "10^9/L"
+    name: "White Blood Cell Count"
+    high_feature: "wbc_high"
+    low_feature: "leukopenia"
+
+  hemoglobin:
+    min: 13.0
+    max: 17.0
+    unit: "g/dL"
+    name: "Hemoglobin"
+    high_feature: null
+    low_feature: "microcytic_anemia"
+    note: "Reference range may vary by sex and age"
+
+  platelets:
+    min: 150
+    max: 410
+    unit: "10^9/L"
+    name: "Platelet Count"
+    high_feature: "thrombocytosis"
+    low_feature: "thrombocytopenia_deng"
+
+  esr:
+    min: 0
+    max: 30
+    unit: "mm/hr"
+    name: "Erythrocyte Sedimentation Rate"
+    high_feature: "inflammation_generic"
+    low_feature: null
+
+  neutrophils:
+    min: 40
+    max: 80
+    unit: "%"
+    name: "Neutrophils"
+    high_feature: "neutrophilia"
+    low_feature: "neutropenia"
+
+  lymphocytes:
+    min: 20
+    max: 40
+    unit: "%"
+    name: "Lymphocytes"
+    high_feature: "lymphocytosis"
+    low_feature: "lymphopenia"
+
+  eosinophils:
+    min: 1
+    max: 6
+    unit: "%"
+    name: "Eosinophils"
+    high_feature: "eosinophilia"
+    low_feature: null
+
+  # Diabetes Markers
+  glucose_fasting:
+    min: 70
+    max: 100
+    unit: "mg/dL"
+    name: "Fasting Blood Glucose"
+    high_feature: "diabetes_uncontrolled"
+    low_feature: "hypoglycemia"
+
+  hba1c:
+    min: 4.0
+    max: 5.7
+    unit: "%"
+    name: "Hemoglobin A1c"
+    high_feature: "diabetes_uncontrolled"
+    low_feature: null
+
+  # Kidney Function
+  creatinine:
+    min: 0.7
+    max: 1.3
+    unit: "mg/dL"
+    name: "Creatinine"
+    high_feature: "egfr_low"
+    low_feature: null
+
+  urea:
+    min: 17
+    max: 49
+    unit: "mg/dL"
+    name: "Blood Urea Nitrogen"
+    high_feature: "uremia"
+    low_feature: null
+
+  uric_acid:
+    min: 3.5
+    max: 7.2
+    unit: "mg/dL"
+    name: "Uric Acid"
+    high_feature: "hyperuricemia"
+    low_feature: null
+
+  calcium:
+    min: 8.8
+    max: 10.2
+    unit: "mg/dL"
+    name: "Calcium"
+    high_feature: "hypercalcemia"
+    low_feature: "hypocalcemia"
+
+  phosphorus:
+    min: 2.2
+    max: 3.9
+    unit: "mg/dL"
+    name: "Phosphorus"
+    high_feature: "hyperphosphatemia"
+    low_feature: "hypophosphatemia"
+
+  # Electrolytes
+  sodium:
+    min: 136
+    max: 146
+    unit: "mEq/L"
+    name: "Sodium"
+    high_feature: "hypernatremia"
+    low_feature: "hyponatremia"
+
+  potassium:
+    min: 3.5
+    max: 5.1
+    unit: "mEq/L"
+    name: "Potassium"
+    high_feature: "hyperkalemia"
+    low_feature: "hypokalemia"
+
+  chloride:
+    min: 101
+    max: 109
+    unit: "mEq/L"
+    name: "Chloride"
+    high_feature: "hyperchloremia"
+    low_feature: "hypochloremia"
+
+  magnesium:
+    min: 1.7
+    max: 2.2
+    unit: "mEq/L"
+    name: "Magnesium"
+    high_feature: "hypermagnesemia"
+    low_feature: "hypomagnesemia"
+
+  # Liver Function
+  ast:
+    min: 0
+    max: 48
+    unit: "U/L"
+    name: "Aspartate Aminotransferase"
+    high_feature: "liver_enzyme_elevated"
+    low_feature: null
+
+  alt:
+    min: 0
+    max: 49
+    unit: "U/L"
+    name: "Alanine Aminotransferase"
+    high_feature: "liver_enzyme_elevated"
+    low_feature: null
+
+  alp:
+    min: 30
+    max: 120
+    unit: "U/L"
+    name: "Alkaline Phosphatase"
+    high_feature: "liver_enzyme_elevated"
+    low_feature: null
+
+  bilirubin_total:
+    min: 0.2
+    max: 1.1
+    unit: "mg/dL"
+    name: "Total Bilirubin"
+    high_feature: "jaundice_sickle"
+    low_feature: null
+
+  total_protein:
+    min: 5.7
+    max: 8.2
+    unit: "g/dL"
+    name: "Total Protein"
+    high_feature: null
+    low_feature: "hypoproteinemia"
+
+  albumin:
+    min: 3.2
+    max: 4.6
+    unit: "g/dL"
+    name: "Albumin"
+    high_feature: null
+    low_feature: "hypoalbuminemia"
+
+  # Lipid Panel
+  cholesterol_total:
+    min: 0
+    max: 200
+    unit: "mg/dL"
+    name: "Total Cholesterol"
+    high_feature: "dyslipidemia"
+    low_feature: null
+
+  triglycerides:
+    min: 0
+    max: 150
+    unit: "mg/dL"
+    name: "Triglycerides"
+    high_feature: "dyslipidemia"
+    low_feature: null
+
+  hdl:
+    min: 40
+    max: 100
+    unit: "mg/dL"
+    name: "HDL Cholesterol"
+    high_feature: null
+    low_feature: "dyslipidemia"
+
+  ldl:
+    min: 0
+    max: 100
+    unit: "mg/dL"
+    name: "LDL Cholesterol"
+    high_feature: "dyslipidemia"
+    low_feature: null
+
+  # Thyroid Function
+  tsh:
+    min: 0.55
+    max: 4.78
+    unit: "mIU/L"
+    name: "Thyroid Stimulating Hormone"
+    high_feature: "tsh_high"
+    low_feature: "tsh_low"
+
+  t3:
+    min: 0.60
+    max: 1.81
+    unit: "ng/mL"
+    name: "Triiodothyronine"
+    high_feature: "hyperthyroidism"
+    low_feature: "hypothyroidism"
+
+  t4:
+    min: 4.5
+    max: 11.6
+    unit: "μg/dL"
+    name: "Thyroxine"
+    high_feature: "hyperthyroidism"
+    low_feature: "hypothyroidism"
+
+  # Iron and Vitamins
+  iron:
+    min: 65
+    max: 175
+    unit: "μg/dL"
+    name: "Serum Iron"
+    high_feature: "hemochromatosis"
+    low_feature: "iron_deficiency_anemia"
+
+  vitamin_b12:
+    min: 211
+    max: 911
+    unit: "pg/mL"
+    name: "Vitamin B12"
+    high_feature: null
+    low_feature: "vitamin_b12_deficiency"
+
+  vitamin_d:
+    min: 75
+    max: 250
+    unit: "nmol/L"
+    name: "Vitamin D"
+    high_feature: "vitamin_d_toxicity"
+    low_feature: "vitamin_d_deficiency"
+
+  # Cardiac Markers
+  troponin:
+    min: 0.0
+    max: 0.04
+    unit: "ng/mL"
+    name: "Troponin"
+    high_feature: "troponin_highly_elevated"
+    low_feature: null
+
+  hscrp:
+    min: 0
+    max: 3.0
+    unit: "mg/L"
+    name: "High-Sensitivity C-Reactive Protein"
+    high_feature: "inflammation_generic"
+    low_feature: null
+
+  d_dimer:
+    min: 0
+    max: 500
+    unit: "ng/mL"
+    name: "D-Dimer"
+    high_feature: "ddimer_high"
+    low_feature: "ddimer_normal"
+
+  # Other Specialized Tests
+  psa:
+    min: 0
+    max: 4.0
+    unit: "ng/mL"
+    name: "Prostate-Specific Antigen"
+    high_feature: "psa_high"
+    low_feature: null
+
+  amylase:
+    min: 30
+    max: 110
+    unit: "U/L"
+    name: "Amylase"
+    high_feature: "amylase_high"
+    low_feature: null
+
+  lipase:
+    min: 0
+    max: 160
+    unit: "U/L"
+    name: "Lipase"
+    high_feature: "lipase_high"
+    low_feature: null
+
+  rheumatoid_factor:
+    min: 0
+    max: 14
+    unit: "IU/mL"
+    name: "Rheumatoid Factor"
+    high_feature: "rheumatoid_factor_positive"
+    low_feature: null
+
+  ana:
+    min: 0
+    max: 1.0
+    unit: "titer"
+    name: "Antinuclear Antibody"
+    high_feature: "ana_positive"
+    low_feature: null

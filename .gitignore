@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+dist/
+build/
+
+# Machine Learning & Data
+training/
+data/
+*.npy
+*.npz
+
+# Development Tools (not needed for web interface)
+tools/
+scripts/
+templates/
+
+# User Uploads & Generated Files
+uploads/
+logs/
+*.log
+output/
+cases/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary & Backup Files
+*.tmp
+*.bak
+.css-refactor-backup/
+
+# Reports & Results
+*.json
+!package*.json
+!*config*.json
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Frontend (handled by frontend/.gitignore but listed for clarity)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Input/Output directories
+input/
+images/
+legacy/
+
+# Model outputs
+model_accuracy_report.json

@@ -1,0 +1,24 @@
+exclusions:
+  # --- MALE EXCLUSIONS ---
+  - disease: "ENDOMETRIOSIS"
+    criteria:
+      sex: "MALE"
+  - disease: "POLYCYSTIC_OVARY_SYNDROME"
+    criteria:
+      sex: "MALE"
+
+  # --- FEMALE EXCLUSIONS ---
+  - disease: "PROSTATE_CANCER"
+    criteria:
+      sex: "FEMALE"
+
+  # --- AGE EXCLUSIONS ---
+  - disease: "ALZHEIMERS_DISEASE"
+    criteria:
+      age_lt: 30
+  - disease: "PARKINSONS_DISEASE"
+    criteria:
+      age_lt: 20
+  - disease: "KAWASAKI_DISEASE"
+    criteria:
+      age_gt: 18

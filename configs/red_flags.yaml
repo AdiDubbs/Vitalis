@@ -1,0 +1,71 @@
+rules:
+- id: rule_sah
+  condition: Subarachnoid Hemorrhage
+  severity: CRITICAL
+  message: Severe headache associated with vomiting detected. IMMEDIATE CT Head/LP
+    required to rule out subarachnoid hemorrhage.
+  logic: all
+  triggers:
+  - sym_headache
+  - sym_nausea_vomiting
+- id: rule_cauda_equina
+  condition: Cauda Equina Syndrome
+  severity: CRITICAL
+  message: Features suggestive of spinal cord compression. Emergency MRI Spine required.
+  logic: all
+  triggers:
+  - chronic_back_pain
+  - incontinence
+- id: rule_mi_classic
+  condition: Acute Coronary Syndrome
+  severity: HIGH
+  message: Classic cardiac chest pain features detected. Urgent ECG and Troponin required.
+  logic: all
+  triggers:
+  - sym_chest_pain
+  - radiation_left_arm
+- id: rule_sepsis
+  condition: Sepsis Alert
+  severity: CRITICAL
+  message: Combination of fever and altered mental status/confusion suggests possible
+    sepsis. Immediate vitals and workup.
+  logic: all
+  triggers:
+  - fever
+  - confusion
+- id: rule_meningitis
+  condition: Meningitis
+  severity: HIGH
+  message: Triad of fever, headache and stiff neck. Lumbar Puncture may be indicated.
+  logic: all
+  triggers:
+  - fever
+  - sym_headache
+  - stiff_neck
+- id: rule_pregnancy
+  condition: Consider Pregnancy
+  severity: CONTEXT
+  message: "Symptoms (Nausea + Cycle changes) overlap with early pregnancy. Urine\
+    \ \u03B2-hCG test recommended."
+  logic: all
+  triggers:
+  - sym_nausea_vomiting
+  - irregular_menses_pcos
+- id: rule_panic_attack
+  condition: Panic Attack Mimic
+  severity: CONTEXT
+  message: Chest pain associated with excessive worry/anxiety. Rule out organic causes,
+    but consider Panic Attack.
+  logic: all
+  triggers:
+  - sym_chest_pain
+  - excessive_worry
+- id: rule_dehydration
+  condition: Dehydration
+  severity: CONTEXT
+  message: Dark urine and dizziness suggest dehydration. Rehydrate and reassess before
+    advanced diagnostics.
+  logic: all
+  triggers:
+  - dizziness
+  - dark_urine

@@ -1,0 +1,384 @@
+dx_list:
+- ACS
+- ADHD
+- ALZHEIMERS_DISEASE
+- AMYOTROPHIC_LATERAL_SCLEROSIS
+- ANKLE_FRACTURE
+- APPENDICITIS
+- ASTHMA
+- AUTISM_SPECTRUM_DISORDER
+- BELL_S_PALSY
+- BENIGN_SKIN_LESION
+- BIPOLAR_DISORDER
+- BRAIN_TUMOR
+- BREAST_CANCER
+- CATHETER_ASSOCIATED_UTI
+- CHLAMYDIA
+- CHOLERA
+- CHRONIC_KIDNEY_DISEASE
+- COLORECTAL_CANCER
+- COPD
+- CROHNS_DISEASE
+- DENGUE_FEVER
+- DEPRESSION_MAJOR
+- DIABETES
+- DIVERTICULITIS
+- EBOLA
+- ENDOMETRIOSIS
+- FIBROMYALGIA
+- GERD
+- GLAUCOMA
+- GONORRHEA
+- GOUT
+- GRAVES_DISEASE
+- GUILLAIN_BARRE_SYNDROME
+- HASHIMOTOS_THYROIDITIS
+- HEART_FAILURE
+- HEPATITIS_C
+- HIV_AIDS
+- HUNTINGTONS_DISEASE
+- INFLUENZA
+- IRON_DEFICIENCY_ANEMIA
+- KAWASAKI_DISEASE
+- KNEE_FRACTURE
+- LUNG_CANCER
+- LYMPHOMA
+- MENISCAL_TEAR
+- MIGRAINE
+- MONONUCLEOSIS
+- MULTIPLE_MYELOMA
+- OSTEOARTHRITIS
+- OSTEOPOROSIS
+- PARKINSONS_DISEASE
+- PE
+- PNEUMONIA
+- POLYCYSTIC_OVARY_SYNDROME
+- PROSTATE_CANCER
+- RHEUMATIC_FEVER
+- SARCOIDOSIS
+- SCHIZOPHRENIA
+- SEPTIC_ARTHRITIS
+- SICKLE_CELL_CRISIS
+- SINUSITIS
+- SJOGRENS_SYNDROME
+- STROKE
+- SYPHILIS
+- SYSTEMIC_LUPUS_ERYTHEMATOSUS
+- TB
+- ULCERATIVE_COLITIS
+- UTI
+- WRIST_SCAPHOID_FRACTURE
+- OTHER_UNCERTAIN_DIAGNOSIS
+- ANXIETY_DISORDER
+- CHOLECYSTITIS
+- COMMON_COLD
+- GASTROENTERITIS
+- NEPHROLITHIASIS
+- OTITIS_MEDIA
+- TENSION_HEADACHE
+dx_negative_evidence_map:
+  INFLUENZA:
+  - fever
+  - sym_cough
+  - body_aches
+  PNEUMONIA:
+  - sym_cough
+  - fever
+  - sym_shortness_of_breath
+  SINUSITIS:
+  - runny_nose
+  - facial_pain
+  - sym_headache
+  ASTHMA:
+  - wheezing
+  - sym_shortness_of_breath
+  - sym_cough
+  - dry_cough
+  COPD:
+  - sym_cough
+  - sym_shortness_of_breath
+  - wheezing
+  TB:
+  - sym_cough
+  - hemoptysis
+  - sym_night_sweats
+  - sym_weight_loss
+  LUNG_CANCER:
+  - sym_cough
+  - hemoptysis
+  - sym_weight_loss
+  - persistent_cough_gt_3w
+  SARCOIDOSIS:
+  - sym_cough
+  - sym_shortness_of_breath
+  - fatigue
+  ACS:
+  - sym_chest_pain
+  - sym_shortness_of_breath
+  - diaphoresis
+  - radiation_left_arm
+  HEART_FAILURE:
+  - sym_shortness_of_breath
+  - edema_legs_ckd
+  - fatigue
+  - orthopnea
+  PE:
+  - sym_shortness_of_breath
+  - sym_chest_pain
+  - pleuritic_pain
+  - hemoptysis
+  RHEUMATIC_FEVER:
+  - fever
+  - joint_pain
+  - migratory_arthritis_rf
+  - chorea_rf
+  KAWASAKI_DISEASE:
+  - fever
+  - rash_hiv
+  - conjunctivitis
+  APPENDICITIS:
+  - rlq_pain
+  - sym_abdominal_pain
+  - rebound_tenderness
+  - pain_migration
+  DIVERTICULITIS:
+  - llq_pain
+  - sym_abdominal_pain
+  - fever
+  GERD:
+  - heartburn
+  - sym_abdominal_pain
+  CROHNS_DISEASE:
+  - sym_abdominal_pain
+  - sym_diarrhea
+  - sym_weight_loss
+  - perianal_disease
+  ULCERATIVE_COLITIS:
+  - bloody_diarrhea_uc
+  - sym_diarrhea
+  - sym_abdominal_pain
+  CHOLERA:
+  - sym_diarrhea
+  - sym_nausea_vomiting
+  COLORECTAL_CANCER:
+  - rectal_bleeding
+  - change_bowel_habit
+  - sym_weight_loss
+  HEPATITIS_C:
+  - sym_jaundice
+  - fatigue
+  - sym_abdominal_pain
+  STROKE:
+  - unilateral_facial_weakness
+  - unilateral_weakness
+  - difficulty_speaking
+  BELL_S_PALSY:
+  - unilateral_facial_weakness
+  PARKINSONS_DISEASE:
+  - tremor_pd
+  - bradykinesia
+  - rigidity
+  ALZHEIMERS_DISEASE:
+  - memory_impairment_ad
+  - cognitive_decline
+  MIGRAINE:
+  - sym_headache
+  - sensitivity_light
+  - sym_nausea_vomiting
+  BRAIN_TUMOR:
+  - sym_headache
+  - seizures
+  - unilateral_weakness
+  - difficulty_speaking
+  AMYOTROPHIC_LATERAL_SCLEROSIS:
+  - unilateral_weakness
+  - difficulty_speaking
+  - ascending_weakness_gbs
+  GUILLAIN_BARRE_SYNDROME:
+  - ascending_weakness_gbs
+  - areflexia_gbs
+  HUNTINGTONS_DISEASE:
+  - chorea_hd
+  - personality_change
+  ADHD:
+  - inattention_adhd
+  - hyperactivity_adhd
+  AUTISM_SPECTRUM_DISORDER:
+  - social_deficit_asd
+  - repetitive_behaviors_asd
+  SCHIZOPHRENIA:
+  - hallucinations_scz
+  - delusions_scz
+  - social_deficit_asd
+  BIPOLAR_DISORDER:
+  - manic_episodes_bd
+  - sym_low_mood
+  ANKLE_FRACTURE:
+  - recent_ankle_trauma
+  - malleolar_tenderness
+  - inability_bear_weight
+  KNEE_FRACTURE:
+  - recent_knee_trauma
+  - inability_bear_weight_knee
+  - deformity_knee
+  WRIST_SCAPHOID_FRACTURE:
+  - foosh
+  - snuffbox_tenderness
+  - pain_thumb_axial_load
+  MENISCAL_TEAR:
+  - joint_line_tenderness
+  - mcmurray_positive
+  - locking_knee
+  OSTEOARTHRITIS:
+  - chronic_joint_pain
+  - crepitus
+  - bony_enlargement
+  OSTEOPOROSIS:
+  - chronic_back_pain
+  - kyphosis
+  - previous_fracture
+  GOUT:
+  - podagra
+  - hot_swollen_joint
+  - tophi
+  SEPTIC_ARTHRITIS:
+  - hot_swollen_joint
+  - fever
+  - monoarthritis
+  FIBROMYALGIA:
+  - widespread_pain_fm
+  - fatigue
+  HIV_AIDS:
+  - fever
+  - sym_night_sweats
+  - rash_hiv
+  - sym_weight_loss
+  CHLAMYDIA:
+  - sym_dysuria
+  - irregular_menses_pcos
+  - sym_abdominal_pain
+  GONORRHEA:
+  - sym_dysuria
+  - irregular_menses_pcos
+  - sym_abdominal_pain
+  SYPHILIS:
+  - chancre_syph
+  - rash_hiv
+  MONONUCLEOSIS:
+  - fatigue
+  - fever
+  - pharyngitis
+  DENGUE_FEVER:
+  - fever
+  - rash_hiv
+  - sym_headache
+  - retro_orbital_pain
+  EBOLA:
+  - fever
+  - sym_nausea_vomiting
+  - sym_diarrhea
+  - bleeding
+  DIABETES:
+  - polyuria
+  - polydipsia
+  - sym_weight_loss
+  HASHIMOTOS_THYROIDITIS:
+  - cold_intolerance_hashi
+  - fatigue
+  - sym_weight_gain
+  GRAVES_DISEASE:
+  - heat_intolerance_graves
+  - sym_palpitations
+  - sym_weight_loss
+  - exophthalmos
+  CHRONIC_KIDNEY_DISEASE:
+  - edema_legs_ckd
+  - fatigue
+  - pruritus_ckd
+  UTI:
+  - sym_dysuria
+  - sym_urinary_frequency
+  - sym_flank_pain
+  CATHETER_ASSOCIATED_UTI:
+  - sym_dysuria
+  - fever
+  - sym_flank_pain
+  ENDOMETRIOSIS:
+  - dysmenorrhea_endo
+  - dyspareunia_endo
+  - sym_abdominal_pain
+  POLYCYSTIC_OVARY_SYNDROME:
+  - irregular_menses_pcos
+  - hirsutism_pcos
+  - sym_weight_gain
+  IRON_DEFICIENCY_ANEMIA:
+  - fatigue
+  - pallor_iron
+  - pica
+  - microcytic_anemia
+  - low_ferritin
+  SICKLE_CELL_CRISIS:
+  - severe_pain_sickle
+  - dactylitis
+  - sym_jaundice
+  LYMPHOMA:
+  - palpable_lymphadenopathy
+  - sym_night_sweats
+  - sym_weight_loss
+  MULTIPLE_MYELOMA:
+  - bone_pain_mm
+  - fatigue
+  BREAST_CANCER:
+  - breast_lump
+  - nipple_discharge
+  - skin_dimpling_breast
+  PROSTATE_CANCER:
+  - nocturia_ckd
+  - sym_urinary_frequency
+  - psa_high
+  GLAUCOMA:
+  - elevated_iop
+  - visual_field_loss
+  SJOGRENS_SYNDROME:
+  - fatigue
+  - joint_pain
+  SYSTEMIC_LUPUS_ERYTHEMATOSUS:
+  - rash_hiv
+  - joint_pain
+  - fatigue
+  GASTROENTERITIS:
+  - sym_nausea_vomiting
+  - sym_diarrhea
+  - sym_abdominal_pain
+  COMMON_COLD:
+  - runny_nose
+  - sym_cough
+  - sneezing
+  - pharyngitis
+  ANXIETY_DISORDER:
+  - excessive_worry
+  - sym_palpitations
+  - sym_shortness_of_breath
+  - sym_chest_pain
+  DEPRESSION_MAJOR:
+  - sym_low_mood
+  - anhedonia
+  - fatigue
+  - sym_weight_loss
+  - sym_weight_gain
+  TENSION_HEADACHE:
+  - sym_headache
+  NEPHROLITHIASIS:
+  - sym_flank_pain
+  - sym_dysuria
+  - dark_urine
+  CHOLECYSTITIS:
+  - sym_abdominal_pain
+  - sym_nausea_vomiting
+  - fever
+  OTITIS_MEDIA:
+  - ear_pain
+  - fever
+runtime:
+  lr_store_path: configs/lr_store_evidence_based.json
+  symptom_tree_path: configs/symptom_tree_expanded.yaml

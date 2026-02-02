@@ -1,0 +1,31 @@
+# requirements.txt
+
+# Core ML & Data Handling
+numpy
+pandas
+scipy
+scikit-learn==1.7.1
+joblib
+
+# Deep Learning (for imaging models)
+torch
+torchvision
+
+# NLP
+spacy
+
+# Data Serialization & Config
+PyYAML
+
+# ECG File Handling
+wfdb
+
+# Image Processing
+Pillow
+
+# Interactive Terminal Mode
+questionary
+
+# Web App
+flask
+pypdf

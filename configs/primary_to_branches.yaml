@@ -1,0 +1,200 @@
+version: 3
+links:
+  fatigue:
+    sections:
+    - Endocrine / Renal / GU
+    - ENT (Ear, Nose, Throat)
+    - General & Constitutional
+    suggest_features:
+    - cold_intolerance_hashi
+    - pharyngitis
+    - widespread_pain_fm
+    - depression_pd
+    - sym_shortness_of_breath
+    - sym_weight_gain
+  sym_weight_gain:
+    sections:
+    - Endocrine / Renal / GU
+    - Cardiovascular
+    suggest_features:
+    - cold_intolerance_hashi
+    - edema_legs_ckd
+    - fatigue
+    - sym_constipation
+  anorexia:
+    sections:
+    - Gastrointestinal / Hepatic
+    - General & Constitutional
+    suggest_features:
+    - sym_abdominal_pain
+    - sym_nausea_vomiting
+    - sym_jaundice
+    - sym_weight_loss
+  runny_nose:
+    sections:
+    - ENT (Ear, Nose, Throat)
+    - Respiratory
+    suggest_features:
+    - facial_pain
+    - sym_headache
+    - fever
+    - loss_of_smell_taste
+    - ear_pain
+  sym_cough:
+    sections:
+    - Respiratory
+    - General & Constitutional
+    suggest_features:
+    - productive_cough
+    - dry_cough
+    - sym_shortness_of_breath
+    - wheezing
+    - fever
+    - hemoptysis
+    - persistent_cough_gt_3w
+  sym_shortness_of_breath:
+    sections:
+    - Respiratory
+    - Cardiovascular
+    suggest_features:
+    - sym_chest_pain
+    - edema_legs_ckd
+    - hemoptysis
+    - wheezing
+    - sym_cough
+    - fever
+    - pleuritic_pain
+  sym_chest_pain:
+    sections:
+    - Cardiovascular
+    - Respiratory
+    - Gastrointestinal / Hepatic
+    suggest_features:
+    - sym_shortness_of_breath
+    - radiation_left_arm
+    - diaphoresis
+    - exertional
+    - pleuritic_pain
+    - heartburn
+    - sym_cough
+    - fever
+    - sym_palpitations
+  leg_swelling:
+    sections:
+    - Cardiovascular
+    - Endocrine / Renal / GU
+    suggest_features:
+    - sym_shortness_of_breath
+    - exertional
+    - sym_chest_pain
+    - fatigue
+    - polyuria
+  fever:
+    sections:
+    - General & Constitutional
+    - Respiratory
+    - ENT (Ear, Nose, Throat)
+    - Endocrine / Renal / GU
+    suggest_features:
+    - sym_cough
+    - sym_night_sweats
+    - body_aches
+    - sym_dysuria
+    - hot_swollen_joint
+    - sore_throat
+    - facial_pain
+    - stiff_neck
+  sym_abdominal_pain:
+    sections:
+    - Gastrointestinal / Hepatic
+    suggest_features:
+    - sym_vomiting
+    - sym_diarrhea
+    - sym_constipation
+    - sym_jaundice
+    - fever
+    - rlq_pain
+    - llq_pain
+    - pain_migration
+    - rebound_tenderness
+    - guarding_rlq
+  sym_nausea_vomiting:
+    sections:
+    - Gastrointestinal / Hepatic
+    - General & Constitutional
+    suggest_features:
+    - sym_abdominal_pain
+    - sym_diarrhea
+    - sym_constipation
+    - heartburn
+    - fever
+    - rlq_pain
+    - llq_pain
+    - bloody_diarrhea_uc
+    - sym_jaundice
+  rlq_pain:
+    sections:
+    - Gastrointestinal / Hepatic
+    - Physical Exam
+    suggest_features:
+    - fever
+    - sym_vomiting
+    - anorexia
+    - rebound_tenderness
+    - guarding_rlq
+    - rovsing_sign
+    - psoas_sign
+  sym_headache:
+    sections:
+    - Head & Balance
+    - ENT (Ear, Nose, Throat)
+    suggest_features:
+    - facial_pain
+    - sensitivity_light
+    - stiff_neck
+    - fever
+    - unilateral_weakness
+    - dizziness
+    - sym_nausea_vomiting
+  unilateral_weakness:
+    sections:
+    - Nerves & Brain Function
+    suggest_features:
+    - difficulty_speaking
+    - dizziness
+    - sym_headache
+    - unilateral_facial_weakness
+  foosh:
+    sections:
+    - "Injuries & Trauma"
+    suggest_features:
+    - snuffbox_tenderness
+    - pain_thumb_axial_load
+    - swelling_wrist
+    - deformity_wrist
+  recent_ankle_trauma:
+    sections:
+    - "Injuries & Trauma"
+    suggest_features:
+    - inability_bear_weight
+    - malleolar_tenderness
+    - base_5th_metatarsal_tenderness
+    - navicular_tenderness
+    - swelling_ankle
+  hot_swollen_joint:
+    sections:
+    - "Chronic Joint & Back Pain"
+    - General & Constitutional
+    suggest_features:
+    - fever
+    - monoarthritis
+    - podagra
+    - abrupt_onset_hours
+  dysuria:
+    sections:
+    - Endocrine / Renal / GU
+    suggest_features:
+    - sym_urinary_frequency
+    - sym_flank_pain
+    - fever
+    - dark_urine

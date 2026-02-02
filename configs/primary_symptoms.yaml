@@ -1,0 +1,51 @@
+version: 5
+categories:
+  General:
+  - fever
+  - fatigue
+  - sym_headache
+  - dizziness
+  - sym_weight_loss
+  - sym_weight_gain
+  - sym_night_sweats
+  ENT / Respiratory:
+  - sym_cough
+  - sym_shortness_of_breath
+  - pharyngitis
+  - runny_nose
+  - wheezing
+  - hemoptysis
+  - ear_pain
+  Cardiovascular:
+  - sym_chest_pain
+  - sym_palpitations
+  - leg_swelling
+  Gastrointestinal:
+  - anorexia
+  - sym_abdominal_pain
+  - nausea
+  - sym_vomiting
+  - sym_diarrhea
+  - sym_constipation
+  - heartburn
+  - sym_jaundice
+  - rectal_bleeding
+  Genitourinary (GU):
+  - sym_dysuria
+  - sym_urinary_frequency
+  - sym_flank_pain
+  - irregular_menses_pcos
+  Neurological / Psychiatric:
+  - unilateral_weakness
+  - seizures
+  - tremor_pd
+  - memory_impairment_ad
+  - low_mood
+  - excessive_worry
+  Musculoskeletal (MSK) & Skin:
+  - joint_pain
+  - back_pain
+  - recent_ankle_trauma
+  - recent_knee_trauma
+  - rash_hiv
+  - breast_lump

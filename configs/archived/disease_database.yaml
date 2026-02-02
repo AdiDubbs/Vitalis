@@ -1,0 +1,1008 @@
+PNEUMONIA:
+  full_name: Pneumonia
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_cough
+    - imaging_xray_positive_for_pneumonia
+    negative_features:
+    - imaging_xray_normal
+  recommended_tests:
+  - test_id: imaging_xray_chest
+    display_name: Chest X-ray
+    category: Imaging
+    priority: 1
+  - test_id: lab_cbc_wbc
+    display_name: Blood Test (CBC for White Blood Cells)
+    category: Blood Work
+    priority: 2
+  - test_id: physical_exam_crackles
+    display_name: Physical Exam (Auscultation)
+    category: Physical Exam
+    priority: 2
+INFLUENZA:
+  full_name: Influenza
+  diagnostic_criteria:
+    mandatory_features:
+    - fever
+    - sym_cough
+    - body_aches
+    negative_features:
+    - lab_flu_test_negative
+  recommended_tests:
+  - test_id: lab_flu_test
+    display_name: Rapid Influenza Test
+    category: Lab Test
+    priority: 1
+ASTHMA:
+  full_name: Asthma
+  diagnostic_criteria:
+    mandatory_features:
+    - wheezing
+    - sym_shortness_of_breath
+    negative_features:
+    - lab_spirometry_normal_post_bronchodilator
+  recommended_tests:
+  - test_id: lab_spirometry
+    display_name: Spirometry (Lung Function Test)
+    category: Pulmonary Function
+    priority: 1
+ACS:
+  full_name: Acute Coronary Syndrome (ACS)
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_chest_pain
+    - signals_ecg_ischemia_positive
+    negative_features:
+    - lab_troponin_normal_serial
+    - signals_ecg_normal
+  recommended_tests:
+  - test_id: signals_ecg_ischemia
+    display_name: 12-Lead ECG/EKG
+    category: Cardiac Signals
+    priority: 1
+  - test_id: lab_troponin
+    display_name: Blood Test (Troponin Level)
+    category: Blood Work
+    priority: 1
+UTI:
+  full_name: Urinary Tract Infection (UTI)
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_dysuria
+    - lab_urinalysis_positive_for_nitrites_or_leukocytes
+    negative_features:
+    - lab_urinalysis_normal
+  recommended_tests:
+  - test_id: lab_urinalysis
+    display_name: Urinalysis
+    category: Lab Test
+    priority: 1
+APPENDICITIS:
+  full_name: Appendicitis
+  diagnostic_criteria:
+    mandatory_features:
+    - rlq_pain
+    - imaging_ct_abdomen_positive_for_appendicitis
+    negative_features:
+    - imaging_ct_abdomen_normal
+  recommended_tests:
+  - test_id: imaging_ct_abdomen
+    display_name: CT Scan of the Abdomen
+    category: Imaging
+    priority: 1
+  - test_id: lab_cbc_wbc
+    display_name: Blood Test (CBC for White Blood Cells)
+    category: Blood Work
+    priority: 2
+PE:
+  full_name: Pulmonary Embolism (PE)
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_shortness_of_breath
+    - imaging_ctpa_positive_for_pe
+    negative_features:
+    - lab_d_dimer_normal
+    - imaging_ctpa_normal
+  recommended_tests:
+  - test_id: imaging_ctpa
+    display_name: CT Pulmonary Angiogram (CTPA)
+    category: Imaging
+    priority: 1
+  - test_id: lab_d_dimer
+    display_name: Blood Test (D-dimer)
+    category: Blood Work
+    priority: 2
+COPD:
+  full_name: Chronic Obstructive Pulmonary Disease (COPD)
+  diagnostic_criteria:
+    mandatory_features:
+    - hist_smoking
+    - lab_spirometry_fev1_fvc_ratio_low
+    negative_features: []
+  recommended_tests:
+  - test_id: lab_spirometry
+    display_name: Spirometry (Lung Function Test)
+    category: Pulmonary Function
+    priority: 1
+HEART_FAILURE:
+  full_name: Heart Failure
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_shortness_of_breath
+    - lab_bnp_elevated
+    negative_features:
+    - lab_bnp_normal
+  recommended_tests:
+  - test_id: lab_bnp
+    display_name: Blood Test (BNP Level)
+    category: Blood Work
+    priority: 1
+  - test_id: imaging_echocardiogram
+    display_name: Echocardiogram (Ultrasound of the Heart)
+    category: Imaging
+    priority: 2
+TB:
+  full_name: Tuberculosis (TB)
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_cough
+    - lab_sputum_afb_positive
+    negative_features:
+    - lab_sputum_afb_negative_serial
+  recommended_tests:
+  - test_id: imaging_xray_chest
+    display_name: Chest X-ray (looking for cavitations)
+    category: Imaging
+    priority: 1
+  - test_id: lab_sputum_afb
+    display_name: Sputum Smear (AFB Stain)
+    category: Lab Test
+    priority: 1
+CHRONIC_KIDNEY_DISEASE:
+  full_name: Chronic Kidney Disease (CKD)
+  diagnostic_criteria:
+    mandatory_features:
+    - lab_gfr_low_persistent
+    negative_features: []
+  recommended_tests:
+  - test_id: lab_gfr
+    display_name: Blood Test (eGFR)
+    category: Blood Work
+    priority: 1
+  - test_id: lab_urinalysis_protein
+    display_name: Urinalysis (for protein)
+    category: Lab Test
+    priority: 2
+DIABETES:
+  full_name: Diabetes
+  diagnostic_criteria:
+    mandatory_features:
+    - lab_hba1c_high
+    negative_features: []
+  recommended_tests:
+  - test_id: lab_hba1c
+    display_name: Blood Test (HbA1c)
+    category: Blood Work
+    priority: 1
+  - test_id: lab_fasting_glucose
+    display_name: Blood Test (Fasting Plasma Glucose)
+    category: Blood Work
+    priority: 2
+ADHD:
+  full_name: Attention Deficit Hyperactivity Disorder (ADHD)
+  diagnostic_criteria:
+    mandatory_features:
+    - hist_inattention_persistent
+    - hist_hyperactivity_impulsivity_persistent
+    negative_features: []
+  recommended_tests:
+  - test_id: clinical_assessment_adhd
+    display_name: Clinical Assessment (DSM-5 Criteria)
+    category: Clinical Evaluation
+    priority: 1
+ALZHEIMERS_DISEASE:
+  full_name: Alzheimer's Disease
+  diagnostic_criteria:
+    mandatory_features:
+    - cognitive_decline_progressive
+    negative_features:
+    - evidence_of_other_dementia_causes
+  recommended_tests:
+  - test_id: clinical_assessment_cognitive
+    display_name: Cognitive Testing (e.g., MMSE, MoCA)
+    category: Clinical Evaluation
+    priority: 1
+  - test_id: imaging_pet_amyloid
+    display_name: Amyloid PET Scan
+    category: Imaging
+    priority: 2
+HIV_AIDS:
+  full_name: HIV/AIDS
+  diagnostic_criteria:
+    mandatory_features:
+    - lab_hiv_test_positive
+    negative_features: []
+  recommended_tests:
+  - test_id: lab_hiv_antibody_antigen
+    display_name: Blood Test (HIV 4th Gen)
+    category: Lab Test
+    priority: 1
+GERD:
+  full_name: Gastroesophageal Reflux Disease (GERD)
+  diagnostic_criteria:
+    mandatory_features:
+    - heartburn
+    negative_features: []
+  recommended_tests:
+  - test_id: clinical_trial_ppi
+    display_name: Trial of Proton Pump Inhibitors (PPIs)
+    category: Therapeutic Trial
+    priority: 1
+  - test_id: imaging_endoscopy
+    display_name: Upper Endoscopy (EGD)
+    category: Imaging
+    priority: 2
+BIPOLAR_DISORDER:
+  full_name: Bipolar Disorder
+  diagnostic_criteria:
+    mandatory_features:
+    - hist_manic_or_hypomanic_episode
+    negative_features: []
+  recommended_tests:
+  - test_id: clinical_assessment_psychiatric
+    display_name: Psychiatric Evaluation
+    category: Clinical Evaluation
+    priority: 1
+AUTISM_SPECTRUM_DISORDER:
+  full_name: Autism Spectrum Disorder (ASD)
+  diagnostic_criteria:
+    mandatory_features:
+    - hist_social_communication_deficits
+    - hist_restricted_repetitive_behaviors
+    negative_features: []
+  recommended_tests:
+  - test_id: clinical_assessment_developmental
+    display_name: Developmental Assessment
+    category: Clinical Evaluation
+    priority: 1
+CHLAMYDIA:
+  full_name: Chlamydia
+  diagnostic_criteria:
+    mandatory_features:
+    - lab_chlamydia_naat_positive
+    negative_features: []
+  recommended_tests:
+  - test_id: lab_naat_urine_swab
+    display_name: NAAT Test (Urine or Swab)
+    category: Lab Test
+    priority: 1
+GONORRHEA:
+  full_name: Gonorrhea
+  diagnostic_criteria:
+    mandatory_features:
+    - lab_gonorrhea_naat_positive
+    negative_features: []
+  recommended_tests:
+  - test_id: lab_naat_urine_swab
+    display_name: NAAT Test (Urine or Swab)
+    category: Lab Test
+    priority: 1
+KAWASAKI_DISEASE:
+  full_name: Kawasaki Disease
+  diagnostic_criteria:
+    mandatory_features:
+    - fever
+    - conjunctivitis
+    - rash_hiv
+    negative_features: []
+  recommended_tests:
+  - test_id: imaging_echocardiogram_kawasaki
+    display_name: Echocardiogram (to check for coronary aneurysms)
+    category: Imaging
+    priority: 1
+SEPTIC_ARTHRITIS:
+  full_name: Septic Arthritis
+  diagnostic_criteria:
+    mandatory_features:
+    - lab_joint_fluid_culture_positive
+    negative_features:
+    - lab_joint_fluid_crystals_present
+  recommended_tests:
+  - test_id: procedure_arthrocentesis
+    display_name: Arthrocentesis (Joint Fluid Aspiration)
+    category: Procedure
+    priority: 1
+DIVERTICULITIS:
+  full_name: Diverticulitis
+  diagnostic_criteria:
+    mandatory_features:
+    - llq_pain
+    - imaging_ct_abdomen_positive_for_diverticulitis
+    negative_features:
+    - imaging_ct_abdomen_normal
+  recommended_tests:
+  - test_id: imaging_ct_abdomen
+    display_name: CT Scan of the Abdomen
+    category: Imaging
+    priority: 1
+SICKLE_CELL_CRISIS:
+  full_name: Sickle Cell Crisis (Vaso-occlusive)
+  diagnostic_criteria:
+    mandatory_features:
+    - hist_sickle_cell_disease
+    - acute_pain_crisis
+    negative_features: []
+  recommended_tests:
+  - test_id: lab_cbc_reticulocyte
+    display_name: Blood Test (CBC with Reticulocyte Count)
+    category: Blood Work
+    priority: 1
+SINUSITIS:
+  full_name: Sinusitis (Sinus Infection)
+  diagnostic_criteria:
+    mandatory_features:
+    - runny_nose
+    - facial_pain
+    negative_features: []
+  recommended_tests:
+  - test_id: clinical_diagnosis
+    display_name: Clinical Diagnosis (No imaging usually required)
+    category: Clinical Evaluation
+    priority: 1
+MIGRAINE:
+  full_name: Migraine
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_headache
+    negative_features: []
+  recommended_tests:
+  - test_id: clinical_assessment_neuro
+    display_name: Neurological Exam
+    category: Clinical Evaluation
+    priority: 1
+MONONUCLEOSIS:
+  full_name: Infectious Mononucleosis (Mono)
+  diagnostic_criteria:
+    mandatory_features:
+    - fatigue
+    - pharyngitis
+    negative_features:
+    - lab_monospot_negative
+  recommended_tests:
+  - test_id: lab_monospot
+    display_name: Monospot Test
+    category: Lab Test
+    priority: 1
+GASTROENTERITIS:
+  full_name: Viral Gastroenteritis (Stomach Flu)
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_nausea_vomiting
+    - sym_diarrhea
+    negative_features: []
+  recommended_tests:
+  - test_id: clinical_diagnosis
+    display_name: Clinical Diagnosis (Hydration monitoring)
+    category: Clinical Evaluation
+    priority: 1
+COMMON_COLD:
+  full_name: Common Cold (Upper Respiratory Infection)
+  diagnostic_criteria:
+    mandatory_features:
+    - runny_nose
+    - sym_cough
+    negative_features:
+    - fever
+  recommended_tests:
+  - test_id: clinical_diagnosis
+    display_name: Self-care / Symptomatic relief
+    category: Clinical Evaluation
+    priority: 1
+ANXIETY_DISORDER:
+  full_name: Anxiety Disorder
+  diagnostic_criteria:
+    mandatory_features:
+    - excessive_worry
+    negative_features: []
+  recommended_tests:
+  - test_id: clinical_assessment_psych
+    display_name: GAD-7 Screening Tool
+    category: Clinical Evaluation
+    priority: 1
+NEPHROLITHIASIS:
+  full_name: Kidney Stones (Nephrolithiasis)
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_flank_pain
+    negative_features: []
+  recommended_tests:
+  - test_id: imaging_ct_kua
+    display_name: CT KUB (Kidneys, Ureters, Bladder)
+    category: Imaging
+    priority: 1
+CHOLECYSTITIS:
+  full_name: Acute Cholecystitis (Gallstones)
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_abdominal_pain
+    - sym_nausea_vomiting
+    negative_features: []
+  recommended_tests:
+  - test_id: imaging_ultrasound_ruq
+    display_name: Abdominal Ultrasound (RUQ)
+    category: Imaging
+    priority: 1
+OTITIS_MEDIA:
+  full_name: Otitis Media (Ear Infection)
+  diagnostic_criteria:
+    mandatory_features:
+    - ear_pain
+    negative_features: []
+  recommended_tests:
+  - test_id: clinical_exam_otoscope
+    display_name: Otoscopy (Ear Exam)
+    category: Physical Exam
+    priority: 1
+OTHER_UNCERTAIN_DIAGNOSIS:
+  full_name: Uncertain / Unmodeled Condition
+  diagnostic_criteria:
+    mandatory_features: []
+    negative_features: []
+  recommended_tests:
+  - test_id: referral_specialist
+    display_name: Referral to Specialist (Diagnosis Unclear)
+    category: Clinical Evaluation
+    priority: 1
+BENIGN_SKIN_LESION:
+  full_name: Benign Skin Lesion
+  diagnostic_criteria:
+    mandatory_features: []
+    negative_features: []
+  recommended_tests:
+  - test_id: dermatology_exam
+    display_name: Dermatology Exam
+    category: Clinical Evaluation
+    priority: 1
+AMYOTROPHIC_LATERAL_SCLEROSIS:
+  full_name: Amyotrophic Lateral Sclerosis (ALS)
+  diagnostic_criteria:
+    mandatory_features:
+    - unilateral_weakness
+    negative_features:
+    - evidence_of_spine_pathology
+  recommended_tests:
+  - test_id: diagnostic_emg_ncs
+    display_name: Electromyography (EMG) & Nerve Conduction Studies
+    category: Procedure
+    priority: 1
+ANKLE_FRACTURE:
+  full_name: Ankle Fracture
+  diagnostic_criteria:
+    mandatory_features:
+    - recent_ankle_trauma
+    - imaging_fracture_positive
+    negative_features:
+    - imaging_fracture_normal
+  recommended_tests:
+  - test_id: imaging_xray_ankle
+    display_name: X-Ray Ankle
+    category: Imaging
+    priority: 1
+BELL_S_PALSY:
+  full_name: Bell's Palsy
+  diagnostic_criteria:
+    mandatory_features:
+    - unilateral_facial_weakness
+    negative_features:
+    - imaging_mri_brain_stroke_positive
+  recommended_tests:
+  - test_id: clinical_assessment_neuro
+    display_name: Neurological Exam (Cranial Nerves)
+    category: Clinical Evaluation
+    priority: 1
+BRAIN_TUMOR:
+  full_name: Brain Tumor
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_headache
+    - imaging_mri_brain_tumor_positive
+    negative_features:
+    - imaging_mri_brain_normal
+  recommended_tests:
+  - test_id: imaging_mri_brain
+    display_name: MRI Brain (with contrast)
+    category: Imaging
+    priority: 1
+BREAST_CANCER:
+  full_name: Breast Cancer
+  diagnostic_criteria:
+    mandatory_features:
+    - breast_lump
+    - imaging_mammogram_positive
+    negative_features:
+    - imaging_mammogram_normal
+  recommended_tests:
+  - test_id: imaging_mammogram
+    display_name: Mammography
+    category: Imaging
+    priority: 1
+  - test_id: procedure_biopsy_breast
+    display_name: Breast Biopsy
+    category: Procedure
+    priority: 2
+CATHETER_ASSOCIATED_UTI:
+  full_name: Catheter-Associated UTI
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_dysuria
+    - fever
+    negative_features:
+    - lab_urine_culture_negative
+  recommended_tests:
+  - test_id: lab_urine_culture
+    display_name: Urine Culture & Sensitivity
+    category: Lab Test
+    priority: 1
+CHOLERA:
+  full_name: Cholera
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_diarrhea
+    - sym_nausea_vomiting
+    negative_features:
+    - lab_stool_culture_negative
+  recommended_tests:
+  - test_id: lab_stool_culture_cholera
+    display_name: Stool Culture (V. cholerae)
+    category: Lab Test
+    priority: 1
+COLORECTAL_CANCER:
+  full_name: Colorectal Cancer
+  diagnostic_criteria:
+    mandatory_features:
+    - rectal_bleeding
+    negative_features:
+    - imaging_colonoscopy_normal
+  recommended_tests:
+  - test_id: procedure_colonoscopy
+    display_name: Colonoscopy
+    category: Procedure
+    priority: 1
+CROHNS_DISEASE:
+  full_name: Crohn's Disease
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_abdominal_pain
+    - sym_diarrhea
+    negative_features:
+    - imaging_colonoscopy_normal
+  recommended_tests:
+  - test_id: procedure_colonoscopy
+    display_name: Colonoscopy with Biopsy
+    category: Procedure
+    priority: 1
+  - test_id: imaging_cte
+    display_name: CT Enterography
+    category: Imaging
+    priority: 2
+DENGUE_FEVER:
+  full_name: Dengue Fever
+  diagnostic_criteria:
+    mandatory_features:
+    - fever
+    - rash_hiv
+    negative_features:
+    - lab_dengue_serology_negative
+  recommended_tests:
+  - test_id: lab_dengue_serology
+    display_name: Dengue NS1 / IgM Serology
+    category: Lab Test
+    priority: 1
+DEPRESSION_MAJOR:
+  full_name: Depression (Major Depressive Disorder)
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_low_mood
+    negative_features:
+    - hist_manic_episode
+  recommended_tests:
+  - test_id: clinical_assessment_phq9
+    display_name: PHQ-9 Depression Screen
+    category: Clinical Evaluation
+    priority: 1
+EBOLA:
+  full_name: Ebola (Virus Disease)
+  diagnostic_criteria:
+    mandatory_features:
+    - fever
+    negative_features:
+    - lab_ebola_pcr_negative
+  recommended_tests:
+  - test_id: lab_ebola_pcr
+    display_name: Ebola PCR Test
+    category: Lab Test
+    priority: 1
+ENDOMETRIOSIS:
+  full_name: Endometriosis
+  diagnostic_criteria:
+    mandatory_features:
+    - dysmenorrhea_endo
+    negative_features: []
+  recommended_tests:
+  - test_id: imaging_ultrasound_pelvic
+    display_name: Pelvic Ultrasound
+    category: Imaging
+    priority: 1
+  - test_id: procedure_laparoscopy
+    display_name: Diagnostic Laparoscopy
+    category: Procedure
+    priority: 2
+FIBROMYALGIA:
+  full_name: Fibromyalgia
+  diagnostic_criteria:
+    mandatory_features:
+    - widespread_pain_fm
+    - fatigue
+    negative_features:
+    - lab_esr_elevated
+  recommended_tests:
+  - test_id: clinical_assessment_fm
+    display_name: Clinical Assessment of Tender Points
+    category: Clinical Evaluation
+    priority: 1
+GLAUCOMA:
+  full_name: Glaucoma
+  diagnostic_criteria:
+    mandatory_features:
+    - visual_field_loss
+    negative_features:
+    - exam_iop_normal
+  recommended_tests:
+  - test_id: exam_tonometry
+    display_name: Tonometry (Eye Pressure)
+    category: Physical Exam
+    priority: 1
+GOUT:
+  full_name: Gout
+  diagnostic_criteria:
+    mandatory_features:
+    - podagra
+    negative_features:
+    - lab_uric_acid_normal
+  recommended_tests:
+  - test_id: lab_uric_acid
+    display_name: Serum Uric Acid
+    category: Lab Test
+    priority: 1
+  - test_id: procedure_joint_aspiration
+    display_name: Joint Aspiration (Crystals)
+    category: Procedure
+    priority: 2
+GRAVES_DISEASE:
+  full_name: Graves' Disease
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_palpitations
+    - heat_intolerance_graves
+    negative_features:
+    - lab_tsh_normal
+  recommended_tests:
+  - test_id: lab_thyroid_panel
+    display_name: Thyroid Panel (TSH, T3, T4)
+    category: Blood Work
+    priority: 1
+GUILLAIN_BARRE_SYNDROME:
+  full_name: Guillain-Barre Syndrome
+  diagnostic_criteria:
+    mandatory_features:
+    - ascending_weakness_gbs
+    negative_features: []
+  recommended_tests:
+  - test_id: procedure_lumbar_puncture
+    display_name: Lumbar Puncture (CSF Analysis)
+    category: Procedure
+    priority: 1
+HASHIMOTOS_THYROIDITIS:
+  full_name: Hashimoto's Thyroiditis
+  diagnostic_criteria:
+    mandatory_features:
+    - fatigue
+    - cold_intolerance_hashi
+    negative_features:
+    - lab_tsh_normal
+  recommended_tests:
+  - test_id: lab_thyroid_antibodies
+    display_name: Thyroid Antibody Panel (TPO)
+    category: Blood Work
+    priority: 1
+HEPATITIS_C:
+  full_name: Hepatitis C
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_jaundice
+    negative_features:
+    - lab_hcv_antibody_negative
+  recommended_tests:
+  - test_id: lab_hcv_antibody
+    display_name: Hepatitis C Antibody Test
+    category: Blood Work
+    priority: 1
+HUNTINGTONS_DISEASE:
+  full_name: Huntington's Disease
+  diagnostic_criteria:
+    mandatory_features:
+    - chorea_hd
+    negative_features: []
+  recommended_tests:
+  - test_id: lab_genetic_testing_hd
+    display_name: Genetic Testing (HTT CAG Repeat)
+    category: Lab Test
+    priority: 1
+IRON_DEFICIENCY_ANEMIA:
+  full_name: Iron-Deficiency Anemia
+  diagnostic_criteria:
+    mandatory_features:
+    - fatigue
+    - pallor_iron
+    negative_features:
+    - lab_ferritin_normal
+  recommended_tests:
+  - test_id: lab_iron_panel
+    display_name: Iron Studies (Ferritin, TIBC)
+    category: Blood Work
+    priority: 1
+KNEE_FRACTURE:
+  full_name: Knee Fracture
+  diagnostic_criteria:
+    mandatory_features:
+    - recent_knee_trauma
+    - imaging_fracture_positive
+    negative_features:
+    - imaging_fracture_normal
+  recommended_tests:
+  - test_id: imaging_xray_knee
+    display_name: X-Ray Knee
+    category: Imaging
+    priority: 1
+LUNG_CANCER:
+  full_name: Lung Cancer
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_cough
+    - sym_weight_loss
+    negative_features:
+    - imaging_ct_chest_normal
+  recommended_tests:
+  - test_id: imaging_ct_chest
+    display_name: CT Chest
+    category: Imaging
+    priority: 1
+  - test_id: procedure_bronchoscopy
+    display_name: Bronchoscopy/Biopsy
+    category: Procedure
+    priority: 2
+LYMPHOMA:
+  full_name: Lymphoma
+  diagnostic_criteria:
+    mandatory_features:
+    - palpable_lymphadenopathy
+    - sym_night_sweats
+    negative_features: []
+  recommended_tests:
+  - test_id: procedure_ln_biopsy
+    display_name: Lymph Node Excision Biopsy
+    category: Procedure
+    priority: 1
+MENISCAL_TEAR:
+  full_name: Meniscal Tear
+  diagnostic_criteria:
+    mandatory_features:
+    - joint_line_tenderness
+    negative_features:
+    - imaging_mri_knee_normal
+  recommended_tests:
+  - test_id: imaging_mri_knee
+    display_name: MRI Knee
+    category: Imaging
+    priority: 1
+MULTIPLE_MYELOMA:
+  full_name: Multiple Myeloma
+  diagnostic_criteria:
+    mandatory_features:
+    - bone_pain_mm
+    negative_features:
+    - lab_spep_normal
+  recommended_tests:
+  - test_id: lab_spep
+    display_name: Serum Protein Electrophoresis (SPEP)
+    category: Blood Work
+    priority: 1
+OSTEOARTHRITIS:
+  full_name: Osteoarthritis
+  diagnostic_criteria:
+    mandatory_features:
+    - chronic_joint_pain
+    negative_features: []
+  recommended_tests:
+  - test_id: imaging_xray_joint
+    display_name: X-Ray of Affected Joint
+    category: Imaging
+    priority: 1
+OSTEOPOROSIS:
+  full_name: Osteoporosis
+  diagnostic_criteria:
+    mandatory_features:
+    - previous_fracture
+    negative_features:
+    - imaging_dexa_normal
+  recommended_tests:
+  - test_id: imaging_dexa
+    display_name: DEXA Scan (Bone Density)
+    category: Imaging
+    priority: 1
+PARKINSONS_DISEASE:
+  full_name: Parkinson's Disease
+  diagnostic_criteria:
+    mandatory_features:
+    - tremor_pd
+    negative_features: []
+  recommended_tests:
+  - test_id: clinical_assessment_neuro
+    display_name: Neurological Exam (Movement Disorder)
+    category: Clinical Evaluation
+    priority: 1
+POLYCYSTIC_OVARY_SYNDROME:
+  full_name: Polycystic Ovary Syndrome (PCOS)
+  diagnostic_criteria:
+    mandatory_features:
+    - irregular_menses_pcos
+    negative_features: []
+  recommended_tests:
+  - test_id: imaging_ultrasound_pelvic
+    display_name: Pelvic Ultrasound
+    category: Imaging
+    priority: 1
+  - test_id: lab_hormone_panel
+    display_name: Hormone Panel (Testosterone, LH/FSH)
+    category: Blood Work
+    priority: 2
+PROSTATE_CANCER:
+  full_name: Prostate Cancer
+  diagnostic_criteria:
+    mandatory_features:
+    - psa_high
+    negative_features:
+    - lab_psa_normal
+  recommended_tests:
+  - test_id: lab_psa
+    display_name: PSA (Prostate Specific Antigen)
+    category: Blood Work
+    priority: 1
+  - test_id: procedure_prostate_biopsy
+    display_name: Prostate Biopsy
+    category: Procedure
+    priority: 2
+RHEUMATIC_FEVER:
+  full_name: Rheumatic Fever
+  diagnostic_criteria:
+    mandatory_features:
+    - fever
+    - joint_pain
+    negative_features: []
+  recommended_tests:
+  - test_id: lab_aso_titer
+    display_name: ASO Titer
+    category: Blood Work
+    priority: 1
+SARCOIDOSIS:
+  full_name: Sarcoidosis
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_cough
+    - sym_shortness_of_breath
+    negative_features: []
+  recommended_tests:
+  - test_id: imaging_xray_chest
+    display_name: Chest X-ray
+    category: Imaging
+    priority: 1
+  - test_id: lab_ace_level
+    display_name: Serum ACE Level
+    category: Blood Work
+    priority: 2
+SCHIZOPHRENIA:
+  full_name: Schizophrenia
+  diagnostic_criteria:
+    mandatory_features:
+    - hallucinations_scz
+    negative_features: []
+  recommended_tests:
+  - test_id: clinical_assessment_psychiatric
+    display_name: Comprehensive Psychiatric Evaluation
+    category: Clinical Evaluation
+    priority: 1
+SJOGRENS_SYNDROME:
+  full_name: Sjogren's Syndrome
+  diagnostic_criteria:
+    mandatory_features:
+    - fatigue
+    negative_features:
+    - lab_ana_negative
+  recommended_tests:
+  - test_id: lab_autoimmune_panel
+    display_name: Autoimmune Panel (ANA, SSA/SSB)
+    category: Blood Work
+    priority: 1
+STROKE:
+  full_name: Acute Ischemic Stroke
+  diagnostic_criteria:
+    mandatory_features:
+    - unilateral_weakness
+    negative_features:
+    - imaging_ct_head_normal
+  recommended_tests:
+  - test_id: imaging_ct_head
+    display_name: CT Head (Non-contrast)
+    category: Imaging
+    priority: 1
+SYPHILIS:
+  full_name: Syphilis
+  diagnostic_criteria:
+    mandatory_features:
+    - chancre_syph
+    negative_features:
+    - lab_rpr_negative
+  recommended_tests:
+  - test_id: lab_rpr
+    display_name: RPR / VDRL Test
+    category: Blood Work
+    priority: 1
+SYSTEMIC_LUPUS_ERYTHEMATOSUS:
+  full_name: Lupus (Systemic Lupus Erythematosus)
+  diagnostic_criteria:
+    mandatory_features:
+    - joint_pain
+    - rash_hiv
+    negative_features:
+    - lab_ana_negative
+  recommended_tests:
+  - test_id: lab_ana
+    display_name: Antinuclear Antibody (ANA)
+    category: Blood Work
+    priority: 1
+ULCERATIVE_COLITIS:
+  full_name: Ulcerative Colitis
+  diagnostic_criteria:
+    mandatory_features:
+    - bloody_diarrhea_uc
+    negative_features:
+    - imaging_colonoscopy_normal
+  recommended_tests:
+  - test_id: procedure_colonoscopy
+    display_name: Colonoscopy
+    category: Procedure
+    priority: 1
+WRIST_SCAPHOID_FRACTURE:
+  full_name: Wrist Fracture (Scaphoid)
+  diagnostic_criteria:
+    mandatory_features:
+    - foosh
+    - imaging_fracture_positive
+    negative_features:
+    - imaging_fracture_normal
+  recommended_tests:
+  - test_id: imaging_xray_wrist_scaphoid
+    display_name: X-Ray Wrist (Scaphoid View)
+    category: Imaging
+    priority: 1
+TENSION_HEADACHE:
+  full_name: Tension Headache
+  diagnostic_criteria:
+    mandatory_features:
+    - sym_headache
+    negative_features: []
+  recommended_tests:
+  - test_id: clinical_diagnosis
+    display_name: Clinical Diagnosis (Exclusion of secondary causes)
+    category: Clinical Evaluation
+    priority: 1

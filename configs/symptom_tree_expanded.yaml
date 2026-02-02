@@ -1,0 +1,751 @@
+sections:
+- title: General & Constitutional
+  nodes:
+  - id: sym_fever
+    text: Fever or chills
+    type: bool
+    feature_id: fever
+  - id: sym_fatigue
+    text: Fatigue or Tiredness
+    type: bool
+    feature_id: fatigue
+  - id: sym_weight_loss
+    text: Unintentional weight loss
+    type: bool
+    feature_id: sym_weight_loss
+  - id: sym_weight_gain
+    text: Unintentional weight gain
+    type: bool
+    feature_id: sym_weight_gain
+  - id: sym_night_sweats
+    text: Night sweats
+    type: bool
+    feature_id: sym_night_sweats
+  - id: anorexia
+    text: Loss of appetite
+    type: bool
+    feature_id: anorexia
+  - id: sym_body_aches
+    text: Body aches or muscle pain
+    type: bool
+    feature_id: body_aches
+  - id: sym_diaphoresis
+    text: Excessive sweating (cold sweats)
+    type: bool
+    feature_id: diaphoresis
+  - id: sym_pallor
+    text: Pale skin or pallor
+    type: bool
+    feature_id: pallor_iron
+  - id: sym_bleeding
+    text: Unexplained bleeding
+    type: bool
+    feature_id: bleeding
+- title: Respiratory
+  nodes:
+  - id: sym_cough
+    text: Cough
+    type: bool
+    feature_id: sym_cough
+  - id: sym_productive_cough
+    text: Cough with mucus/phlegm
+    type: bool
+    feature_id: productive_cough
+  - id: sym_dry_cough
+    text: Dry cough
+    type: bool
+    feature_id: dry_cough
+  - id: sym_shortness_of_breath
+    text: Shortness of breath
+    type: bool
+    feature_id: sym_shortness_of_breath
+  - id: sym_wheezing
+    text: Wheezing
+    type: bool
+    feature_id: wheezing
+  - id: sym_hemoptysis
+    text: Coughing up blood
+    type: bool
+    feature_id: hemoptysis
+- title: ENT (Ear, Nose, Throat) & Eyes
+  nodes:
+  - id: sym_sore_throat
+    text: Sore throat
+    type: bool
+    feature_id: pharyngitis
+  - id: sym_runny_nose
+    text: Runny or blocked nose
+    type: bool
+    feature_id: runny_nose
+  - id: sym_sneezing
+    text: Sneezing
+    type: bool
+    feature_id: sneezing
+  - id: sym_loss_of_smell_taste
+    text: Loss of smell or taste
+    type: bool
+    feature_id: loss_of_smell_taste
+  - id: sym_facial_pain
+    text: Facial pressure or pain
+    type: bool
+    feature_id: facial_pain
+  - id: sym_ear_pain
+    text: Ear pain
+    type: bool
+    feature_id: ear_pain
+  - id: sym_conjunctivitis
+    text: Red or pink eyes (conjunctivitis)
+    type: bool
+    feature_id: conjunctivitis
+  - id: sym_exophthalmos
+    text: Bulging eyes
+    type: bool
+    feature_id: exophthalmos
+  - id: sym_elevated_iop
+    text: Known elevated eye pressure
+    type: bool
+    feature_id: elevated_iop
+  - id: sym_visual_field_loss
+    text: Loss of peripheral (side) vision
+    type: bool
+    feature_id: visual_field_loss
+- title: Cardiovascular
+  nodes:
+  - id: sym_chest_pain
+    text: Chest pain, pressure, or tightness
+    type: bool
+    feature_id: sym_chest_pain
+  - id: sym_palpitations
+    text: Heart racing or fluttering
+    type: bool
+    feature_id: sym_palpitations
+  - id: sym_leg_swelling
+    text: Leg swelling
+    type: bool
+    feature_id: edema_legs_ckd
+  - id: bradycardia
+    text: Slow heartbeat
+    type: bool
+    feature_id: bradycardia
+  - id: sym_radiation_left_arm
+    text: Pain radiating to left arm, jaw, or back
+    type: bool
+    feature_id: radiation_left_arm
+  - id: sym_orthopnea
+    text: Difficulty breathing when lying flat
+    type: bool
+    feature_id: orthopnea
+  - id: sym_pleuritic_pain
+    text: Sharp chest pain that worsens with breathing
+    type: bool
+    feature_id: pleuritic_pain
+- title: Gastrointestinal / Hepatic
+  nodes:
+  - id: sym_nausea_vomiting
+    text: Nausea or vomiting
+    type: bool
+    feature_id: sym_nausea_vomiting
+  - id: sym_diarrhea
+    text: Diarrhea
+    type: bool
+    feature_id: sym_diarrhea
+  - id: sym_constipation
+    text: Constipation
+    type: bool
+    feature_id: sym_constipation
+  - id: sym_abdominal_pain
+    text: Belly pain or cramps
+    type: bool
+    feature_id: sym_abdominal_pain
+  - id: sym_heartburn
+    text: Heartburn or acid reflux
+    type: bool
+    feature_id: heartburn
+  - id: sym_jaundice
+    text: Yellowing of skin or eyes
+    type: bool
+    feature_id: sym_jaundice
+  - id: sym_dark_urine
+    text: Dark urine
+    type: bool
+    feature_id: dark_urine
+  - id: sym_rlq_pain
+    text: Right lower belly pain
+    type: bool
+    feature_id: rlq_pain
+  - id: sym_llq_pain
+    text: Left lower belly pain
+    type: bool
+    feature_id: llq_pain
+  - id: pain_migration
+    text: Pain moved to the right lower belly
+    type: bool
+    feature_id: pain_migration
+  - id: perianal_disease
+    text: Sores or abscesses near the anus
+    type: bool
+    feature_id: perianal_disease
+  - id: bloody_diarrhea_uc
+    text: Diarrhea with blood
+    type: bool
+    feature_id: bloody_diarrhea_uc
+- title: Head & Balance
+  nodes:
+  - id: sym_headache
+    text: Headache
+    type: bool
+    feature_id: sym_headache
+  - id: sym_dizziness
+    text: Dizziness or lightheadedness
+    type: bool
+    feature_id: dizziness
+  - id: sym_sensitivity_light
+    text: Light sensitivity
+    type: bool
+    feature_id: sensitivity_light
+  - id: sym_stiff_neck
+    text: Stiff neck
+    type: bool
+    feature_id: stiff_neck
+  - id: sym_retro_orbital_pain
+    text: Pain behind the eyes
+    type: bool
+    feature_id: retro_orbital_pain
+- title: Nerves & Brain Function
+  nodes:
+  - id: sym_confusion
+    text: Confusion or altered mental state
+    type: bool
+    feature_id: confusion
+  - id: sym_incontinence
+    text: Loss of bladder or bowel control
+    type: bool
+    feature_id: incontinence
+  - id: sym_unilateral_weakness
+    text: One-sided weakness or numbness
+    type: bool
+    feature_id: unilateral_facial_weakness
+  - id: sym_difficulty_speaking
+    text: Trouble speaking or understanding
+    type: bool
+    feature_id: language_difficulty_ad
+  - id: sym_tremor
+    text: Shaking or tremor
+    type: bool
+    feature_id: tremor_pd
+  - id: sym_seizures
+    text: Seizures
+    type: bool
+    feature_id: seizures
+  - id: ascending_weakness_gbs
+    text: Weakness starting in the legs and moving upward
+    type: bool
+    feature_id: ascending_weakness_gbs
+  - id: areflexia_gbs
+    text: Loss of reflexes
+    type: bool
+    feature_id: areflexia_gbs
+  - id: chorea_hd
+    text: Jerky, involuntary movements
+    type: bool
+    feature_id: chorea_hd
+  - id: sym_chorea_rf
+    text: Involuntary dance-like movements (Sydenham chorea)
+    type: bool
+    feature_id: chorea_rf
+  - id: sym_unilateral_limb_weakness
+    text: One-sided arm or leg weakness
+    type: bool
+    feature_id: unilateral_weakness
+  - id: sym_difficulty_speaking
+    text: Difficulty speaking or slurred speech
+    type: bool
+    feature_id: difficulty_speaking
+  - id: sym_memory_impairment
+    text: Memory problems or forgetfulness
+    type: bool
+    feature_id: memory_impairment_ad
+  - id: sym_cognitive_decline
+    text: Declining thinking or reasoning ability
+    type: bool
+    feature_id: cognitive_decline
+  - id: sym_personality_change
+    text: Personality or behavior changes
+    type: bool
+    feature_id: personality_change
+  - id: sym_bradykinesia
+    text: Slowness of movement
+    type: bool
+    feature_id: bradykinesia
+  - id: sym_rigidity
+    text: Muscle stiffness or rigidity
+    type: bool
+    feature_id: rigidity
+- title: Mental Health & Sleep
+  nodes:
+  - id: sym_low_mood
+    text: Low mood or sadness
+    type: bool
+    feature_id: sym_low_mood
+  - id: sym_anhedonia
+    text: Loss of interest or enjoyment
+    type: bool
+    feature_id: anhedonia
+  - id: sym_excessive_worry
+    text: Excessive or uncontrollable worry
+    type: bool
+    feature_id: excessive_worry
+  - id: sym_sleep_disturbance
+    text: Sleep changes (too little or too much)
+    type: bool
+    feature_id: sleep_disturbance_ad
+  - id: manic_episodes_bd
+    text: Episodes of unusually high mood or energy (mania)
+    type: bool
+    feature_id: manic_episodes_bd
+  - id: hallucinations_scz
+    text: Seeing or hearing things that aren't there
+    type: bool
+    feature_id: hallucinations_scz
+  - id: delusions_scz
+    text: Strongly held false beliefs (delusions)
+    type: bool
+    feature_id: delusions_scz
+  - id: inattention_adhd
+    text: Trouble paying attention or staying organized
+    type: bool
+    feature_id: inattention_adhd
+  - id: hyperactivity_adhd
+    text: Restlessness or impulsive behavior
+    type: bool
+    feature_id: hyperactivity_adhd
+  - id: social_deficit_asd
+    text: Difficulty with social interactions
+    type: bool
+    feature_id: social_deficit_asd
+  - id: repetitive_behaviors_asd
+    text: Repetitive behaviors or restricted interests
+    type: bool
+    feature_id: repetitive_behaviors_asd
+- title: Endocrine / Renal / GU
+  nodes:
+  - id: sym_cold_intolerance
+    text: Feeling unusually cold
+    type: bool
+    feature_id: cold_intolerance_hashi
+  - id: sym_heat_intolerance
+    text: Feeling unusually hot
+    type: bool
+    feature_id: heat_intolerance_graves
+  - id: sym_polyuria
+    text: Urinating more often
+    type: bool
+    feature_id: polyuria
+  - id: sym_polydipsia
+    text: Feeling very thirsty
+    type: bool
+    feature_id: polydipsia
+  - id: sym_dysuria
+    text: Pain/burning when urinating
+    type: bool
+    feature_id: sym_dysuria
+  - id: sym_urinary_frequency
+    text: Frequent urination
+    type: bool
+    feature_id: sym_urinary_frequency
+  - id: sym_flank_pain
+    text: Side or back pain (flank pain)
+    type: bool
+    feature_id: sym_flank_pain
+  - id: irregular_menses_pcos
+    text: Irregular periods
+    type: bool
+    feature_id: irregular_menses_pcos
+  - id: hirsutism_pcos
+    text: Excess hair growth (male-pattern)
+    type: bool
+    feature_id: hirsutism_pcos
+  - id: dyspareunia_endo
+    text: Painful intercourse
+    type: bool
+    feature_id: dyspareunia_endo
+  - id: dysmenorrhea_endo
+    text: Severe menstrual cramps
+    type: bool
+    feature_id: dysmenorrhea_endo
+- title: "Injuries & Trauma"
+  nodes:
+  - id: recent_ankle_trauma
+    text: Recent ankle injury
+    type: bool
+    feature_id: recent_ankle_trauma
+  - id: malleolar_tenderness
+    text: Ankle bone tenderness
+    type: bool
+    feature_id: malleolar_tenderness
+  - id: base_5th_metatarsal_tenderness
+    text: Outer midfoot pain
+    type: bool
+    feature_id: base_5th_metatarsal_tenderness
+  - id: navicular_tenderness
+    text: Inner midfoot pain
+    type: bool
+    feature_id: navicular_tenderness
+  - id: inability_bear_weight
+    text: Can't take 4 steps on the ankle
+    type: bool
+    feature_id: inability_bear_weight
+  - id: swelling_ankle
+    text: Ankle swelling
+    type: bool
+    feature_id: swelling_ankle
+  - id: ecchymosis_ankle
+    text: Ankle bruising
+    type: bool
+    feature_id: ecchymosis_ankle
+  - id: deformity_ankle
+    text: Visible ankle deformity
+    type: bool
+    feature_id: deformity_ankle
+  - id: recent_knee_trauma
+    text: Recent knee injury
+    type: bool
+    feature_id: recent_knee_trauma
+  - id: patellar_tenderness
+    text: Pain when touching the kneecap
+    type: bool
+    feature_id: patellar_tenderness
+  - id: fibular_head_tenderness
+    text: Pain on the outer side of the knee
+    type: bool
+    feature_id: fibular_head_tenderness
+  - id: knee_flex_lt_90
+    text: Unable to bend the knee 90 degrees
+    type: bool
+    feature_id: knee_flex_lt_90
+  - id: inability_bear_weight_knee
+    text: Can't take 4 steps on the knee
+    type: bool
+    feature_id: inability_bear_weight_knee
+  - id: swelling_knee
+    text: Knee swelling
+    type: bool
+    feature_id: swelling_knee
+  - id: deformity_knee
+    text: Visible knee deformity
+    type: bool
+    feature_id: deformity_knee
+  - id: foosh
+    text: Fall onto an outstretched hand
+    type: bool
+    feature_id: foosh
+  - id: snuffbox_tenderness
+    text: Pain at the base of the thumb
+    type: bool
+    feature_id: snuffbox_tenderness
+  - id: pain_thumb_axial_load
+    text: Pain when pressing the thumb toward the wrist
+    type: bool
+    feature_id: pain_thumb_axial_load
+  - id: swelling_wrist
+    text: Wrist swelling
+    type: bool
+    feature_id: swelling_wrist
+  - id: deformity_wrist
+    text: Visible wrist deformity
+    type: bool
+    feature_id: deformity_wrist
+- title: "Chronic Joint & Back Pain"
+  nodes:
+  - id: painful_arc
+    text: Shoulder pain when lifting the arm
+    type: bool
+    feature_id: painful_arc
+  - id: external_rotation_weakness
+    text: Weakness when rotating arm outward
+    type: bool
+    feature_id: external_rotation_weakness
+  - id: drop_arm_sign
+    text: Can't slowly lower the arm
+    type: bool
+    feature_id: drop_arm_sign
+  - id: night_pain_shoulder
+    text: Shoulder pain at night
+    type: bool
+    feature_id: night_pain_shoulder
+  - id: joint_line_tenderness
+    text: Knee joint-line pain
+    type: bool
+    feature_id: joint_line_tenderness
+  - id: mcmurray_positive
+    text: Knee pain or clicking when twisting
+    type: bool
+    feature_id: mcmurray_positive
+  - id: locking_knee
+    text: Knee locking or getting stuck
+    type: bool
+    feature_id: locking_knee
+  - id: positive_slr
+    text: Leg pain when lifting a straight leg
+    type: bool
+    feature_id: positive_slr
+  - id: dermatomal_pain
+    text: Pain that travels down the leg in a specific path
+    type: bool
+    feature_id: dermatomal_pain
+  - id: cough_sneeze_pain
+    text: Leg pain worse with coughing or sneezing
+    type: bool
+    feature_id: cough_sneeze_pain
+  - id: neuro_deficit_leg
+    text: Weakness, numbness, or tingling in the leg
+    type: bool
+    feature_id: neuro_deficit_leg
+  - id: neurogenic_claudication
+    text: Leg pain worse walking, better leaning forward
+    type: bool
+    feature_id: neurogenic_claudication
+  - id: relief_when_flexed
+    text: Back pain that improves when leaning forward
+    type: bool
+    feature_id: relief_when_flexed
+  - id: chronic_back_pain
+    text: Low back pain for more than 6 weeks
+    type: bool
+    feature_id: chronic_back_pain
+  - id: no_red_flags_backpain
+    text: No red-flag back pain symptoms (e.g., fever, loss of bladder control)
+    type: bool
+    feature_id: no_red_flags_backpain
+  - id: hot_swollen_joint
+    text: Single hot, swollen joint
+    type: bool
+    feature_id: hot_swollen_joint
+  - id: monoarthritis
+    text: Pain in a single joint
+    type: bool
+    feature_id: monoarthritis
+  - id: podagra
+    text: Sudden, severe pain in the big toe joint
+    type: bool
+    feature_id: podagra
+  - id: tophi
+    text: Chalky lumps under the skin
+    type: bool
+    feature_id: tophi
+  - id: hyperuricemia
+    text: History of high uric acid in the blood
+    type: bool
+    feature_id: hyperuricemia
+  - id: abrupt_onset_hours
+    text: Symptoms started suddenly over a few hours
+    type: bool
+    feature_id: abrupt_onset_hours
+  - id: morning_stiffness_lt_30min
+    text: Joint stiffness in the morning that lasts less than 30 minutes
+    type: bool
+    feature_id: morning_stiffness_lt_30min
+  - id: bony_enlargement
+    text: Hard, bony lumps in the joints
+    type: bool
+    feature_id: bony_enlargement
+  - id: crepitus
+    text: Grating or cracking sound in a joint during movement
+    type: bool
+    feature_id: crepitus
+  - id: chronic_joint_pain
+    text: Long-term joint pain
+    type: bool
+    feature_id: chronic_joint_pain
+  - id: widespread_pain_fm
+    text: Widespread pain (3+ months)
+    type: bool
+    feature_id: widespread_pain_fm
+  - id: sym_joint_pain
+    text: Joint pain (any location)
+    type: bool
+    feature_id: joint_pain
+  - id: sym_migratory_arthritis
+    text: Joint pain that moves from one joint to another
+    type: bool
+    feature_id: migratory_arthritis_rf
+  - id: sym_kyphosis
+    text: Hunched or curved upper back
+    type: bool
+    feature_id: kyphosis
+  - id: sym_previous_fracture
+    text: History of fragility fracture
+    type: bool
+    feature_id: previous_fracture
+  - id: sym_bone_pain
+    text: Deep bone pain
+    type: bool
+    feature_id: bone_pain_mm
+  - id: sym_severe_pain_crisis
+    text: Severe pain crisis (in known sickle cell)
+    type: bool
+    feature_id: severe_pain_sickle
+  - id: sym_dactylitis
+    text: Painful swelling of fingers or toes
+    type: bool
+    feature_id: dactylitis
+- title: "Cancer \u2014 Alarm Features"
+  nodes:
+  - id: persistent_cough_gt_3w
+    text: Cough lasting more than 3 weeks
+    type: bool
+    feature_id: persistent_cough_gt_3w
+  - id: change_bowel_habit
+    text: Persistent change in bowel habits
+    type: bool
+    feature_id: change_bowel_habit
+  - id: rectal_bleeding
+    text: Rectal bleeding
+    type: bool
+    feature_id: rectal_bleeding
+  - id: iron_deficiency_anemia
+    text: History of iron-deficiency anemia
+    type: bool
+    feature_id: iron_deficiency_anemia
+  - id: breast_lump
+    text: New breast lump or swelling
+    type: bool
+    feature_id: breast_lump
+  - id: nipple_discharge
+    text: Nipple discharge (especially if bloody)
+    type: bool
+    feature_id: nipple_discharge
+  - id: skin_dimpling_breast
+    text: Dimpling or puckering of the breast skin
+    type: bool
+    feature_id: skin_dimpling_breast
+  - id: axillary_lymphadenopathy
+    text: Armpit lump/swelling
+    type: bool
+    feature_id: axillary_lymphadenopathy
+  - id: psa_high
+    text: History of a high PSA level
+    type: bool
+    feature_id: psa_high
+  - id: nocturia
+    text: Waking up at night to urinate
+    type: bool
+    feature_id: nocturia_ckd
+  - id: palpable_lymphadenopathy
+    text: Swollen glands (lymph nodes)
+    type: bool
+    feature_id: palpable_lymphadenopathy
+  - id: unexplained_weight_loss
+    text: Unexplained weight loss
+    type: bool
+    feature_id: unexplained_weight_loss
+- title: Skin
+  nodes:
+  - id: erythema_localized
+    text: Localized skin redness
+    type: bool
+    feature_id: erythema_localized
+  - id: skin_warmth
+    text: Skin that feels warm to the touch
+    type: bool
+    feature_id: skin_warmth
+  - id: itchy_skin
+    text: Itchy skin
+    type: bool
+    feature_id: pruritus_ckd
+  - id: skin_rash
+    text: Skin rash
+    type: bool
+    feature_id: rash_hiv
+  - id: sym_chancre
+    text: Painless sore on genitals, mouth, or rectum
+    type: bool
+    feature_id: chancre_syph
+  - id: sym_pica
+    text: Craving to eat non-food items (ice, dirt, etc.)
+    type: bool
+    feature_id: pica
+- title: Physical Exam
+  nodes:
+  - id: respiratory_rate_gte_20
+    text: Breathing rate 20+ per minute
+    type: bool
+    feature_id: respiratory_rate_gte_20
+  - id: pulse_rate_gt_100
+    text: Heart rate over 100 bpm
+    type: bool
+    feature_id: tachycardia_chol
+  - id: crackles
+    text: Crackles in the lungs (heard by stethoscope)
+    type: bool
+    feature_id: crackles
+  - id: s3_gallop
+    text: Extra heart sound (S3 gallop)
+    type: bool
+    feature_id: s3_gallop
+  - id: elevated_jvp
+    text: Visible neck vein pulsing or fullness
+    type: bool
+    feature_id: elevated_jvp
+  - id: rebound_tenderness
+    text: Belly pain when pressure is released
+    type: bool
+    feature_id: rebound_tenderness
+  - id: guarding_rlq
+    text: Lower-right abdominal muscle guarding
+    type: bool
+    feature_id: guarding_rlq
+  - id: rovsing_sign
+    text: Right lower belly pain when left side is pressed
+    type: bool
+    feature_id: rovsing_sign
+  - id: psoas_sign
+    text: Belly pain when lifting the right leg
+    type: bool
+    feature_id: psoas_sign
+  - id: obturator_sign
+    text: Belly pain when flexing/rotating the right hip
+    type: bool
+    feature_id: obturator_sign
+- title: Lab Results
+  nodes:
+  - id: troponin_slightly_elevated
+    text: Troponin slightly elevated
+    type: bool
+    feature_id: troponin_slightly_elevated
+  - id: troponin_moderately_elevated
+    text: Troponin moderately elevated
+    type: bool
+    feature_id: troponin_moderately_elevated
+  - id: troponin_highly_elevated
+    text: Troponin highly elevated
+    type: bool
+    feature_id: troponin_highly_elevated
+  - id: low_ferritin
+    text: Low ferritin (<30 ng/mL)
+    type: bool
+    feature_id: low_ferritin
+  - id: microcytic_anemia
+    text: Anemia with small red blood cells
+    type: bool
+    feature_id: microcytic_anemia
+  - id: egfr_low
+    text: Reduced kidney function (eGFR <60)
+    type: bool
+    feature_id: egfr_low
+  - id: monoclonal_protein
+    text: Abnormal M-protein in blood
+    type: bool
+    feature_id: monoclonal_protein
+  - id: abnormal_csf_ad
+    text: Abnormal spinal fluid proteins (Alzheimer's-related)
+    type: bool
+    feature_id: abnormal_csf_ad
+  - id: cd4_low
+    text: Low CD4 count (<200)
+    type: bool
+    feature_id: cd4_low
+  - id: fecal_calprotectin_high
+    text: High calprotectin in stool
+    type: bool
+    feature_id: fecal_calprotectin_high_uc
