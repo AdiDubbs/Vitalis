@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import {
+  Alert,
   Badge,
   Button,
   Chip,
@@ -11,7 +12,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { IconSend } from "@tabler/icons-react";
+import { IconAlertCircle, IconSend } from "@tabler/icons-react";
 import CaseSummary from "../components/CaseSummary.jsx";
 import DiagnosisIntake from "./DiagnosisIntake.jsx";
 import DiagnosisSymptoms from "./DiagnosisSymptoms.jsx";
@@ -39,6 +40,8 @@ function DiagnosisLayout() {
   const [symptomLibrary, setSymptomLibrary] = useState({
     buckets: {},
     bucketOrder: [],
+    loading: true,
+    error: "",
   });
   const [activeCategory, setActiveCategory] = useState(null);
   const hasNoteUpload = Boolean(uploads.doctor_note_upload);
@@ -47,16 +50,35 @@ function DiagnosisLayout() {
   useEffect(() => {
     const loadSymptomNames = async () => {
       try {
+        setSymptomLibrary((prev) => ({
+          ...prev,
+          loading: true,
+          error: "",
+        }));
         const response = await fetch("/api/symptoms");
+        if (!response.ok) {
+          throw new Error("Could not load symptom categories.");
+        }
         const data = await response.json();
         if (data.buckets) {
           setSymptomLibrary({
             buckets: data.buckets || {},
             bucketOrder: data.metadata?.bucketOrder || [],
+            loading: false,
+            error: "",
           });
+          return;
         }
+        throw new Error("Symptom categories were empty.");
       } catch (error) {
-        console.error("Failed to load symptom names:", error);
+        setSymptomLibrary({
+          buckets: {},
+          bucketOrder: [],
+          loading: false,
+          error:
+            error.message ||
+            "Could not load symptom categories. Refresh and try again.",
+        });
       }
     };
     loadSymptomNames();
@@ -190,7 +212,20 @@ function DiagnosisLayout() {
 
                     <Divider my="xs" />
 
-                    {categoryOptions.length > 0 ? (
+                    {symptomLibrary.loading ? (
+                      <Text size="xs" c="dimmed">
+                        Loading categories...
+                      </Text>
+                    ) : symptomLibrary.error ? (
+                      <Alert
+                        icon={<IconAlertCircle size={14} />}
+                        color="gray"
+                        title="Categories unavailable"
+                        className="alert-critical"
+                      >
+                        {symptomLibrary.error}
+                      </Alert>
+                    ) : categoryOptions.length > 0 ? (
                       <Grid gutter={2} columns={2}>
                         {categoryOptions.map(({ value }) => {
                           const hasSelections =

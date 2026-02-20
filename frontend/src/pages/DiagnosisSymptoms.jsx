@@ -223,18 +223,17 @@ function DiagnosisSymptoms({
         if (!response.ok) throw new Error("Failed to fetch follow-ups");
 
         const data = await response.json();
+        const followUpPayload = Array.isArray(data)
+          ? data
+          : (data.follow_up_data || []);
 
-        // Filter out already selected symptoms
-        const followUpIds = (data.follow_up_symptoms || [])
-          .filter(id => !selectedSymptoms.has(id));
-
-        // Map IDs to symptom objects with names
-        const followUps = followUpIds
-          .map(id => ({
-            id,
-            text: symptomNameMap.get(id) || id
+        const followUps = followUpPayload
+          .filter((item) => item?.id && !selectedSymptoms.has(item.id))
+          .map((item) => ({
+            id: item.id,
+            text: item.text || symptomNameMap.get(item.id) || item.id,
           }))
-          .filter(s => s.text);
+          .filter((item) => item.text);
 
         setFollowUpSymptoms(followUps);
       } catch (error) {
@@ -370,7 +369,7 @@ function DiagnosisSymptoms({
         message: "Redirecting to results.",
       });
 
-      navigate("/results", {
+      navigate(`/results?case_id=${encodeURIComponent(data.case_id)}`, {
         state: {
           analysis: data.analysis,
           caseId: data.case_id,
@@ -382,7 +381,10 @@ function DiagnosisSymptoms({
       });
       setIsSubmitting(false);
     } catch (error) {
-      setSubmit({ loading: false, error: error.message || "Submission failed." });
+      setSubmit({
+        loading: false,
+        error: `${error.message || "Submission failed."} Check patient details and uploads, then try again.`,
+      });
       setIsSubmitting(false);
     }
   };
@@ -671,6 +673,9 @@ function DiagnosisSymptoms({
                 className="alert-critical"
               >
                 {submit.error}
+                <Text size="xs" mt={6} c="dimmed">
+                  If this continues, refresh and resubmit with smaller files or fewer uploads.
+                </Text>
               </Alert>
             )}
       </Stack>

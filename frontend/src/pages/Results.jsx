@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { createSymptomNameMap, formatContribution } from "../utils/symptomHelpers.js";
 import {
   ActionIcon,
@@ -36,20 +36,24 @@ import EvidenceBadge from "../components/EvidenceBadge";
 
 function Results() {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const state = location.state || {};
-  const analysis = state.analysis || null;
-  const caseId = state.caseId || "";
-  const selectedSymptoms = state.selectedSymptoms || [];
-  const doctorNoteProvided = state.doctorNoteProvided || false;
-  const age = state.age ?? null;
-  const sex = state.sex || "";
+  const caseIdFromState = state.caseId || "";
+  const caseIdFromQuery = searchParams.get("case_id") || "";
+  const caseId = caseIdFromState || caseIdFromQuery;
 
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const [hydratedCase, setHydratedCase] = useState(null);
+  const [caseFetch, setCaseFetch] = useState({
+    loading: false,
+    error: "",
+  });
 
   const [data, setData] = useState({
     symptomCategories: {},
     diseaseMap: {},
-    error: "",
+    symptomsError: "",
+    diseasesError: "",
   });
 
   const [ui, setUi] = useState({
@@ -73,36 +77,82 @@ function Results() {
 
   useEffect(() => {
     let active = true;
-    
-    const fetchData = async () => {
+    const fetchCase = async () => {
+      if (state.analysis || !caseId) {
+        return;
+      }
+      setCaseFetch({ loading: true, error: "" });
       try {
-        const [symptomsRes, diseasesRes] = await Promise.all([
-          fetch("/api/symptoms"),
-          fetch("/api/diseases")
-        ]);
-
-        if (!symptomsRes.ok) throw new Error("Unable to load symptom library.");
-        const symptomsData = await symptomsRes.json();
-        
-        let diseasesData = {};
-        if (diseasesRes.ok) {
-           diseasesData = await diseasesRes.json();
+        const response = await fetch(`/api/cases/${encodeURIComponent(caseId)}`);
+        const payload = await response.json();
+        if (!response.ok || payload.status !== "success") {
+          throw new Error(payload.message || "Could not load this saved case.");
         }
-
         if (active) {
-          setData({
-            symptomCategories: symptomsData?.buckets || {},
-            diseaseMap: diseasesData || {},
-            error: "",
-          });
+          setHydratedCase(payload);
+          setCaseFetch({ loading: false, error: "" });
         }
       } catch (error) {
         if (active) {
-          setData(prev => ({
-            ...prev,
-            error: error.message || "Unable to load data.",
-          }));
+          setCaseFetch({
+            loading: false,
+            error: error.message || "Could not load this saved case.",
+          });
         }
+      }
+    };
+    fetchCase();
+    return () => {
+      active = false;
+    };
+  }, [caseId, state.analysis]);
+
+  const analysis = state.analysis || hydratedCase?.analysis || null;
+  const selectedSymptoms = state.selectedSymptoms || hydratedCase?.selected_symptoms || [];
+  const doctorNoteProvided =
+    typeof state.doctorNoteProvided === "boolean"
+      ? state.doctorNoteProvided
+      : Boolean(hydratedCase?.doctor_note_provided);
+  const age = state.age ?? hydratedCase?.age ?? null;
+  const sex = state.sex || hydratedCase?.sex || "";
+
+  useEffect(() => {
+    let active = true;
+    
+    const fetchData = async () => {
+      let symptomCategories = {};
+      let diseaseMap = {};
+      let symptomsError = "";
+      let diseasesError = "";
+
+      try {
+        const symptomsRes = await fetch("/api/symptoms");
+        if (!symptomsRes.ok) {
+          throw new Error("Could not load symptom labels.");
+        }
+        const symptomsData = await symptomsRes.json();
+        symptomCategories = symptomsData?.buckets || {};
+      } catch (error) {
+        symptomsError = error.message || "Could not load symptom labels.";
+      }
+
+      try {
+        const diseasesRes = await fetch("/api/diseases");
+        if (!diseasesRes.ok) {
+          throw new Error("Could not load disease names.");
+        }
+        diseaseMap = await diseasesRes.json();
+      } catch (error) {
+        diseasesError = error.message || "Could not load disease names.";
+      }
+
+      if (active) {
+        setData({
+          symptomCategories,
+          diseaseMap,
+          symptomsError,
+          diseasesError,
+        });
       }
     };
 
@@ -299,13 +349,52 @@ function Results() {
           </Group>
         </Group>
 
-        {!analysis ? (
+        {caseFetch.error ? (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            color="gray"
+            title="Could not load case"
+            className="alert-critical"
+          >
+            {caseFetch.error} Open a case from the intake flow and try again.
+          </Alert>
+        ) : null}
+
+        {data.symptomsError ? (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            color="yellow"
+            title="Symptom labels unavailable"
+          >
+            {data.symptomsError} Symptom IDs may be shown instead of names.
+          </Alert>
+        ) : null}
+
+        {data.diseasesError ? (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            color="yellow"
+            title="Disease names unavailable"
+          >
+            {data.diseasesError} Internal IDs may be shown for conditions.
+          </Alert>
+        ) : null}
+
+        {caseFetch.loading ? (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            color="blue"
+            title="Loading saved case"
+          >
+            Restoring this result from the server.
+          </Alert>
+        ) : !analysis ? (
           <Alert
             icon={<IconAlertCircle size={16} />}
             color="yellow"
             title="No results loaded"
           >
-            Run a diagnosis from the intake screen to generate results.
+            Run a diagnosis from the intake screen to generate results, or open a URL with `?case_id=...`.
           </Alert>
         ) : (
           <Grid gutter="lg" align="flex-start">
@@ -411,7 +500,7 @@ function Results() {
 
                     <Divider my="xs" />
 
-                    {data.error ? (
+                    {data.symptomsError ? (
                       <Text size="xs" c="dimmed">
                         Symptom labels unavailable.
                       </Text>

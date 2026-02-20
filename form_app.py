@@ -203,7 +203,10 @@ def get_follow_ups_route():
 
     follow_up_data = [{'id': s_id, 'text': all_symptoms.get(s_id, s_id)} for s_id in new_symptoms]
 
-    return jsonify(follow_up_data)
+    return jsonify({
+        "follow_up_symptoms": new_symptoms,
+        "follow_up_data": follow_up_data
+    })
 
 
 @app.route('/submit', methods=['POST'])
@@ -243,6 +246,7 @@ def submit():
 
     app.logger.info(f"Form data keys received: {list(form_data.keys())}")
 
+    symptom_list = []
     try:
         symptoms_json = form_data.get('symptoms', '[]')
         symptom_list = json.loads(symptoms_json)
@@ -296,12 +300,16 @@ def submit():
         case_filename = f"cases/{response['case_id']}.json"
         with open(case_filename, 'w') as f:
             serializable_data = {
+                "case_id": response["case_id"],
                 "demographics": {"age": age_val, "sex": form_data.get('sex')},
                 "features": features,
+                "selected_symptoms": symptom_list,
+                "doctor_note_provided": bool(combined_note.strip()),
                 "doctor_note": combined_note,
                 "attachments": uploaded_files,
                 "fracture_body_part": fracture_body_part,
-                "analysis_summary": analysis_result['fused_probabilities']
+                "analysis_summary": analysis_result['fused_probabilities'],
+                "analysis": analysis_result
             }
             json.dump(serializable_data, f, indent=2)
 
@@ -310,6 +318,35 @@ def submit():
     except Exception as e:
         app.logger.error(f"Analysis failed: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@app.route('/api/cases/<case_id>', methods=['GET'])
+def get_case(case_id):
+    safe_case_id = secure_filename(case_id)
+    if not safe_case_id:
+        return jsonify({"status": "error", "message": "Invalid case ID."}), 400
+
+    case_filename = Path("cases") / f"{safe_case_id}.json"
+    if not case_filename.exists():
+        return jsonify({"status": "error", "message": "Case not found."}), 404
+
+    try:
+        with open(case_filename, 'r') as f:
+            case_data = json.load(f)
+    except Exception as e:
+        app.logger.error(f"Failed to load case {safe_case_id}: {e}")
+        return jsonify({"status": "error", "message": "Failed to load case data."}), 500
+
+    demographics = case_data.get("demographics", {})
+    return jsonify({
+        "status": "success",
+        "case_id": case_data.get("case_id", safe_case_id),
+        "analysis": case_data.get("analysis"),
+        "selected_symptoms": case_data.get("selected_symptoms", list(case_data.get("features", {}).keys())),
+        "doctor_note_provided": bool(case_data.get("doctor_note_provided")),
+        "age": demographics.get("age"),
+        "sex": demographics.get("sex")
+    })
 
 
 @app.route('/<path:path>')
