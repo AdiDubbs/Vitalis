@@ -109,6 +109,7 @@ function Results() {
 
   const analysis = state.analysis || hydratedCase?.analysis || null;
   const selectedSymptoms = state.selectedSymptoms || hydratedCase?.selected_symptoms || [];
+  const uploadResults = analysis?.upload_results || [];
   const doctorNoteProvided =
     typeof state.doctorNoteProvided === "boolean"
       ? state.doctorNoteProvided
@@ -289,17 +290,6 @@ function Results() {
     return parts.join(" ");
   };
 
-  const ageDisplay =
-    typeof age === "number" && !Number.isNaN(age) ? `${age} years` : "Not provided";
-  const sexDisplay = sex
-    ? sex === "MALE"
-      ? "Male"
-      : sex === "FEMALE"
-      ? "Female"
-      : sex.charAt(0).toUpperCase() + sex.slice(1).toLowerCase()
-    : "Not provided";
-  const caseIdDisplay = caseId || "Pending";
-
   const formatDxName = (name) => {
     if (!name) {
       return "";
@@ -319,6 +309,19 @@ function Results() {
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
+  };
+
+  const formatModelName = (modelType) => {
+    const names = {
+      imaging_xray: "Chest X-Ray",
+      imaging_mri: "Brain MRI",
+      imaging_skin: "Skin image",
+      imaging_fracture: "Fracture image",
+      imaging_breast_cancer: "Breast image",
+      signals_ecg_afib: "ECG",
+      signals_ecg_ischemia: "ECG",
+    };
+    return names[modelType] || "Uploaded evidence";
   };
 
   return (
@@ -377,6 +380,36 @@ function Results() {
             title="Disease names unavailable"
           >
             {data.diseasesError} Internal IDs may be shown for conditions.
+          </Alert>
+        ) : null}
+
+        {analysis && uploadResults.length ? (
+          <Alert
+            icon={<IconAlertTriangle size={16} />}
+            color={uploadResults.some((result) => result.status === "failed") ? "yellow" : "blue"}
+            title="Uploaded evidence"
+          >
+            <Stack gap={6}>
+              {uploadResults.map((result, index) => (
+                <Group key={`${result.model_type}-${index}`} gap="xs" align="flex-start">
+                  <Badge
+                    size="xs"
+                    color={result.status === "failed" ? "yellow" : result.contributed ? "teal" : "gray"}
+                    variant="light"
+                  >
+                    {result.status === "failed"
+                      ? "Not analyzed"
+                      : result.contributed
+                      ? "Used in results"
+                      : "Analyzed"}
+                  </Badge>
+                  <Text size="sm">
+                    <Text component="span" fw={600}>{formatModelName(result.model_type)}:</Text>{" "}
+                    {result.message}
+                  </Text>
+                </Group>
+              ))}
+            </Stack>
           </Alert>
         ) : null}
 

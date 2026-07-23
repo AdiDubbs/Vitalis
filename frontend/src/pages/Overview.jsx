@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { createElement, useState } from "react";
 import {
   Badge,
   Container,
@@ -176,7 +176,7 @@ const TECH_STACK = [
   },
 ];
 
-function StatCard({ label, value, icon: Icon, color }) {
+function StatCard({ label, value, icon, color }) {
   return (
     <PanelCard className="stat" padding="md">
       <Group justify="space-between" wrap="nowrap">
@@ -189,7 +189,7 @@ function StatCard({ label, value, icon: Icon, color }) {
           </Text>
         </Stack>
         <ThemeIcon variant="light" size={rem(42)} radius="md" color={color}>
-          <Icon style={{ width: rem(24), height: rem(24) }} />
+          {createElement(icon, { style: { width: rem(24), height: rem(24) } })}
         </ThemeIcon>
       </Group>
     </PanelCard>
@@ -245,12 +245,12 @@ function StepCard({ step, index, isActive, onClick, isLast }) {
   );
 }
 
-function SectionHeader({ title, subtitle, icon: Icon }) {
+function SectionHeader({ title, subtitle, icon }) {
   return (
     <Stack gap={8} mb="lg">
       <Group gap="md" align="flex-start">
         <ThemeIcon variant="light" color="cyan" size={rem(44)} radius="lg">
-          <Icon style={{ width: rem(24), height: rem(24) }} />
+          {createElement(icon, { style: { width: rem(24), height: rem(24) } })}
         </ThemeIcon>
         <Stack gap={4} style={{ flex: 1 }}>
           <Title order={2} size={rem(28)} fw={800} c="var(--text-primary)" lh={1.2}>

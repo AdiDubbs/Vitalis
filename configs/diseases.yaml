@@ -29,6 +29,27 @@ _metadata:
     - Wells Criteria validation studies
     - 'PMC5940642 - Acute PE: Focus on Clinical Picture'
 diseases:
+  BASAL_CELL_CARCINOMA:
+    full_name: Basal Cell Carcinoma
+    diagnostic_criteria:
+      mandatory_features: []
+      negative_features: []
+    recommended_tests: []
+    likelihood_ratios: {}
+  BENIGN_SKIN_LESION:
+    full_name: Benign Skin Lesion
+    diagnostic_criteria:
+      mandatory_features: []
+      negative_features: []
+    recommended_tests: []
+    likelihood_ratios: {}
+  MELANOMA:
+    full_name: Melanoma
+    diagnostic_criteria:
+      mandatory_features: []
+      negative_features: []
+    recommended_tests: []
+    likelihood_ratios: {}
   PNEUMONIA:
     full_name: Pneumonia
     diagnostic_criteria:

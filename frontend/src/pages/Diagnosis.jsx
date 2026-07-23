@@ -22,7 +22,6 @@ const INITIAL_UPLOADS = {
   doctor_note_upload: null,
   upload_image: null,
   upload_mri: null,
-  upload_ecg: null,
   upload_skin: null,
   upload_fracture: null,
   upload_breast: null,
@@ -37,6 +36,12 @@ function DiagnosisLayout() {
   const [selectedSymptoms, setSelectedSymptoms] = useState(new Set());
   const [submitHandler, setSubmitHandler] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
+  const [intakeSchema, setIntakeSchema] = useState({
+    loading: true,
+    data: null,
+    error: "",
+  });
   const [symptomLibrary, setSymptomLibrary] = useState({
     buckets: {},
     bucketOrder: [],
@@ -84,6 +89,35 @@ function DiagnosisLayout() {
     loadSymptomNames();
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    const loadIntakeSchema = async () => {
+      try {
+        const response = await fetch("/api/intake-schema");
+        if (!response.ok) {
+          throw new Error("Could not load intake validation rules.");
+        }
+        const data = await response.json();
+        if (active) {
+          setIntakeSchema({ loading: false, data, error: "" });
+        }
+      } catch (error) {
+        if (active) {
+          setIntakeSchema({
+            loading: false,
+            data: null,
+            error: error.message || "Could not load intake validation rules.",
+          });
+        }
+      }
+    };
+
+    loadIntakeSchema();
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const categoryOptions = useMemo(() => {
     const getBucketCount = (bucketData) =>
       Array.isArray(bucketData) ? bucketData.length : 0;
@@ -110,29 +144,6 @@ function DiagnosisLayout() {
 
     return options;
   }, [symptomLibrary]);
-
-  const selectedSymptomsByBucket = useMemo(() => {
-    const grouped = new Map();
-    const bucketMap = new Map();
-    Object.entries(symptomLibrary.buckets || {}).forEach(
-      ([bucket, symptoms]) => {
-        symptoms.forEach((symptom) => {
-          if (symptom?.id) {
-            bucketMap.set(symptom.id, bucket);
-          }
-        });
-      }
-    );
-
-    selectedSymptoms.forEach((symptomId) => {
-      const bucket = bucketMap.get(symptomId) || "Other";
-      if (!grouped.has(bucket)) {
-        grouped.set(bucket, []);
-      }
-      grouped.get(bucket).push(symptomId);
-    });
-    return grouped;
-  }, [selectedSymptoms, symptomLibrary.buckets]);
 
   const symptomNameMap = useMemo(() =>
     createSymptomNameMap(symptomLibrary.buckets),
@@ -228,8 +239,6 @@ function DiagnosisLayout() {
                     ) : categoryOptions.length > 0 ? (
                       <Grid gutter={2} columns={2}>
                         {categoryOptions.map(({ value }) => {
-                          const hasSelections =
-                            selectedSymptomsByBucket.has(value);
                           const isActive = activeCategory === value;
                           return (
                             <Grid.Col key={value} span={{ base: 2, md: 1 }}>
@@ -359,6 +368,9 @@ function DiagnosisLayout() {
                 setFractureBodyPart={setFractureBodyPart}
                 uploads={uploads}
                 setUploads={setUploads}
+                intakeSchema={intakeSchema}
+                validationErrors={validationErrors}
+                setValidationErrors={setValidationErrors}
               />
               <DiagnosisSymptoms
                 age={age}
@@ -371,6 +383,9 @@ function DiagnosisLayout() {
                 setSubmitHandler={setSubmitHandler}
                 setIsSubmitting={setIsSubmitting}
                 activeCategory={activeCategory}
+                intakeSchema={intakeSchema}
+                validationErrors={validationErrors}
+                setValidationErrors={setValidationErrors}
               />
             </Stack>
           </Grid.Col>
@@ -382,7 +397,7 @@ function DiagnosisLayout() {
             color="cyan"
             rightSection={<IconSend size={16} />}
             onClick={() => submitHandler?.()}
-            disabled={!submitHandler}
+            disabled={!submitHandler || intakeSchema.loading || Boolean(intakeSchema.error)}
             loading={isSubmitting}
             loaderProps={{ type: "dots" }}
           >

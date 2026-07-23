@@ -180,9 +180,6 @@ const theme = createTheme({
         label: {
           color: "var(--text-secondary)",
           fontWeight: 500,
-          "&[data-active]": {
-            color: "var(--text-primary)",
-          },
         },
       },
     },

@@ -131,5 +131,6 @@ def run_case(
         "disease_db": disease_db,
         "extracted_features": features,
         "red_flags": red_flags,
-        "model_outputs": ev_meta.get("model_outputs", [])
+        "model_outputs": ev_meta.get("model_outputs", []),
+        "upload_results": ev_meta.get("upload_results", []),
     }

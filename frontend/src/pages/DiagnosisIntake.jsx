@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Accordion,
   ActionIcon,
@@ -16,126 +16,22 @@ import {
   Text,
   Textarea,
   ThemeIcon,
-  Title,
   Tooltip,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import {
-  IconBrain,
-  IconHeartbeat,
   IconInfoCircle,
   IconPhoto,
   IconScan,
   IconStethoscope,
   IconUser,
   IconUpload,
-  IconPencil,
 } from "@tabler/icons-react";
 
-const FILE_CATEGORIES = [
-  {
-    category: "Radiology",
-    icon: IconScan,
-    fields: [
-      {
-        key: "upload_image",
-        label: "Chest X-Ray",
-        accept: [
-          "image/png",
-          "image/jpeg",
-          "image/jpg",
-          ".dcm",
-          ".dicom",
-          "application/dicom",
-        ],
-        maxSize: 50 * 1024 * 1024,
-        formats: "PNG, JPG, DICOM",
-      },
-      {
-        key: "upload_mri",
-        label: "Brain MRI",
-        accept: [
-          "image/png",
-          "image/jpeg",
-          "image/jpg",
-          ".dcm",
-          ".dicom",
-          "application/dicom",
-        ],
-        maxSize: 50 * 1024 * 1024,
-        formats: "PNG, JPG, DICOM",
-      },
-      {
-        key: "upload_fracture",
-        label: "Fracture Image",
-        accept: [
-          "image/png",
-          "image/jpeg",
-          "image/jpg",
-          ".dcm",
-          ".dicom",
-          "application/dicom",
-        ],
-        maxSize: 50 * 1024 * 1024,
-        formats: "PNG, JPG, DICOM",
-      },
-      {
-        key: "upload_breast",
-        label: "Breast Image",
-        accept: [
-          "image/png",
-          "image/jpeg",
-          "image/jpg",
-          ".dcm",
-          ".dicom",
-          "application/dicom",
-        ],
-        maxSize: 50 * 1024 * 1024,
-        formats: "PNG, JPG, DICOM",
-      },
-    ],
-  },
-  {
-    category: "Cardiology",
-    icon: IconHeartbeat,
-    fields: [
-      {
-        key: "upload_ecg",
-        label: "ECG",
-        accept: [".dat"],
-        maxSize: 10 * 1024 * 1024,
-        formats: "DAT",
-      },
-    ],
-  },
-  {
-    category: "Dermatology",
-    icon: IconPhoto,
-    fields: [
-      {
-        key: "upload_skin",
-        label: "Skin Image",
-        accept: ["image/png", "image/jpeg", "image/jpg"],
-        maxSize: 20 * 1024 * 1024,
-        formats: "PNG, JPG",
-      },
-    ],
-  },
-];
-
-const FILE_FIELDS = FILE_CATEGORIES.flatMap((cat) => cat.fields);
-
-const FRACTURE_BODY_PART_OPTIONS = [
-  { value: "hand_wrist", label: "Hand / Wrist" },
-  { value: "forearm_elbow", label: "Forearm / Elbow" },
-  { value: "humerus_shoulder", label: "Humerus / Shoulder" },
-  { value: "ankle_foot", label: "Ankle / Foot" },
-  { value: "tibia_fibula", label: "Tibia / Fibula" },
-  { value: "femur_hip", label: "Femur / Hip" },
-  { value: "ribs", label: "Ribs" },
-  { value: "spine", label: "Spine" },
-  { value: "pelvis", label: "Pelvis" },
-];
+const CATEGORY_ICONS = {
+  Radiology: IconScan,
+  Dermatology: IconPhoto,
+};
 
 function DiagnosisIntake({
   age,
@@ -148,14 +44,54 @@ function DiagnosisIntake({
   setFractureBodyPart,
   uploads,
   setUploads,
+  intakeSchema,
+  validationErrors,
+  setValidationErrors,
 }) {
   const [noteInputMode, setNoteInputMode] = useState("type");
+
+  const schema = intakeSchema.data;
+  const fileCategories = useMemo(() => {
+    if (!schema?.uploads) return [];
+
+    return Object.entries(schema.uploads)
+      .filter(([key]) => key !== "doctor_note_upload")
+      .reduce((categories, [key, rule]) => {
+        const categoryName = rule.category;
+        const category = categories.find((item) => item.category === categoryName);
+        const field = { key, ...rule };
+        if (category) {
+          category.fields.push(field);
+        } else {
+          categories.push({
+            category: categoryName,
+            icon: CATEGORY_ICONS[categoryName] || IconUpload,
+            fields: [field],
+          });
+        }
+        return categories;
+      }, []);
+  }, [schema]);
+
+  const fileFields = useMemo(
+    () => fileCategories.flatMap((category) => category.fields),
+    [fileCategories]
+  );
+
+  const clearValidationError = (fieldKey) => {
+    setValidationErrors((previous) => {
+      if (!previous[fieldKey]) return previous;
+      const next = { ...previous };
+      delete next[fieldKey];
+      return next;
+    });
+  };
 
   const validateFile = (file, field) => {
     if (!file) return { valid: true };
 
-    if (field.maxSize && file.size > field.maxSize) {
-      const maxSizeMB = (field.maxSize / (1024 * 1024)).toFixed(0);
+    if (field.max_size && file.size > field.max_size) {
+      const maxSizeMB = (field.max_size / (1024 * 1024)).toFixed(0);
       return {
         valid: false,
         error: `File size exceeds ${maxSizeMB}MB limit. Please choose a smaller file.`,
@@ -163,23 +99,14 @@ function DiagnosisIntake({
     }
 
     const fileName = file.name.toLowerCase();
-    const fileType = file.type.toLowerCase();
-
-    const isValidType = field.accept.some((acceptType) => {
-      if (acceptType.startsWith(".")) {
-        return fileName.endsWith(acceptType);
-      }
-      return (
-        fileType === acceptType || fileType.startsWith(acceptType.split("/")[0])
-      );
-    });
+    const isValidType = field.extensions.some((extension) =>
+      fileName.endsWith(extension)
+    );
 
     if (!isValidType) {
       return {
         valid: false,
-        error: `Invalid file type. Accepted formats: ${field.accept.join(
-          ", "
-        )}`,
+        error: `Supported formats: ${field.formats}.`,
       };
     }
 
@@ -187,7 +114,15 @@ function DiagnosisIntake({
   };
 
   const handleFileChange = (fieldKey, file) => {
-    const field = FILE_FIELDS.find((f) => f.key === fieldKey);
+    const field = [
+      ...fileFields,
+      schema?.uploads?.doctor_note_upload && {
+        key: "doctor_note_upload",
+        ...schema.uploads.doctor_note_upload,
+      },
+    ]
+      .filter(Boolean)
+      .find((candidate) => candidate.key === fieldKey);
     if (!field) return;
 
     const validation = validateFile(file, field);
@@ -206,7 +141,16 @@ function DiagnosisIntake({
       ...prev,
       [fieldKey]: file,
     }));
+    clearValidationError(fieldKey);
   };
+
+  if (intakeSchema.loading) {
+    return <Text c="dimmed">Loading intake validation rules…</Text>;
+  }
+
+  if (!schema) {
+    return <Text c="red">{intakeSchema.error || "Intake validation rules are unavailable."}</Text>;
+  }
 
   return (
     <>
@@ -253,10 +197,14 @@ function DiagnosisIntake({
                       radius="lg"
                       placeholder="Enter age"
                       value={age}
-                      onChange={setAge}
-                      min={0}
-                      max={130}
+                      onChange={(value) => {
+                        setAge(value);
+                        clearValidationError("age");
+                      }}
+                      min={schema.age.min}
+                      max={schema.age.max}
                       clampBehavior="strict"
+                      error={validationErrors.age}
                       rightSection={
                         <Text size="xs" c="dimmed">
                           yrs
@@ -275,14 +223,13 @@ function DiagnosisIntake({
                       radius="lg"
                       placeholder="Select"
                       value={sex}
-                      onChange={setSex}
-                      data={[
-                        { value: "MALE", label: "Male" },
-                        { value: "FEMALE", label: "Female" },
-                        { value: "INTERSEX", label: "Intersex" },
-                        { value: "OTHER", label: "Other" },
-                      ]}
+                      onChange={(value) => {
+                        setSex(value || "");
+                        clearValidationError("sex");
+                      }}
+                      data={schema.sex.options}
                       clearable
+                      error={validationErrors.sex}
                       style={{ flex: 1 }}
                     />
                   </Group>
@@ -344,11 +291,14 @@ function DiagnosisIntake({
                         placeholder="Type a short clinical summary..."
                         rows={2}
                         value={doctorNote}
-                        onChange={(event) =>
-                          setDoctorNote(event.currentTarget.value)
-                        }
+                        onChange={(event) => {
+                          setDoctorNote(event.currentTarget.value);
+                          clearValidationError("doctor_note");
+                        }}
                         radius="lg"
+                        maxLength={schema.doctor_note.max_length}
                         style={{ flex: 1 }}
+                        error={validationErrors.doctor_note}
                       />
                     </>
                   ) : (
@@ -359,21 +309,17 @@ function DiagnosisIntake({
                       </Text>
                       <FileInput
                         placeholder="Choose a note file"
-                        accept=".txt"
+                        accept={schema.uploads.doctor_note_upload.extensions.join(",")}
                         value={uploads.doctor_note_upload}
-                        onChange={(value) =>
-                          setUploads((prev) => ({
-                            ...prev,
-                            doctor_note_upload: value,
-                          }))
-                        }
+                        onChange={(value) => handleFileChange("doctor_note_upload", value)}
                         clearable
                         radius="lg"
                         rightSection={<IconUpload size={16} />}
+                        error={validationErrors.doctor_note_upload}
                       />
                       <Box mt="0">
                         <Text size="xs" c="dimmed">
-                          Supported format: .txt • Size limit: not specified
+                          {`Supported format: ${schema.uploads.doctor_note_upload.formats} • Max: ${(schema.uploads.doctor_note_upload.max_size / (1024 * 1024)).toFixed(0)}MB`}
                         </Text>
                       </Box>
                     </>
@@ -391,10 +337,10 @@ function DiagnosisIntake({
                 <ThemeIcon variant="light" color="cyan" size="md" radius="lg">
                   <IconPhoto size={16} />
                 </ThemeIcon>
-                <Text className="card-heading">Imaging and signals</Text>
+                <Text className="card-heading">Imaging evidence</Text>
               </Group>
               <Text size="sm" c="dimmed">
-                Upload imaging or signal files to enrich the analysis.
+                Upload a supported image to enrich the analysis.
               </Text>
             </Stack>
             <Divider />
@@ -404,7 +350,7 @@ function DiagnosisIntake({
               radius="lg"
               className="imaging-accordion"
             >
-              {FILE_CATEGORIES.map((category) => {
+              {fileCategories.map((category) => {
                 const CategoryIcon = category.icon;
                 return (
                   <Accordion.Item
@@ -419,8 +365,8 @@ function DiagnosisIntake({
                     <Accordion.Panel>
                       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
                         {category.fields.map((field) => {
-                          const maxSizeLabel = field.maxSize
-                            ? `Max: ${(field.maxSize / (1024 * 1024)).toFixed(
+                          const maxSizeLabel = field.max_size
+                            ? `Max: ${(field.max_size / (1024 * 1024)).toFixed(
                                 0
                               )}MB`
                             : "No size limit";
@@ -446,17 +392,14 @@ function DiagnosisIntake({
                               </Group>
                               <FileInput
                                 placeholder="Choose a file"
-                                accept={
-                                  Array.isArray(field.accept)
-                                    ? field.accept.join(",")
-                                    : field.accept
-                                }
+                                accept={field.extensions.join(",")}
                                 value={uploads[field.key]}
                                 onChange={(value) =>
                                   handleFileChange(field.key, value)
                                 }
                                 clearable
                                 radius="md"
+                                error={validationErrors[field.key]}
                               />
                               <Text size="xs" c="dimmed" mt={4}>
                                 {`Formats: ${field.formats} • ${maxSizeLabel}`}
@@ -465,12 +408,16 @@ function DiagnosisIntake({
                                 uploads[field.key] && (
                                   <Select
                                     placeholder="Select body part"
-                                    data={FRACTURE_BODY_PART_OPTIONS}
+                                    data={schema.fracture_body_part.options}
                                     value={fractureBodyPart}
-                                    onChange={setFractureBodyPart}
+                                    onChange={(value) => {
+                                      setFractureBodyPart(value || "");
+                                      clearValidationError("fracture_body_part");
+                                    }}
                                     clearable
                                     size="xs"
                                     mt="xs"
+                                    error={validationErrors.fracture_body_part}
                                   />
                                 )}
                             </Box>

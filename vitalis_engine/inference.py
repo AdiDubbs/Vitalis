@@ -1,6 +1,7 @@
 import logging
 import math
 import os
+from collections.abc import Mapping
 import numpy as np
 import torch
 import torch.nn as nn
@@ -19,12 +20,15 @@ try:
     import wfdb
     from scipy import signal
     ECG_OK = True
-except ImportError as e:
+except Exception as e:
     joblib = None
     wfdb = None
     signal = None
     ECG_OK = False
-    logging.warning(f"Optional dependency missing: {e}. ECG features may be disabled.")
+    logger.warning(
+        "ECG support is disabled because its optional dependencies could not be initialized: %s",
+        e,
+    )
 
 
 MODEL_CONFIGS = {
@@ -55,9 +59,20 @@ def _build_model(arch_name, state_dict=None, num_classes=2):
     else:
         raise ValueError(f"Unknown architecture: {arch_name}")
 
-    if state_dict:
-        m.load_state_dict(state_dict, strict=False)
+    if state_dict is not None:
+        m.load_state_dict(state_dict, strict=True)
     return m.eval()
+
+
+def _load_model_state_dict(model_path: str) -> Mapping:
+    """Load a model checkpoint and unwrap training metadata when present."""
+    checkpoint = torch.load(model_path, map_location="cpu", weights_only=True)
+    state_dict = checkpoint.get("state_dict", checkpoint) if isinstance(checkpoint, Mapping) else checkpoint
+
+    if not isinstance(state_dict, Mapping):
+        raise ValueError(f"Model checkpoint at {model_path} does not contain a state dictionary")
+
+    return state_dict
 
 def _import_from_string(path: str):
     try:
@@ -78,8 +93,29 @@ def _apply_bump(model_logits, evidence, dx: str, bump: float, source: str, **met
         evidence["contributions"].append(
             Contribution(feature_id=source, source="model", dx=dx, contribution=clamped_bump))
 
+
+def _record_upload_result(evidence, model_type, status, message, contributed=False):
+    """Keep a user-safe outcome for every supplied model input."""
+    evidence["upload_results"].append({
+        "model_type": model_type,
+        "status": status,
+        "contributed": contributed,
+        "message": message,
+    })
+
 def _run_imaging_model(path, key, dx_map, artifacts, model_logits, evidence):
-    if not IMAGING_OK or not path or not os.path.exists(path) or key not in artifacts: return
+    if not path:
+        return
+    if not IMAGING_OK:
+        _record_upload_result(
+            evidence, key, "failed", "Image analysis is unavailable in this runtime."
+        )
+        return
+    if not os.path.exists(path) or key not in artifacts:
+        _record_upload_result(
+            evidence, key, "failed", "This uploaded image could not be prepared for analysis."
+        )
+        return
     try:
         logger.info(f"[{key}] Processing image: {path}")
         info = artifacts[key]
@@ -94,19 +130,28 @@ def _run_imaging_model(path, key, dx_map, artifacts, model_logits, evidence):
             cfg = MODEL_CONFIGS[config_key]
             model = _build_model(
                 cfg["arch"],
-                state_dict=torch.load(model_path, map_location="cpu"),
+                state_dict=_load_model_state_dict(model_path),
                 num_classes=len(info.get("labels", []))
             )
         else:
             # Legacy support for direct factory imports
             factory = _import_from_string(info["factory"])
             model = factory(
-                state_dict=torch.load(model_path, map_location="cpu"),
+                state_dict=_load_model_state_dict(model_path),
                 num_classes=len(info.get("labels", []))
             )
         
-        tfm = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor(),
-                                  transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
+        input_size = info.get("input_size", 224)
+        transform_steps = [transforms.Resize((input_size, input_size)), transforms.ToTensor()]
+        normalization = info.get(
+            "normalization",
+            {"mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]},
+        )
+        if normalization is not None:
+            transform_steps.append(
+                transforms.Normalize(normalization["mean"], normalization["std"])
+            )
+        tfm = transforms.Compose(transform_steps)
         img = Image.open(path).convert("RGB")
         with torch.no_grad():
             logits = model(tfm(img).unsqueeze(0))
@@ -124,7 +169,6 @@ def _run_imaging_model(path, key, dx_map, artifacts, model_logits, evidence):
 
         model_output = {
             "model_type": key,
-            "file_path": path,
             "raw_probabilities": {k: float(v) for k, v in pmap.items()},
             "confidence": float(conf),
             "diagnoses": []
@@ -157,13 +201,35 @@ def _run_imaging_model(path, key, dx_map, artifacts, model_logits, evidence):
             _apply_bump(model_logits, evidence, dx, bump, f"{key}:model")
 
         evidence["model_outputs"].append(model_output)
+        if model_output["diagnoses"]:
+            _record_upload_result(
+                evidence, key, "analyzed", "Image analysis contributed to the ranked results.", True
+            )
+        else:
+            _record_upload_result(
+                evidence, key, "analyzed", "Image analysis completed, but did not change the ranked results."
+            )
     except Exception as e:
         logger.error(f"[{key}] Error: {e}")
         evidence["notes"].append(f"[{key}] Error: {e}")
+        _record_upload_result(
+            evidence, key, "failed", "This uploaded image could not be analyzed. Try a clear PNG or JPG."
+        )
 
 
 def _run_ecg_model(path, key, dx_map, artifacts, model_logits, evidence):
-    if not ECG_OK or not path or not os.path.exists(path) or key not in artifacts or not wfdb or not joblib: return
+    if not path:
+        return
+    if not ECG_OK or not wfdb or not joblib:
+        _record_upload_result(
+            evidence, key, "failed", "ECG analysis is unavailable in this runtime."
+        )
+        return
+    if not os.path.exists(path) or key not in artifacts:
+        _record_upload_result(
+            evidence, key, "failed", "This ECG upload could not be prepared for analysis."
+        )
+        return
     try:
         logger.info(f"[{key}] Processing ECG: {path}")
         model_path = artifacts[key]["path"]
@@ -198,7 +264,6 @@ def _run_ecg_model(path, key, dx_map, artifacts, model_logits, evidence):
         # Store model output details
         model_output = {
             "model_type": key,
-            "file_path": path,
             "raw_probabilities": {str(k): float(v) for k, v in pmap.items()},
             "confidence": float(conf),
             "diagnoses": []
@@ -223,9 +288,20 @@ def _run_ecg_model(path, key, dx_map, artifacts, model_logits, evidence):
                     _apply_bump(model_logits, evidence, dx, bump, f"{key}:model")
 
         evidence["model_outputs"].append(model_output)
+        if model_output["diagnoses"]:
+            _record_upload_result(
+                evidence, key, "analyzed", "ECG analysis contributed to the ranked results.", True
+            )
+        else:
+            _record_upload_result(
+                evidence, key, "analyzed", "ECG analysis completed, but did not change the ranked results."
+            )
     except Exception as e:
         logger.error(f"[{key}] Error: {e}")
         evidence["notes"].append(f"[{key}] Error: {e}")
+        _record_upload_result(
+            evidence, key, "failed", "This ECG upload could not be analyzed."
+        )
 
 
 def build_model_logits(
@@ -235,7 +311,13 @@ def build_model_logits(
     **kwargs,
 ):
     model_logits = {dx: 0.0 for dx in dx_list}
-    evidence = {"applied": [], "notes": [], "contributions": [], "model_outputs": []}
+    evidence = {
+        "applied": [],
+        "notes": [],
+        "contributions": [],
+        "model_outputs": [],
+        "upload_results": [],
+    }
     fracture_dx_map = {
         "hand_wrist": ["WRIST_SCAPHOID_FRACTURE"],
         "ankle_foot": ["ANKLE_FRACTURE"],
@@ -244,15 +326,10 @@ def build_model_logits(
     fracture_dx_targets = fracture_dx_map.get(fracture_body_part)
     dx_maps = {
         "imaging_xray": {"PNEUMONIA": "PNEUMONIA"},
-        "imaging_mri": {
-            "glioma_tumor": "BRAIN_TUMOR",
-            "meningioma_tumor": "BRAIN_TUMOR",
-            "pituitary_tumor": "BRAIN_TUMOR"
-        },
+        "imaging_mri": {"BRAIN_TUMOR": "BRAIN_TUMOR"},
         "imaging_skin": {
             "mel": "MELANOMA",
             "bcc": "BASAL_CELL_CARCINOMA",
-            "akiec": "BENIGN_SKIN_LESION",
             "bkl": "BENIGN_SKIN_LESION",
             "df": "BENIGN_SKIN_LESION",
             "nv": "BENIGN_SKIN_LESION",

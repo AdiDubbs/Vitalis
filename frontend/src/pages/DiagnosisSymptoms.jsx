@@ -123,6 +123,9 @@ function DiagnosisSymptoms({
   setSubmitHandler,
   setIsSubmitting,
   activeCategory,
+  intakeSchema,
+  validationErrors,
+  setValidationErrors,
 }) {
   const navigate = useNavigate();
   const activeCategoryDescription = activeCategory
@@ -304,6 +307,12 @@ function DiagnosisSymptoms({
   }, [allSymptomsByBucket, activeCategory]);
 
   const handleSymptomToggle = (symptomId) => {
+    setValidationErrors((previous) => {
+      if (!previous.symptoms) return previous;
+      const next = { ...previous };
+      delete next.symptoms;
+      return next;
+    });
     setSelectedSymptoms((prev) => {
       const next = new Set(prev);
       if (next.has(symptomId)) {
@@ -325,6 +334,45 @@ function DiagnosisSymptoms({
   };
 
   const performSubmit = async () => {
+    if (!intakeSchema.data) {
+      setSubmit({
+        loading: false,
+        error: "Intake validation rules are unavailable. Refresh and try again.",
+      });
+      return;
+    }
+
+    const errors = {};
+    const schema = intakeSchema.data;
+    if (age !== "" && age !== null) {
+      const parsedAge = Number(age);
+      if (!Number.isInteger(parsedAge) || parsedAge < schema.age.min || parsedAge > schema.age.max) {
+        errors.age = `Age must be between ${schema.age.min} and ${schema.age.max}.`;
+      }
+    }
+    if (sex && !schema.sex.options.some((option) => option.value === sex)) {
+      errors.sex = "Select either Male or Female.";
+    }
+    if (selectedSymptoms.size > schema.symptoms.max_items) {
+      errors.symptoms = `Select at most ${schema.symptoms.max_items} symptoms.`;
+    }
+    if (doctorNote.length > schema.doctor_note.max_length) {
+      errors.doctor_note = `Clinical notes must be at most ${schema.doctor_note.max_length} characters.`;
+    }
+    if (uploads.upload_fracture && !fractureBodyPart) {
+      errors.fracture_body_part = "Select the body part shown in the fracture image.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      setSubmit({
+        loading: false,
+        error: "Please correct the highlighted fields before running analysis.",
+      });
+      return;
+    }
+
+    setValidationErrors({});
     setSubmit({ loading: true, error: "" });
     setIsSubmitting(true);
     try {
@@ -358,6 +406,9 @@ function DiagnosisSymptoms({
 
       const data = await response.json();
       if (!response.ok || data.status !== "success") {
+        if (data.errors) {
+          setValidationErrors(data.errors);
+        }
         throw new Error(data.message || "Submission failed.");
       }
 
@@ -413,6 +464,16 @@ function DiagnosisSymptoms({
                 </Text>
               </Stack>
                 <Divider />
+
+                {validationErrors.symptoms && (
+                  <Alert
+                    icon={<IconAlertCircle size={16} />}
+                    color="red"
+                    title="Symptom selection needs attention"
+                  >
+                    {validationErrors.symptoms}
+                  </Alert>
+                )}
 
                 <TextInput
                   placeholder="Search symptoms"

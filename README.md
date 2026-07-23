@@ -61,8 +61,8 @@ Vitalis is a multi-modal diagnostic engine that combines clinical notes, lab res
 ## Installation & Setup
 
 ### Prerequisites
-- **Python 3.10+** (3.13 recommended)
-- **Node.js 18+** and npm
+- **Python 3.12** (the pinned runtime was verified with 3.12)
+- **Node.js 20.19+** or **22.12+**, plus npm 10+
 
 ### 1. Clone the Repository
 ```bash
@@ -80,7 +80,8 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 Install Python dependencies:
 ```bash
-pip install -r requirements.txt
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 ```
 
 Download spaCy language model:
@@ -93,7 +94,7 @@ python -m spacy download en_core_web_sm
 Navigate to the frontend directory and install dependencies:
 ```bash
 cd frontend
-npm install
+npm ci
 ```
 
 Build the frontend for production:

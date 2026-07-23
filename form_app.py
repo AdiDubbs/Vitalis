@@ -1,23 +1,180 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, session
 import json
 import os
+import shutil
 import yaml
 from pathlib import Path
+from typing import Any, Dict, List, Tuple
+from uuid import UUID, uuid4
 from werkzeug.utils import secure_filename
 
 from vitalis_engine import load_confidence_map, load_symptom_tree, load_primary_to_branches, get_follow_up_symptoms, extract_features_from_note, \
     spacy, run_case, load_disease_database
 
-UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'dat', 'pdf', 'txt'}
+BASE_DIR = Path(__file__).resolve().parent
+CASE_STORAGE_ROOT = BASE_DIR / "cases"
+SESSION_CASE_LIMIT = 20
 
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-if not os.path.exists('cases'):
-    os.makedirs('cases')
+INTAKE_SCHEMA = {
+    "age": {"min": 0, "max": 120},
+    "sex": {
+        "options": [
+            {"value": "MALE", "label": "Male"},
+            {"value": "FEMALE", "label": "Female"},
+        ]
+    },
+    "symptoms": {"max_items": 50},
+    "doctor_note": {"max_length": 10000},
+    "uploads": {
+        "doctor_note_upload": {
+            "label": "Clinical note or transcript",
+            "category": "Medical history",
+            "extensions": [".txt"],
+            "formats": "TXT",
+            "max_size": 1024 * 1024,
+        },
+        "upload_image": {
+            "label": "Chest X-Ray",
+            "category": "Radiology",
+            "extensions": [".png", ".jpg", ".jpeg"],
+            "formats": "PNG, JPG",
+            "max_size": 50 * 1024 * 1024,
+        },
+        "upload_mri": {
+            "label": "Brain MRI",
+            "category": "Radiology",
+            "extensions": [".png", ".jpg", ".jpeg"],
+            "formats": "PNG, JPG",
+            "max_size": 50 * 1024 * 1024,
+        },
+        "upload_fracture": {
+            "label": "Fracture Image",
+            "category": "Radiology",
+            "extensions": [".png", ".jpg", ".jpeg"],
+            "formats": "PNG, JPG",
+            "max_size": 50 * 1024 * 1024,
+        },
+        "upload_breast": {
+            "label": "Breast Image",
+            "category": "Radiology",
+            "extensions": [".png", ".jpg", ".jpeg"],
+            "formats": "PNG, JPG",
+            "max_size": 50 * 1024 * 1024,
+        },
+        "upload_skin": {
+            "label": "Skin Image",
+            "category": "Dermatology",
+            "extensions": [".png", ".jpg", ".jpeg"],
+            "formats": "PNG, JPG",
+            "max_size": 20 * 1024 * 1024,
+        },
+    },
+    "fracture_body_part": {
+        "options": [
+            {"value": "hand_wrist", "label": "Hand / Wrist"},
+            {"value": "ankle_foot", "label": "Ankle / Foot"},
+            {"value": "tibia_fibula", "label": "Tibia / Fibula"},
+        ]
+    },
+}
+
+FILE_MAPPING = {
+    'upload_image': 'upload_image',
+    'upload_mri': 'upload_mri',
+    'upload_skin': 'upload_skin_image',
+    'upload_fracture': 'upload_fracture_image',
+    'upload_breast': 'upload_breast_image',
+}
 
 app = Flask(__name__, static_folder="frontend/dist", static_url_path="")
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config.update(
+    CASE_STORAGE_ROOT=CASE_STORAGE_ROOT,
+    # A deployment must provide a stable secret so existing signed sessions survive restarts.
+    SECRET_KEY=os.environ.get("VITALIS_SESSION_SECRET") or os.urandom(32),
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.environ.get("VITALIS_COOKIE_SECURE", "").lower() == "true",
+)
+
+
+def _create_case_directory() -> Tuple[str, Path]:
+    """Create a private, unguessable directory for a single in-flight case."""
+    case_id = str(uuid4())
+    case_root = Path(app.config["CASE_STORAGE_ROOT"])
+    case_root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    case_root.chmod(0o700)
+
+    case_dir = case_root / case_id
+    case_dir.mkdir(mode=0o700)
+    case_dir.chmod(0o700)
+    return case_id, case_dir
+
+
+def _write_case_result(case_dir: Path, case_data: Dict[str, Any]) -> None:
+    """Persist the minimum result payload with owner-only filesystem permissions."""
+    result_path = case_dir / "result.json"
+    descriptor = os.open(result_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(descriptor, "w", encoding="utf-8") as result_file:
+        json.dump(case_data, result_file, indent=2)
+
+
+def _grant_case_access(case_id: str) -> None:
+    """Bind saved-case retrieval to the browser session that created the case."""
+    case_ids = [saved_id for saved_id in session.get("case_ids", []) if saved_id != case_id]
+    session["case_ids"] = (case_ids + [case_id])[-SESSION_CASE_LIMIT:]
+
+
+def _private_json(payload: Dict[str, Any], status: int = 200):
+    response = jsonify(payload)
+    response.status_code = status
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+def _health_checks() -> Dict[str, Any]:
+    """Verify the files required for the currently exposed intake flow."""
+    config_paths = [
+        BASE_DIR / "configs" / "system.yaml",
+        BASE_DIR / "configs" / "diseases.yaml",
+        BASE_DIR / "configs" / "confidence_map.yaml",
+        BASE_DIR / "configs" / "symptom_tree_expanded.yaml",
+        BASE_DIR / "configs" / "primary_to_branches.yaml",
+    ]
+    missing_config = [str(path.relative_to(BASE_DIR)) for path in config_paths if not path.is_file()]
+
+    manifest_path = BASE_DIR / "models" / "manifest.json"
+    required_artifact_keys = {
+        "imaging_xray",
+        "imaging_mri",
+        "imaging_skin",
+        "imaging_fracture",
+        "imaging_breast_cancer",
+    }
+    missing_artifact_keys = []
+    missing_model_files = []
+    manifest_ok = manifest_path.is_file()
+    if manifest_ok:
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            artifacts = manifest.get("artifacts", {})
+            missing_artifact_keys = sorted(required_artifact_keys - set(artifacts))
+            missing_model_files = sorted(
+                artifact["path"]
+                for key, artifact in artifacts.items()
+                if key in required_artifact_keys
+                and (not artifact.get("path") or not (BASE_DIR / artifact["path"]).is_file())
+            )
+        except (OSError, json.JSONDecodeError):
+            manifest_ok = False
+
+    return {
+        "configuration": {"ok": not missing_config, "missing": missing_config},
+        "model_manifest": {
+            "ok": manifest_ok and not missing_artifact_keys,
+            "missing_artifacts": missing_artifact_keys,
+        },
+        "model_files": {"ok": not missing_model_files, "missing": missing_model_files},
+    }
 
 
 def frontend_ready():
@@ -26,8 +183,161 @@ def frontend_ready():
     return (Path(app.static_folder) / "index.html").exists()
 
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+@app.route('/api/health', methods=['GET'])
+def health_route():
+    """Report whether the current backend can serve supported intake modes."""
+    checks = _health_checks()
+    is_healthy = all(check["ok"] for check in checks.values())
+    status_code = 200 if is_healthy else 503
+    return jsonify({
+        "status": "ok" if is_healthy else "unhealthy",
+        "checks": checks,
+    }), status_code
+
+
+def _file_size(file_storage) -> int:
+    """Return a stream's size without consuming it for a later save."""
+    stream = file_storage.stream
+    current_position = stream.tell()
+    stream.seek(0, os.SEEK_END)
+    size = stream.tell()
+    stream.seek(current_position)
+    return size
+
+
+def _known_symptom_ids() -> set:
+    symptom_data = load_symptoms_from_tree()
+    symptom_ids = {
+        symptom["id"]
+        for symptoms in symptom_data.get("buckets", {}).values()
+        for symptom in symptoms
+        if symptom.get("id")
+    }
+    symptom_ids.update(
+        symptom["id"]
+        for symptom in symptom_data.get("redFlags", [])
+        if symptom.get("id")
+    )
+    return symptom_ids
+
+
+def _validate_submission(form_data, files) -> Tuple[Dict[str, Any], Dict[str, str]]:
+    """Validate all request inputs before writing uploads or running inference."""
+    errors: Dict[str, str] = {}
+
+    raw_age = (form_data.get("age") or "").strip()
+    age = None
+    if raw_age:
+        try:
+            age = int(raw_age)
+        except ValueError:
+            errors["age"] = "Age must be a whole number."
+        else:
+            age_rules = INTAKE_SCHEMA["age"]
+            if not age_rules["min"] <= age <= age_rules["max"]:
+                errors["age"] = (
+                    f"Age must be between {age_rules['min']} and {age_rules['max']}."
+                )
+
+    sex = (form_data.get("sex") or "").strip()
+    allowed_sex = {option["value"] for option in INTAKE_SCHEMA["sex"]["options"]}
+    if sex and sex not in allowed_sex:
+        errors["sex"] = "Select either Male or Female."
+
+    raw_symptoms = form_data.get("symptoms")
+    symptoms: List[str] = []
+    if raw_symptoms is None:
+        errors["symptoms"] = "Symptoms must be provided as a list."
+    else:
+        try:
+            parsed_symptoms = json.loads(raw_symptoms)
+        except json.JSONDecodeError:
+            errors["symptoms"] = "Symptoms must be a valid JSON list."
+        else:
+            if not isinstance(parsed_symptoms, list) or not all(
+                isinstance(symptom, str) and symptom for symptom in parsed_symptoms
+            ):
+                errors["symptoms"] = "Symptoms must be a list of symptom identifiers."
+            elif len(parsed_symptoms) > INTAKE_SCHEMA["symptoms"]["max_items"]:
+                errors["symptoms"] = (
+                    f"Select at most {INTAKE_SCHEMA['symptoms']['max_items']} symptoms."
+                )
+            elif len(parsed_symptoms) != len(set(parsed_symptoms)):
+                errors["symptoms"] = "Each symptom may only be selected once."
+            else:
+                unknown_symptoms = sorted(set(parsed_symptoms) - _known_symptom_ids())
+                if unknown_symptoms:
+                    errors["symptoms"] = "One or more selected symptoms are not recognized."
+                else:
+                    symptoms = parsed_symptoms
+
+    doctor_note = form_data.get("doctor_note") or ""
+    if len(doctor_note) > INTAKE_SCHEMA["doctor_note"]["max_length"]:
+        errors["doctor_note"] = (
+            f"Clinical notes must be at most {INTAKE_SCHEMA['doctor_note']['max_length']} characters."
+        )
+
+    validated_files = {}
+    upload_rules = INTAKE_SCHEMA["uploads"]
+    for field_name in files:
+        field_files = files.getlist(field_name)
+        if field_name not in upload_rules:
+            errors[field_name] = "This upload field is not supported."
+            continue
+        if len(field_files) != 1:
+            errors[field_name] = "Upload exactly one file for this field."
+            continue
+
+        uploaded_file = field_files[0]
+        filename = secure_filename(uploaded_file.filename or "")
+        if not filename:
+            errors[field_name] = "Choose a file to upload."
+            continue
+
+        rule = upload_rules[field_name]
+        extension = Path(filename).suffix.lower()
+        if extension not in rule["extensions"]:
+            errors[field_name] = f"Supported formats: {rule['formats']}."
+            continue
+
+        if _file_size(uploaded_file) > rule["max_size"]:
+            max_size_mb = rule["max_size"] // (1024 * 1024)
+            errors[field_name] = f"File must be no larger than {max_size_mb}MB."
+            continue
+
+        if field_name == "doctor_note_upload":
+            try:
+                uploaded_file.stream.seek(0)
+                uploaded_file.stream.read().decode("utf-8")
+            except UnicodeDecodeError:
+                errors[field_name] = "Clinical note files must use UTF-8 text."
+                continue
+            finally:
+                uploaded_file.stream.seek(0)
+
+        validated_files[field_name] = uploaded_file
+
+    fracture_body_part = (form_data.get("fracture_body_part") or "").strip()
+    allowed_body_parts = {
+        option["value"]
+        for option in INTAKE_SCHEMA["fracture_body_part"]["options"]
+    }
+    has_fracture_upload = "upload_fracture" in validated_files
+    if fracture_body_part and fracture_body_part not in allowed_body_parts:
+        errors["fracture_body_part"] = "Select a supported fracture body part."
+    elif fracture_body_part and not has_fracture_upload:
+        errors["fracture_body_part"] = "Upload a fracture image before selecting a body part."
+    elif has_fracture_upload and not fracture_body_part:
+        errors["fracture_body_part"] = "Select the body part shown in the fracture image."
+
+    return {
+        "age": age,
+        "sex": sex or None,
+        "symptoms": symptoms,
+        "doctor_note": doctor_note,
+        "fracture_body_part": fracture_body_part or None,
+        "files": validated_files,
+    }, errors
 
 
 def load_symptoms_from_tree():
@@ -174,6 +484,12 @@ def symptoms_route():
     return jsonify(load_symptoms_from_tree())
 
 
+@app.route('/api/intake-schema', methods=['GET'])
+def intake_schema_route():
+    """Expose the server-owned intake contract for the React client."""
+    return jsonify(INTAKE_SCHEMA)
+
+
 @app.route('/api/diseases', methods=['GET'])
 def diseases_route():
     """API endpoint to get the list of diseases with their full names."""
@@ -214,61 +530,48 @@ def get_follow_ups_route():
 def submit():
     form_data = request.form
     files = request.files
-    fracture_body_part = form_data.get("fracture_body_part") or None
 
-    uploaded_files = {}
-    note_text_from_file = ""
+    validated_submission, errors = _validate_submission(form_data, files)
+    if errors:
+        return jsonify({
+            "status": "error",
+            "message": "Please correct the highlighted fields.",
+            "errors": errors,
+        }), 400
 
-    file_mapping = {
-        'upload_image': 'upload_image',
-        'upload_mri': 'upload_mri',
-        'upload_ecg': 'upload_ecg',
-        'upload_skin': 'upload_skin_image',
-        'upload_fracture': 'upload_fracture_image',
-        'upload_breast': 'upload_breast_image'
-    }
-    
-    run_case_files = {}
+    case_id, case_dir = _create_case_directory()
+    working_dir = case_dir / "inference-inputs"
+    try:
+        # Uploaded files are isolated per case and exist only while inference is running.
+        # They are deliberately not kept in the saved result record.
+        working_dir.mkdir(mode=0o700)
+        working_dir.chmod(0o700)
 
-    for key, file in files.items():
-        if file and file.filename and allowed_file(file.filename):
+        fracture_body_part = validated_submission["fracture_body_part"]
+        note_text_from_file = ""
+        run_case_files = {}
+        for key, file in validated_submission["files"].items():
             filename = secure_filename(file.filename)
-            save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            save_path = working_dir / f"{key}{Path(filename).suffix.lower()}"
             file.save(save_path)
-            uploaded_files[key] = save_path
 
-            if key == 'doctor_note_upload' and filename.endswith('.txt'):
-                with open(save_path, 'r') as f:
-                    note_text_from_file = f.read()
+            if key == "doctor_note_upload":
+                note_text_from_file = save_path.read_text(encoding="utf-8")
 
-            if key in file_mapping:
-                run_case_files[file_mapping[key]] = save_path
+            if key in FILE_MAPPING:
+                run_case_files[FILE_MAPPING[key]] = str(save_path)
 
-    app.logger.info(f"Form data keys received: {list(form_data.keys())}")
-
-    symptom_list = []
-    try:
-        symptoms_json = form_data.get('symptoms', '[]')
-        symptom_list = json.loads(symptoms_json)
-        features = {s_id: True for s_id in symptom_list}
-    except json.JSONDecodeError:
-        app.logger.error("Failed to parse symptoms JSON")
-        features = {}
-        
-    app.logger.info(f"Extracted features: {list(features.keys())}")
-
-    typed_note = form_data.get('doctor_note', '')
-
-    combined_note = typed_note + "\n" + note_text_from_file
-
-    try:
-        age_val = int(form_data.get('age')) if form_data.get('age') else None
+        symptom_list = validated_submission["symptoms"]
+        features = {symptom_id: True for symptom_id in symptom_list}
+        typed_note = validated_submission["doctor_note"]
+        combined_note = typed_note + "\n" + note_text_from_file
+        age_val = validated_submission["age"]
 
         analysis_result = run_case(
             features=features,
             doctor_note=combined_note,
             age=age_val,
-            sex=form_data.get('sex'),
+            sex=validated_submission["sex"],
             fracture_body_part=fracture_body_part,
             **run_case_files
         )
@@ -294,39 +597,41 @@ def submit():
             "status": "success",
             "analysis": analysis_result,
             "summary": summary,
-            "case_id": f"case_{form_data.get('age')}_{form_data.get('sex')}_{len(os.listdir('cases')) + 1}"
+            "case_id": case_id,
         }
-        
-        case_filename = f"cases/{response['case_id']}.json"
-        with open(case_filename, 'w') as f:
-            serializable_data = {
-                "case_id": response["case_id"],
-                "demographics": {"age": age_val, "sex": form_data.get('sex')},
-                "features": features,
-                "selected_symptoms": symptom_list,
-                "doctor_note_provided": bool(combined_note.strip()),
-                "doctor_note": combined_note,
-                "attachments": uploaded_files,
-                "fracture_body_part": fracture_body_part,
-                "analysis_summary": analysis_result['fused_probabilities'],
-                "analysis": analysis_result
-            }
-            json.dump(serializable_data, f, indent=2)
 
-        return jsonify(response)
+        # Do not persist raw clinical notes, original filenames, upload paths, or attachments.
+        _write_case_result(case_dir, {
+            "case_id": case_id,
+            "demographics": {"age": age_val, "sex": validated_submission["sex"]},
+            "selected_symptoms": symptom_list,
+            "doctor_note_provided": bool(combined_note.strip()),
+            "analysis": analysis_result,
+        })
+        _grant_case_access(case_id)
+        return _private_json(response)
 
     except Exception as e:
         app.logger.error(f"Analysis failed: {e}")
-        return jsonify({"status": "error", "message": str(e)}), 500
+        # A failed request must not leave sensitive inputs or partial results behind.
+        shutil.rmtree(case_dir, ignore_errors=True)
+        return jsonify({"status": "error", "message": "Analysis could not be completed."}), 500
+    finally:
+        shutil.rmtree(working_dir, ignore_errors=True)
 
 
 @app.route('/api/cases/<case_id>', methods=['GET'])
 def get_case(case_id):
-    safe_case_id = secure_filename(case_id)
-    if not safe_case_id:
+    try:
+        UUID(case_id)
+    except (ValueError, TypeError):
         return jsonify({"status": "error", "message": "Invalid case ID."}), 400
 
-    case_filename = Path("cases") / f"{safe_case_id}.json"
+    if case_id not in session.get("case_ids", []):
+        # Return the same response as a missing record to avoid revealing whether it exists.
+        return jsonify({"status": "error", "message": "Case not found."}), 404
+
+    case_filename = Path(app.config["CASE_STORAGE_ROOT"]) / case_id / "result.json"
     if not case_filename.exists():
         return jsonify({"status": "error", "message": "Case not found."}), 404
 
@@ -338,11 +643,11 @@ def get_case(case_id):
         return jsonify({"status": "error", "message": "Failed to load case data."}), 500
 
     demographics = case_data.get("demographics", {})
-    return jsonify({
+    return _private_json({
         "status": "success",
-        "case_id": case_data.get("case_id", safe_case_id),
+        "case_id": case_data.get("case_id", case_id),
         "analysis": case_data.get("analysis"),
-        "selected_symptoms": case_data.get("selected_symptoms", list(case_data.get("features", {}).keys())),
+        "selected_symptoms": case_data.get("selected_symptoms", []),
         "doctor_note_provided": bool(case_data.get("doctor_note_provided")),
         "age": demographics.get("age"),
         "sex": demographics.get("sex")
