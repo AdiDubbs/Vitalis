@@ -184,46 +184,49 @@ function Overview() {
             <h2 className="v-headline">Inference pipeline</h2>
             <p className="v-lede">
               End-to-end flow from unstructured intake to ranked clinical
-              evidence.
+              evidence. Pick a stage to see what happens inside it.
             </p>
           </header>
 
-          <div className="v-steps" role="tablist" aria-label="Pipeline stages">
-            {PIPELINE_STEPS.map((item, index) => (
-              <button
-                type="button"
-                role="tab"
-                key={item.title}
-                className="v-step"
-                data-active={index === activeStep || undefined}
-                aria-selected={index === activeStep}
-                onClick={() => setActiveStep(index)}
-              >
-                <span className="v-step-index" aria-hidden="true">
-                  {index + 1}
-                </span>
-                <span className="v-step-name">{item.title}</span>
-              </button>
-            ))}
-          </div>
-
-          <div className="v-card overview-pipeline-detail">
-            <div className="overview-detail-head">
-              <div>
-                <span className="v-kicker">Step {activeStep + 1}</span>
-                <h3 className="v-title">{step.heading}</h3>
-              </div>
+          <div className="overview-pipeline">
+            <div
+              className="overview-stage-list"
+              role="tablist"
+              aria-label="Pipeline stages"
+            >
+              {PIPELINE_STEPS.map((item, index) => (
+                <button
+                  type="button"
+                  role="tab"
+                  key={item.title}
+                  className="overview-stage"
+                  data-active={index === activeStep || undefined}
+                  aria-selected={index === activeStep}
+                  onClick={() => setActiveStep(index)}
+                >
+                  <span className="v-rail-dot">{index + 1}</span>
+                  <span className="overview-stage-text">
+                    <strong>{item.title}</strong>
+                    <small>{item.heading}</small>
+                  </span>
+                </button>
+              ))}
             </div>
-            <p className="v-body overview-detail-summary">{step.summary}</p>
 
-            <div className="overview-detail-grid">
-              <div className="v-card--inset">
-                <span className="v-kicker">Logic &amp; mechanism</span>
-                <p className="v-mono v-body">{step.mechanism}</p>
-              </div>
-              <div className="v-card--inset">
-                <span className="v-kicker">Input / output</span>
-                <p className="v-mono v-body">{step.example}</p>
+            <div className="v-card overview-stage-detail">
+              <span className="v-kicker">Stage {activeStep + 1}</span>
+              <h3 className="v-title overview-stage-title">{step.heading}</h3>
+              <p className="v-body overview-detail-summary">{step.summary}</p>
+
+              <div className="overview-detail-grid">
+                <div className="v-card--inset">
+                  <span className="v-kicker">Logic &amp; mechanism</span>
+                  <p className="v-mono v-body">{step.mechanism}</p>
+                </div>
+                <div className="v-card--inset">
+                  <span className="v-kicker">Input / output</span>
+                  <p className="v-mono v-body">{step.example}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -243,57 +246,74 @@ function Overview() {
             </p>
           </header>
 
-          <div className="overview-columns">
-            <div>
-              <div className="v-section-label">
-                <span>
-                  <IconBrain size={14} aria-hidden="true" /> Active models
-                </span>
-                <span>{ACTIVE_MODELS.length}</span>
-              </div>
-              {ACTIVE_MODELS.map((model) => (
-                <article className="overview-entry" key={model.name}>
-                  <div className="overview-entry-head">
-                    <strong>{model.name}</strong>
-                    <span className="v-chip v-chip--sage">{model.target}</span>
-                  </div>
-                  <div className="overview-entry-meta">
-                    <span className="v-chip v-chip--mono">{model.type}</span>
-                    <span className="v-chip">{model.dataset}</span>
-                  </div>
-                  <p className="v-body overview-entry-note">
-                    {model.description}
-                  </p>
-                </article>
-              ))}
-            </div>
+          <div className="v-section-label">
+            <span>
+              <IconBrain size={14} aria-hidden="true" /> Active models
+            </span>
+            <span>{ACTIVE_MODELS.length}</span>
+          </div>
 
-            <div>
-              <div className="v-section-label">
-                <span>
-                  <IconDeviceLaptop size={14} aria-hidden="true" /> Tech stack
-                </span>
-                <span>{TECH_STACK.length}</span>
-              </div>
-              {TECH_STACK.map((group) => (
-                <article className="overview-entry" key={group.category}>
-                  <div className="overview-entry-head">
-                    <strong>{group.category}</strong>
-                  </div>
-                  <div className="overview-entry-meta">
+          <div className="v-table-wrap overview-models">
+            <table className="v-table">
+              <thead>
+                <tr>
+                  <th scope="col">Model</th>
+                  <th scope="col">Target</th>
+                  <th scope="col">Architecture</th>
+                  <th scope="col">Training data</th>
+                  <th scope="col" className="overview-col-note">
+                    What it contributes
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {ACTIVE_MODELS.map((model) => (
+                  <tr key={model.name}>
+                    <td>
+                      <strong>{model.name}</strong>
+                    </td>
+                    <td>
+                      <span className="v-chip v-chip--sage">
+                        {model.target}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="v-chip v-chip--mono">{model.type}</span>
+                    </td>
+                    <td>{model.dataset}</td>
+                    <td className="overview-col-note">{model.description}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="v-section-label overview-stack-label">
+            <span>
+              <IconDeviceLaptop size={14} aria-hidden="true" /> Tech stack
+            </span>
+            <span>{TECH_STACK.length}</span>
+          </div>
+
+          <dl className="overview-stack">
+            {TECH_STACK.map((group) => (
+              <div key={group.category}>
+                <dt>{group.category}</dt>
+                <dd>
+                  <div className="v-chips overview-stack-chips">
                     {group.items.map((item) => (
                       <span className="v-chip" key={item}>
                         {item}
                       </span>
                     ))}
                   </div>
-                  <p className="v-body overview-entry-note">
+                  <p className="v-body overview-stack-note">
                     {group.description}
                   </p>
-                </article>
-              ))}
-            </div>
-          </div>
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
     </div>

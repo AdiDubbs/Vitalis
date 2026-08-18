@@ -516,6 +516,183 @@ button.v-step {
   letter-spacing: -0.01em;
 }
 
+/* ---------- Connected rail ----------
+ * The wizard's signature progress device: numbered nodes joined by a hairline.
+ * Reused wherever the app describes an ordered journey.
+ */
+
+.v-rail {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.v-rail-node {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.v-rail-node:last-child {
+  flex: 0 0 auto;
+}
+
+.v-rail-dot {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  color: var(--ink-muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.v-rail-node[data-active] .v-rail-dot {
+  border-color: var(--sage);
+  background: var(--sage);
+  color: var(--bg);
+  box-shadow: 0 0 0 5px rgba(138, 186, 178, 0.08);
+}
+
+.v-rail-label {
+  margin-left: 10px;
+  color: var(--ink-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.v-rail-node[data-active] .v-rail-label {
+  color: var(--sage);
+}
+
+.v-rail-line {
+  flex: 1;
+  min-width: 20px;
+  height: 1px;
+  margin: 0 16px;
+  background: linear-gradient(
+    90deg,
+    rgba(138, 186, 178, 0.22),
+    var(--line-strong)
+  );
+}
+
+/* ---------- Spec table ----------
+ * For dense, comparable records that read badly as a wall of cards.
+ */
+
+.v-table-wrap {
+  overflow-x: auto;
+}
+
+.v-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.v-table th {
+  padding: 0 16px 12px;
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.v-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-muted);
+  vertical-align: top;
+}
+
+.v-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.v-table th:first-child,
+.v-table td:first-child {
+  padding-left: 0;
+}
+
+.v-table th:last-child,
+.v-table td:last-child {
+  padding-right: 0;
+}
+
+.v-table td strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.v-table tbody tr:hover td {
+  background: rgba(138, 186, 178, 0.04);
+}
+
+/* ---------- Ledger ----------
+ * A quiet horizontal strip of figures, lighter than .v-stats.
+ */
+
+.v-ledger {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.v-ledger > div {
+  flex: 1 1 160px;
+  padding: 22px 26px;
+  border-left: 1px solid var(--line);
+}
+
+.v-ledger > div:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.v-ledger dt {
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.v-ledger dd {
+  margin: 8px 0 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* ---------- Confidence dial ---------- */
+
+.confidence-dial {
+  display: block;
+}
+
+.confidence-dial-value {
+  fill: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 650;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
 /* ---------- Utility ---------- */
 
 .v-split {

@@ -3,6 +3,7 @@ import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { createSymptomNameMap, formatContribution } from "../utils/symptomHelpers.js";
 import { Modal, ScrollArea } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import ConfidenceDial from "../components/ConfidenceDial.jsx";
 import {
   IconAlertCircle,
   IconAlertTriangle,
@@ -11,53 +12,6 @@ import {
   IconChevronDown,
   IconPrinter,
 } from "@tabler/icons-react";
-
-/* Ranked confidence, drawn in the shared sage-to-terracotta gradient. */
-function ConfidenceDial({ value }) {
-  const percent = Math.round(value * 100);
-  const radius = 62;
-  const circumference = 2 * Math.PI * radius;
-
-  return (
-    <svg
-      className="results-dial-svg"
-      width="164"
-      height="164"
-      viewBox="0 0 164 164"
-      role="img"
-      aria-label={`${percent}% diagnostic confidence`}
-    >
-      <defs>
-        <linearGradient id="results-dial-fill" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#8abab2" />
-          <stop offset="100%" stopColor="#c9917b" />
-        </linearGradient>
-      </defs>
-      <circle
-        cx="82"
-        cy="82"
-        r={radius}
-        fill="none"
-        stroke="rgba(255, 255, 255, 0.08)"
-        strokeWidth="18"
-      />
-      <circle
-        cx="82"
-        cy="82"
-        r={radius}
-        fill="none"
-        stroke="url(#results-dial-fill)"
-        strokeWidth="18"
-        strokeLinecap="round"
-        strokeDasharray={`${(percent / 100) * circumference} ${circumference}`}
-        transform="rotate(-90 82 82)"
-      />
-      <text x="82" y="82" className="results-dial-value">
-        {percent}%
-      </text>
-    </svg>
-  );
-}
 
 function Results() {
   const location = useLocation();
@@ -550,7 +504,7 @@ function Results() {
                           return (
                             <div className="results-primary" key={dx.name}>
                               <div className="results-dial">
-                                <ConfidenceDial value={dx.probability} />
+                                <ConfidenceDial value={dx.probability} id="results-dial" />
                               </div>
                               <div>
                                 <span className="v-kicker">

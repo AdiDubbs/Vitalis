@@ -1,42 +1,56 @@
 import { Link } from "react-router-dom";
-import {
-  IconActivity,
-  IconArrowRight,
-  IconGitBranch,
-  IconMicroscope,
-  IconPhotoScan,
-  IconShieldCheck,
-  IconSparkles,
-} from "@tabler/icons-react";
-import doctorPatient from "../assets/undraw_doctor_patient.svg";
-import doctors from "../assets/undraw_doctors.svg";
+import { IconArrowRight, IconSparkles } from "@tabler/icons-react";
+import ConfidenceDial from "../components/ConfidenceDial.jsx";
 
-const FLOW_STEPS = [
+const LEDGER = [
+  { label: "Diseases mapped", value: "85+" },
+  { label: "Symptom nodes", value: "320+" },
+  { label: "Models active", value: "5" },
+  { label: "Lab biomarkers", value: "45+" },
+];
+
+const JOURNEY = [
   {
-    title: "Symptom selection",
-    description:
-      "Select primary symptoms and add brief notes for timing and severity.",
-    example: "28-year-old male with fever, cough, and chest tightness.",
+    title: "Patient",
+    body: "Age, sex, and history frame every downstream estimate. Nothing is scored in a vacuum.",
   },
   {
-    title: "Evidence upload",
-    description:
-      "Attach lab PDFs or scans to add objective signals to the case.",
-    example: "Chest X-ray image uploaded alongside lab results.",
+    title: "Evidence",
+    body: "Attach labs, imaging, or ECG waveforms. Each becomes another likelihood, not another opinion.",
   },
   {
-    title: "Ranked results",
-    description:
-      "View ranked conditions with confidence estimates and contributing evidence.",
-    example: "Ranked list shows influenza, pneumonia, bronchitis.",
+    title: "Symptoms",
+    body: "Pick findings from a structured tree. Vitalis asks follow-ups as the picture narrows.",
   },
 ];
 
-const STATS = [
-  { label: "Diseases mapped", value: "85+", icon: IconActivity },
-  { label: "Symptom nodes", value: "320+", icon: IconGitBranch },
-  { label: "Models active", value: "5", icon: IconPhotoScan },
-  { label: "Lab biomarkers", value: "45+", icon: IconMicroscope },
+/* A miniature of a real result, so the landing page shows the output rather
+ * than describing it. Figures mirror an actual run. */
+const SAMPLE = {
+  primary: { name: "Common Cold", probability: 0.77 },
+  secondary: [
+    { name: "Asthma", probability: 0.117 },
+    { name: "Influenza", probability: 0.089 },
+  ],
+};
+
+const PRINCIPLES = [
+  {
+    heading: "What it does",
+    points: [
+      "Ranks 79 candidate diagnoses by posterior probability",
+      "Shows which evidence moved each estimate, and by how much",
+      "Flags red-flag patterns that warrant urgent evaluation",
+    ],
+  },
+  {
+    heading: "What it does not",
+    points: [
+      "Replace clinical judgment or a qualified clinician",
+      "Claim regulatory clearance — this is research software",
+      "Hide its reasoning behind an end-to-end black box",
+    ],
+  },
 ];
 
 function Home() {
@@ -45,15 +59,20 @@ function Home() {
       <section className="v-section home-hero">
         <div className="home-hero-wash" aria-hidden="true" />
         <div className="v-shell home-hero-inner">
-          <div>
+          <div className="home-hero-copy">
             <span className="v-kicker">
               <IconSparkles size={14} aria-hidden="true" />
               Trusted clinical workflow
             </span>
-            <h1 className="v-display">Your diagnostic co-pilot</h1>
+            <h1 className="v-display">
+              Reasoning you can
+              <br />
+              follow, end to end.
+            </h1>
             <p className="v-lede">
-              Vitalis supports calm, structured intake and clear reasoning so care
-              teams can move from symptoms to next steps with confidence.
+              Vitalis fuses symptoms, labs, imaging, and ECG into a ranked
+              differential — and shows its work at every step, so the estimate is
+              never something you have to take on faith.
             </p>
 
             <div className="home-hero-actions">
@@ -62,48 +81,81 @@ function Home() {
                 <IconArrowRight size={17} aria-hidden="true" />
               </Link>
               <Link to="/overview" className="v-btn v-btn--quiet">
-                See how it works
+                How the engine works
               </Link>
             </div>
-
-            <ul className="v-chips home-hero-stats">
-              {STATS.map((stat) => (
-                <li key={stat.label} className="v-chip">
-                  <stat.icon size={14} aria-hidden="true" />
-                  {stat.value} {stat.label.toLowerCase()}
-                </li>
-              ))}
-            </ul>
           </div>
 
-          <div className="home-hero-art">
-            <img src={doctorPatient} alt="" />
-          </div>
+          <figure className="home-preview">
+            <figcaption className="v-section-label">
+              <span>Ranked differentials</span>
+              <span>Sample case</span>
+            </figcaption>
+            <div className="home-preview-primary">
+              <ConfidenceDial
+                value={SAMPLE.primary.probability}
+                size={124}
+                id="home-dial"
+              />
+              <div>
+                <span className="v-kicker">Primary</span>
+                <p className="home-preview-name">{SAMPLE.primary.name}</p>
+              </div>
+            </div>
+            {SAMPLE.secondary.map((dx) => (
+              <div className="home-preview-rank" key={dx.name}>
+                <div className="home-preview-rank-head">
+                  <span>{dx.name}</span>
+                  <span>{(dx.probability * 100).toFixed(1)}%</span>
+                </div>
+                <div className="v-meter">
+                  <span style={{ width: `${dx.probability * 100}%` }} />
+                </div>
+              </div>
+            ))}
+          </figure>
+        </div>
+      </section>
+
+      <section className="v-section">
+        <div className="v-shell">
+          <dl className="v-ledger">
+            {LEDGER.map((item) => (
+              <div key={item.label}>
+                <dt>{item.label}</dt>
+                <dd>{item.value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
       <section className="v-section">
         <div className="v-shell">
           <header className="home-section-head">
-            <span className="v-kicker">
-              <IconShieldCheck size={14} aria-hidden="true" />
-              From intake to guidance
-            </span>
-            <h2 className="v-headline">A clear, consistent diagnostic flow.</h2>
+            <span className="v-kicker">Three steps, one thread</span>
+            <h2 className="v-headline">Intake that builds a case.</h2>
             <p className="v-lede">
-              Move from intake to guidance without losing context or clarity.
+              Each step narrows the differential, and the case stays visible
+              beside you the whole way through.
             </p>
           </header>
 
-          <ol className="v-steps home-flow">
-            {FLOW_STEPS.map((step, index) => (
-              <li className="v-step" key={step.title}>
-                <span className="v-step-index" aria-hidden="true">
-                  {index + 1}
-                </span>
-                <span className="v-step-name">{step.title}</span>
-                <p className="v-body home-flow-copy">{step.description}</p>
-                <p className="v-fine home-flow-example">{step.example}</p>
+          <div className="v-rail home-journey-rail" aria-hidden="true">
+            {JOURNEY.map((step, index) => (
+              <div className="v-rail-node" data-active key={step.title}>
+                <span className="v-rail-dot">{index + 1}</span>
+                <span className="v-rail-label">{step.title}</span>
+                {index < JOURNEY.length - 1 && <span className="v-rail-line" />}
+              </div>
+            ))}
+          </div>
+
+          <ol className="home-journey">
+            {JOURNEY.map((step) => (
+              <li key={step.title}>
+                <h3 className="home-journey-title">{step.title}</h3>
+                <p className="v-body">{step.body}</p>
               </li>
             ))}
           </ol>
@@ -112,24 +164,37 @@ function Home() {
 
       <section className="v-section">
         <div className="v-shell">
-          <div className="v-card v-card--lit home-closing">
-            <div>
-              <span className="v-kicker">Ranked, with reasoning</span>
-              <h2 className="v-headline">Get results with confidence.</h2>
-              <p className="v-lede">
-                See ranked conditions based on symptoms, labs, and uploads in a
-                single view, with confidence estimates and key signals surfaced
-                for quick review.
-              </p>
-              <div className="home-hero-actions">
-                <Link to="/diagnosis" className="v-btn v-btn--primary">
-                  Start diagnosis
-                  <IconArrowRight size={17} aria-hidden="true" />
-                </Link>
+          <div className="home-principles">
+            {PRINCIPLES.map((column) => (
+              <div key={column.heading}>
+                <div className="v-section-label">
+                  <span>{column.heading}</span>
+                </div>
+                <ul className="home-principle-list">
+                  {column.points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
               </div>
-            </div>
-            <div className="home-closing-art">
-              <img src={doctors} alt="" />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="v-section">
+        <div className="v-shell">
+          <div className="v-card v-card--lit home-closing">
+            <span className="v-kicker">Ready when you are</span>
+            <h2 className="v-headline">Start with the person.</h2>
+            <p className="v-lede">
+              Intake takes a few minutes, and every field is optional except the
+              findings you care about.
+            </p>
+            <div className="home-hero-actions">
+              <Link to="/diagnosis" className="v-btn v-btn--primary">
+                Start diagnosis
+                <IconArrowRight size={17} aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </div>
