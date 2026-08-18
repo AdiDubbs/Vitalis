@@ -11,6 +11,24 @@
   --accent-hover: #2f7364;
   --accent-warm: #c9917b;
   --color-red-muted: #e57373;
+
+  /* Design language — shared with the intake wizard */
+  --sage: #8abab2;
+  --terracotta: #c9917b;
+  --danger: #e0876f;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --ink: #f2f4ef;
+  --ink-muted: #adbdb7;
+
+  /* Elevation & shape */
+  --card-radius: 24px;
+  --control-radius: 12px;
+  --card-shadow: 0 18px 54px rgba(0, 0, 0, 0.13);
+  --card-pad: clamp(28px, 3.4vw, 48px);
+
+  /* Type */
+  --font-display: "Outfit", system-ui, sans-serif;
   
   /* Text Colors */
   --text-primary: #e4edeb;

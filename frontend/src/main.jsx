@@ -4,6 +4,7 @@ import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import { MantineProvider, createTheme } from "@mantine/core";
 import "./styles/base.css";
+import "./styles/design-system.css";
 import "./styles/layout.css";
 import "./styles/components.css";
 import "./styles/pages.css";

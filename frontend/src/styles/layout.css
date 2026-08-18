@@ -1,12 +1,24 @@
 
 .app-header {
-  background: color-mix(in srgb, var(--bg) 90%, transparent);
-  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(16, 37, 34, 0.82);
+  border-bottom: 1px solid var(--line);
   position: sticky;
   top: 0;
   z-index: 200;
   backdrop-filter: blur(16px);
-  box-shadow: 0 10px 24px rgba(12, 27, 38, 0.08);
+  box-shadow: none;
+}
+
+.app-header .brand-name,
+.app-footer .brand-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.brand-mark {
+  background: linear-gradient(135deg, var(--sage), var(--terracotta));
+  box-shadow: 0 0 0 5px rgba(138, 186, 178, 0.11);
 }
 
 .app-header-inner {
@@ -15,13 +27,14 @@
 
 .app-main {
   min-height: calc(100vh - 72px - 56px);
-  padding: 90px var(--space-lg) var(--space-lg);
+  /* Horizontal gutters belong to .v-shell; only vertical rhythm here. */
+  padding: 84px 0 var(--space-lg);
 }
 
 .app-footer {
   position: static;
-  border-top: 1px solid var(--border-subtle);
-  background: color-mix(in srgb, var(--bg) 96%, var(--surface));
+  border-top: 1px solid var(--line);
+  background: rgba(16, 37, 34, 0.82);
 }
 
 .app-footer-inner {
@@ -34,7 +47,7 @@
 }
 
 .brand-link:hover .brand-name {
-  color: var(--mantine-color-cyan-6);
+  color: var(--sage);
 }
 
 .nav-button {
@@ -258,7 +271,7 @@
 
 @media (max-width: 768px) {
   .app-main {
-    padding: 72px var(--space-md) var(--space-md);
+    padding: 68px 0 var(--space-md);
   }
 
   .section {

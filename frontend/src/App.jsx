@@ -96,22 +96,21 @@ function MainApplication() {
         </AppShell.Header>
         <AppShell.Main className="app-main">
           <ErrorBoundary>
-            <Container size="xl">
-              <Suspense
-                fallback={
-                  <Center h={400}>
-                    <Loader type="dots" />
-                  </Center>
-                }
-              >
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/overview" element={<Overview />} />
-                  <Route path="/results" element={<Results />} />
-                  <Route path="*" element={<Home />} />
-                </Routes>
-              </Suspense>
-            </Container>
+            {/* Pages own their horizontal rhythm via .v-shell, so no Container here. */}
+            <Suspense
+              fallback={
+                <Center h={400}>
+                  <Loader type="dots" />
+                </Center>
+              }
+            >
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/overview" element={<Overview />} />
+                <Route path="/results" element={<Results />} />
+                <Route path="*" element={<Home />} />
+              </Routes>
+            </Suspense>
           </ErrorBoundary>
         </AppShell.Main>
         <AppShell.Footer className="app-footer">
