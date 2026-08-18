@@ -4,11 +4,12 @@
   color-scheme: dark;
 
   /* Color Palette */
-  --bg: #152828;
-  --surface: #1f3b3a;
-  --surface-elevated: #264342;
-  --accent: #0c8599;
-  --accent-hover: #0a6d7f;
+  --bg: #102522;
+  --surface: #1c3935;
+  --surface-elevated: #23413c;
+  --accent: #3f8f78;
+  --accent-hover: #2f7364;
+  --accent-warm: #c9917b;
   --color-red-muted: #e57373;
   
   /* Text Colors */

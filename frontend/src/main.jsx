@@ -7,6 +7,7 @@ import "./styles/base.css";
 import "./styles/layout.css";
 import "./styles/components.css";
 import "./styles/pages.css";
+import "./styles/intake-prototype.css";
 import App from "./App.jsx";
 
 const theme = createTheme({
@@ -42,6 +43,30 @@ const theme = createTheme({
       "#35524d",
       "#1f3a36",
       "#152828",
+    ],
+    cyan: [
+      "#eaf3f0",
+      "#d6e8e1",
+      "#bcd9cf",
+      "#9fc8bc",
+      "#86b8a9",
+      "#6da796",
+      "#55937f",
+      "#417d6a",
+      "#316856",
+      "#245346",
+    ],
+    terracotta: [
+      "#faf1ec",
+      "#f2ded2",
+      "#e8c7b3",
+      "#ddad91",
+      "#d29c7b",
+      "#c9917b",
+      "#b87c63",
+      "#a1684f",
+      "#87543f",
+      "#6d4230",
     ],
     gray: [
       "#f5f7f8",
