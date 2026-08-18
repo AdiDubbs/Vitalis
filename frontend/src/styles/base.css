@@ -78,10 +78,14 @@
   box-sizing: border-box;
 }
 
+/*
+ * min-height, not height: these pages scroll well past the viewport, and a
+ * hard 100% clamps #root to the viewport while its content overflows.
+ */
 html,
 body,
 #root {
-  height: 100%;
+  min-height: 100%;
 }
 
 body {
@@ -94,18 +98,8 @@ body {
   line-height: var(--line-height);
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: color-mix(in srgb, var(--bg) 25%, transparent);
-  pointer-events: none;
-  z-index: 0;
-}
-
 #root {
   position: relative;
-  z-index: 1;
 }
 
 p,
