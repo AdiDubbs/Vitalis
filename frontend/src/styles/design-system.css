@@ -1,0 +1,741 @@
+/*
+ * Shared design language, extracted from the intake wizard.
+ *
+ * The wizard established the app's visual vocabulary: a terracotta kicker over
+ * a large Outfit display heading, generously padded cards on a soft dark wash,
+ * and plain semantic controls rather than Mantine's default chrome. These
+ * primitives let the rest of the app speak the same language.
+ */
+
+/* ---------- Page scaffolding ---------- */
+
+.v-stack {
+  display: grid;
+  gap: clamp(48px, 6vw, 92px);
+}
+
+.v-shell {
+  width: min(1210px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.v-section {
+  position: relative;
+}
+
+/* A section that reads as its own surface, the way the wizard's panels do. */
+.v-band {
+  padding-top: clamp(34px, 4vw, 58px);
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- Typography ---------- */
+
+.v-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--terracotta);
+  font-size: 0.76rem;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.v-kicker svg {
+  flex: none;
+}
+
+.v-display,
+.v-headline,
+.v-title {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  font-weight: 650;
+}
+
+.v-display {
+  margin-top: 10px;
+  font-size: clamp(2.15rem, 3.4vw, 3rem);
+  line-height: 1.04;
+}
+
+.v-headline {
+  margin-top: 8px;
+  font-size: clamp(1.7rem, 2.4vw, 2.2rem);
+  line-height: 1.12;
+}
+
+.v-title {
+  font-size: 1.55rem;
+  line-height: 1.2;
+}
+
+.v-lede {
+  max-width: 58ch;
+  margin: 14px 0 0;
+  color: var(--ink-muted);
+  font-size: 1.02rem;
+  line-height: 1.62;
+}
+
+.v-body {
+  margin: 0;
+  color: var(--ink-muted);
+  line-height: 1.65;
+}
+
+.v-fine {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.v-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.84rem;
+  line-height: 1.62;
+}
+
+/* A quiet label that heads a list, with optional right-aligned meta. */
+.v-section-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0 2px 12px;
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.v-section-label > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.v-section-label > span:first-child {
+  flex: none;
+}
+
+/* Trailing meta yields first when space is tight. */
+.v-section-label > span:last-child:not(:only-child) {
+  min-width: 0;
+  color: var(--sage);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+/* ---------- Surfaces ---------- */
+
+.v-card {
+  padding: var(--card-pad);
+  border: 1px solid var(--line);
+  border-radius: var(--card-radius);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.022), transparent 46%),
+    var(--surface);
+  box-shadow: var(--card-shadow);
+}
+
+.v-card--quiet {
+  padding: clamp(20px, 2vw, 26px);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: none;
+}
+
+.v-card--inset {
+  padding: clamp(18px, 2vw, 24px);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(10, 29, 26, 0.28);
+  box-shadow: none;
+}
+
+/* The wizard's review panel: a lit corner and an organic shape bleeding out. */
+.v-card--lit {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 24% 7%, rgba(138, 186, 178, 0.1), transparent 220px),
+    var(--surface);
+}
+
+.v-card--lit::after {
+  content: "";
+  position: absolute;
+  right: -54px;
+  bottom: -64px;
+  width: 190px;
+  height: 190px;
+  border: 34px solid rgba(201, 145, 123, 0.07);
+  border-radius: 48% 52% 61% 39%;
+  transform: rotate(18deg);
+  pointer-events: none;
+}
+
+.v-card--lit > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Rows ---------- */
+
+.v-rows {
+  margin: 0;
+}
+
+.v-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.v-row:last-child {
+  border-bottom: 0;
+}
+
+.v-row dt,
+.v-row-label {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.v-row dd,
+.v-row-value {
+  margin: 0;
+  color: var(--ink-muted);
+  text-align: right;
+}
+
+/* ---------- Tiles (interactive rows) ---------- */
+
+.v-tile {
+  width: 100%;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #203d38;
+  color: var(--ink-muted);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  font: inherit;
+  text-align: left;
+}
+
+.v-tile--static {
+  cursor: default;
+}
+
+button.v-tile {
+  cursor: pointer;
+}
+
+.v-tile > svg {
+  color: var(--sage);
+  flex: none;
+}
+
+.v-tile-body {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.v-tile-body strong {
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.v-tile-body small {
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+.v-tile[data-selected],
+button.v-tile:hover {
+  border-color: rgba(138, 186, 178, 0.38);
+  background: rgba(138, 186, 178, 0.08);
+}
+
+.v-tile-meta {
+  color: var(--sage);
+  font-size: 0.86rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.v-tiles {
+  display: grid;
+  gap: 12px;
+}
+
+/* ---------- Chips ---------- */
+
+.v-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.v-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.v-chip--sage {
+  border-color: rgba(138, 186, 178, 0.34);
+  background: rgba(138, 186, 178, 0.1);
+  color: var(--sage);
+}
+
+.v-chip--warm {
+  border-color: rgba(201, 145, 123, 0.32);
+  background: rgba(201, 145, 123, 0.09);
+  color: var(--terracotta);
+}
+
+.v-chip--danger {
+  border-color: rgba(224, 135, 111, 0.4);
+  background: rgba(224, 135, 111, 0.1);
+  color: var(--danger);
+}
+
+.v-chip--mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+}
+
+/* ---------- Stats ---------- */
+
+.v-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.v-stat {
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.v-stat dt {
+  color: var(--ink-muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.v-stat dd {
+  margin: 8px 0 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* ---------- Progress ---------- */
+
+.v-progress {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.v-progress > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--sage), var(--terracotta));
+  transition: width 240ms ease;
+}
+
+/* A slimmer bar for ranked lists, tinted by rank. */
+.v-meter {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.v-meter > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--sage);
+  transition: width 240ms ease;
+}
+
+.v-meter[data-tone="lead"] > span {
+  background: linear-gradient(90deg, var(--sage), var(--terracotta));
+}
+
+/* ---------- Buttons ---------- */
+
+.v-btn {
+  min-height: 46px;
+  padding: 0 18px;
+  border: 1px solid rgba(242, 244, 239, 0.3);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.v-btn:hover {
+  border-color: rgba(138, 186, 178, 0.58);
+  background: rgba(138, 186, 178, 0.08);
+}
+
+.v-btn--primary {
+  border-color: rgba(138, 186, 178, 0.55);
+  background: rgba(138, 186, 178, 0.13);
+  color: var(--sage);
+}
+
+.v-btn--primary:hover {
+  background: rgba(138, 186, 178, 0.2);
+}
+
+.v-btn--quiet {
+  border-color: transparent;
+  background: transparent;
+  color: var(--ink-muted);
+}
+
+.v-btn--quiet:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ---------- Focus ---------- */
+
+.v-btn:focus-visible,
+.v-tile:focus-visible,
+.v-chip:focus-visible,
+.v-step:focus-visible {
+  outline: 3px solid rgba(138, 186, 178, 0.44);
+  outline-offset: 3px;
+}
+
+/* ---------- Numbered steps ---------- */
+
+.v-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.v-step {
+  padding: 26px 24px 28px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+button.v-step {
+  cursor: pointer;
+}
+
+.v-step[data-active] {
+  border-color: rgba(138, 186, 178, 0.45);
+  background: rgba(138, 186, 178, 0.07);
+}
+
+.v-step-index {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  color: var(--ink-muted);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.v-step[data-active] .v-step-index {
+  border-color: var(--sage);
+  background: var(--sage);
+  color: var(--bg);
+}
+
+.v-step-name {
+  display: block;
+  margin-top: 14px;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Connected rail ----------
+ * The wizard's signature progress device: numbered nodes joined by a hairline.
+ * Reused wherever the app describes an ordered journey.
+ */
+
+.v-rail {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.v-rail-node {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.v-rail-node:last-child {
+  flex: 0 0 auto;
+}
+
+.v-rail-dot {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  color: var(--ink-muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.v-rail-node[data-active] .v-rail-dot {
+  border-color: var(--sage);
+  background: var(--sage);
+  color: var(--bg);
+  box-shadow: 0 0 0 5px rgba(138, 186, 178, 0.08);
+}
+
+.v-rail-label {
+  margin-left: 10px;
+  color: var(--ink-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.v-rail-node[data-active] .v-rail-label {
+  color: var(--sage);
+}
+
+.v-rail-line {
+  flex: 1;
+  min-width: 20px;
+  height: 1px;
+  margin: 0 16px;
+  background: linear-gradient(
+    90deg,
+    rgba(138, 186, 178, 0.22),
+    var(--line-strong)
+  );
+}
+
+/* ---------- Spec table ----------
+ * For dense, comparable records that read badly as a wall of cards.
+ */
+
+.v-table-wrap {
+  overflow-x: auto;
+}
+
+.v-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.v-table th {
+  padding: 0 16px 12px;
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.v-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-muted);
+  vertical-align: top;
+}
+
+.v-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.v-table th:first-child,
+.v-table td:first-child {
+  padding-left: 0;
+}
+
+.v-table th:last-child,
+.v-table td:last-child {
+  padding-right: 0;
+}
+
+.v-table td strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.v-table tbody tr:hover td {
+  background: rgba(138, 186, 178, 0.04);
+}
+
+/* ---------- Ledger ----------
+ * A quiet horizontal strip of figures, lighter than .v-stats.
+ */
+
+.v-ledger {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.v-ledger > div {
+  flex: 1 1 160px;
+  padding: 22px 26px;
+  border-left: 1px solid var(--line);
+}
+
+.v-ledger > div:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.v-ledger dt {
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.v-ledger dd {
+  margin: 8px 0 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* ---------- Confidence dial ---------- */
+
+.confidence-dial {
+  display: block;
+}
+
+.confidence-dial-value {
+  fill: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 650;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* ---------- Utility ---------- */
+
+.v-split {
+  display: grid;
+  gap: clamp(18px, 2.4vw, 30px);
+}
+
+@media (min-width: 62em) {
+  .v-split--sidebar {
+    grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.75fr);
+    align-items: start;
+  }
+
+  .v-split--even {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.v-sticky {
+  position: sticky;
+  top: 92px;
+}
+
+@media (max-width: 760px) {
+  .v-shell {
+    width: min(100% - 32px, 620px);
+  }
+
+  .v-card {
+    padding: 26px 22px 30px;
+  }
+
+  .v-sticky {
+    position: static;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v-progress > span,
+  .v-meter > span,
+  .v-btn,
+  .v-step,
+  .v-tile {
+    transition-duration: 0.01ms !important;
+  }
+}

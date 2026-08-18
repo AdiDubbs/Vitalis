@@ -1,247 +1,205 @@
-import {
-  Badge,
-  Button,
-  Card,
-  Container,
-  Divider,
-  Group,
-  Image,
-  SimpleGrid,
-  Stack,
-  Text,
-  ThemeIcon,
-  Title,
-  Box,
-} from "@mantine/core";
-import {
-  IconArrowRight,
-  IconChartDots,
-  IconChecklist,
-  IconShieldCheck,
-  IconSparkles,
-  IconStethoscope,
-  IconActivity,
-  IconPhotoScan,
-  IconGitBranch,
-  IconMicroscope,
-} from "@tabler/icons-react";
-import { useNavigate } from "react-router-dom";
-import doctorPatient from "../assets/undraw_doctor_patient.svg";
-import doctors from "../assets/undraw_doctors.svg";
+import { Link } from "react-router-dom";
+import { IconArrowRight, IconSparkles } from "@tabler/icons-react";
+import ConfidenceDial from "../components/ConfidenceDial.jsx";
 
-const THINKING_STEPS = [
+const LEDGER = [
+  { label: "Diseases mapped", value: "85+" },
+  { label: "Symptom nodes", value: "320+" },
+  { label: "Models active", value: "5" },
+  { label: "Lab biomarkers", value: "45+" },
+];
+
+const JOURNEY = [
   {
-    title: "Symptom Selection",
-    description:
-      "Select primary symptoms and add brief notes for timing and severity.",
-    example:
-      "Example: 28-year-old male with fever, cough, and chest tightness.",
+    title: "Patient",
+    body: "Age, sex, and history frame every downstream estimate. Nothing is scored in a vacuum.",
   },
   {
-    title: "Evidence Upload",
-    description:
-      "Attach lab PDFs or scans to add objective signals to the case.",
-    example: "Example: Chest X-ray image uploaded alongside lab results.",
+    title: "Evidence",
+    body: "Attach labs, imaging, or ECG waveforms. Each becomes another likelihood, not another opinion.",
   },
   {
-    title: "Ranked Results",
-    description: "View ranked conditions with confidence estimates.",
-    example: "Example: Ranked list shows influenza, pneumonia, bronchitis.",
+    title: "Symptoms",
+    body: "Pick findings from a structured tree. Vitalis asks follow-ups as the picture narrows.",
   },
 ];
 
-const LIVE_STATS = [
-  { label: "Diseases Mapped", value: "85+", icon: IconActivity, color: "blue" },
-  { label: "Symptom Nodes", value: "320+", icon: IconGitBranch, color: "cyan" },
-  { label: "Models Active", value: "5", icon: IconPhotoScan, color: "teal" },
-  { label: "Lab Biomarkers", value: "45+", icon: IconMicroscope, color: "grape" },
+/* A miniature of a real result, so the landing page shows the output rather
+ * than describing it. Figures mirror an actual run. */
+const SAMPLE = {
+  primary: { name: "Common Cold", probability: 0.77 },
+  secondary: [
+    { name: "Asthma", probability: 0.117 },
+    { name: "Influenza", probability: 0.089 },
+  ],
+};
+
+const PRINCIPLES = [
+  {
+    heading: "What it does",
+    points: [
+      "Ranks 79 candidate diagnoses by posterior probability",
+      "Shows which evidence moved each estimate, and by how much",
+      "Flags red-flag patterns that warrant urgent evaluation",
+    ],
+  },
+  {
+    heading: "What it does not",
+    points: [
+      "Replace clinical judgment or a qualified clinician",
+      "Claim regulatory clearance — this is research software",
+      "Hide its reasoning behind an end-to-end black box",
+    ],
+  },
 ];
 
 function Home() {
-  const navigate = useNavigate();
-  const subtleTextColor = "var(--text-primary)";
-
-  const handleStartDiagnosis = () => {
-    navigate("/diagnosis");
-  };
-
   return (
-    <Stack gap="xl">
-      <section className="section hero-canvas">
-        <Container className="hero-content" size="lg">
-          <SimpleGrid
-            cols={{ base: 1, md: 2 }}
-            spacing={50}
-            verticalSpacing="xl"
-          >
-            <div className="hero-left">
-              <div className="hero-blob" aria-hidden="true" />
-              <Stack gap="lg" justify="center">
-                <Badge
-                  variant="light"
-                  color="cyan"
-                  leftSection={<IconSparkles size={14} />}
-                  w="fit-content"
-                >
-                  Trusted clinical workflow
-                </Badge>
-                <Title
-                  order={1}
-                  c={subtleTextColor}
-                >
-                  Your diagnostic co-pilot
-                </Title>
-                <Text c={subtleTextColor} size="lg" className="line-height-1-6">
-                  Vitalis supports calm, structured intake and clear reasoning
-                  so care teams can move from symptoms to next steps with
-                  confidence.
-                </Text>
-                <Group mt="md">
-                  <Button
-                    rightSection={<IconArrowRight size={20} />}
-                    onClick={handleStartDiagnosis}
-                    color="cyan"
-                    className="btn-hover-lift"
-                  >
-                    Start Diagnosis
-                  </Button>
-                </Group>
-                
-                <Group gap="xs" mt="sm" wrap="wrap">
-                  {LIVE_STATS.map((stat) => (
-                    <Badge
-                      key={stat.label}
-                      variant="light"
-                      color="cyan"
-                      size="md"
-                      leftSection={<stat.icon size={14} />}
-                    >
-                      {stat.value} {stat.label}
-                    </Badge>
-                  ))}
-                </Group>
-              </Stack>
+    <div className="home">
+      <section className="v-section home-hero">
+        <div className="home-hero-wash" aria-hidden="true" />
+        <div className="v-shell home-hero-inner">
+          <div className="home-hero-copy">
+            <span className="v-kicker">
+              <IconSparkles size={14} aria-hidden="true" />
+              Trusted clinical workflow
+            </span>
+            <h1 className="v-display">
+              Reasoning you can
+              <br />
+              follow, end to end.
+            </h1>
+            <p className="v-lede">
+              Vitalis fuses symptoms, labs, imaging, and ECG into a ranked
+              differential — and shows its work at every step, so the estimate is
+              never something you have to take on faith.
+            </p>
+
+            <div className="home-hero-actions">
+              <Link to="/diagnosis" className="v-btn v-btn--primary">
+                Start diagnosis
+                <IconArrowRight size={17} aria-hidden="true" />
+              </Link>
+              <Link to="/overview" className="v-btn v-btn--quiet">
+                How the engine works
+              </Link>
             </div>
-            <div className="hero-visual">
-              <div className="hero-glow" aria-hidden="true" />
-              <Image
-                src={doctorPatient}
-                alt="Clinician and patient illustration"
-                fit="contain"
-                className="theme-invert hero-illustration"
+          </div>
+
+          <figure className="home-preview">
+            <figcaption className="v-section-label">
+              <span>Ranked differentials</span>
+              <span>Sample case</span>
+            </figcaption>
+            <div className="home-preview-primary">
+              <ConfidenceDial
+                value={SAMPLE.primary.probability}
+                size={124}
+                id="home-dial"
               />
+              <div>
+                <span className="v-kicker">Primary</span>
+                <p className="home-preview-name">{SAMPLE.primary.name}</p>
+              </div>
             </div>
-          </SimpleGrid>
-        </Container>
+            {SAMPLE.secondary.map((dx) => (
+              <div className="home-preview-rank" key={dx.name}>
+                <div className="home-preview-rank-head">
+                  <span>{dx.name}</span>
+                  <span>{(dx.probability * 100).toFixed(1)}%</span>
+                </div>
+                <div className="v-meter">
+                  <span style={{ width: `${dx.probability * 100}%` }} />
+                </div>
+              </div>
+            ))}
+          </figure>
+        </div>
       </section>
 
-      <section className="section section-tight">
-        <Container size="lg">
-          <Stack gap="xl">
-            <Stack gap={6}>
-              <Badge
-                variant="light"
-                color="cyan"
-                leftSection={<IconShieldCheck size={14} />}
-                w="fit-content"
-              >
-                From intake to guidance
-              </Badge>
-              <Title order={2} c={subtleTextColor}>
-                A clear, consistent diagnostic flow.
-              </Title>
-              <Text c={subtleTextColor} size="lg">
-                Move from intake to guidance without losing context or clarity.
-              </Text>
-            </Stack>
+      <section className="v-section">
+        <div className="v-shell">
+          <dl className="v-ledger">
+            {LEDGER.map((item) => (
+              <div key={item.label}>
+                <dt>{item.label}</dt>
+                <dd>{item.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
 
-            <div className="thinking-steps-container">
-              {THINKING_STEPS.map((step, index) => (
-                <Box key={step.title} className="thinking-step-wrapper">
-                  <Card
-                    padding="lg"
-                    radius="lg"
-                    className="panel-card"
-                  >
-                    <Stack gap="xs" className="line-height-1-6">
-                      <Group gap="sm" justify="space-between" align="center">
-                        <Group gap="sm" align="center">
-                          <ThemeIcon
-                            variant="light"
-                            color="cyan"
-                            size="md"
-                            radius="lg"
-                          >
-                            {index + 1}
-                          </ThemeIcon>
-                          <Text fw={700} c={subtleTextColor} size="lg">
-                            {step.title}
-                          </Text>
-                        </Group>
-                      </Group>
-                      <Stack gap="md" className="max-width-360">
-                        <Text c={subtleTextColor} size="md">
-                          {step.description}
-                        </Text>
-                        <Divider color="dark.5" my={6} />
-                        <Text c="dimmed" size="sm">
-                          {step.example}
-                        </Text>
-                      </Stack>
-                    </Stack>
-                  </Card>
-                  {index < THINKING_STEPS.length - 1 && (
-                    <div className="step-arrow">
-                      <IconArrowRight
-                        size={24}
-                        color="var(--mantine-color-cyan-7)"
-                      />
-                    </div>
-                  )}
-                </Box>
-              ))}
+      <section className="v-section">
+        <div className="v-shell">
+          <header className="home-section-head">
+            <span className="v-kicker">Three steps, one thread</span>
+            <h2 className="v-headline">Intake that builds a case.</h2>
+            <p className="v-lede">
+              Each step narrows the differential, and the case stays visible
+              beside you the whole way through.
+            </p>
+          </header>
+
+          <div className="v-rail home-journey-rail" aria-hidden="true">
+            {JOURNEY.map((step, index) => (
+              <div className="v-rail-node" data-active key={step.title}>
+                <span className="v-rail-dot">{index + 1}</span>
+                <span className="v-rail-label">{step.title}</span>
+                {index < JOURNEY.length - 1 && <span className="v-rail-line" />}
+              </div>
+            ))}
+          </div>
+
+          <ol className="home-journey">
+            {JOURNEY.map((step) => (
+              <li key={step.title}>
+                <h3 className="home-journey-title">{step.title}</h3>
+                <p className="v-body">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="v-section">
+        <div className="v-shell">
+          <div className="home-principles">
+            {PRINCIPLES.map((column) => (
+              <div key={column.heading}>
+                <div className="v-section-label">
+                  <span>{column.heading}</span>
+                </div>
+                <ul className="home-principle-list">
+                  {column.points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="v-section">
+        <div className="v-shell">
+          <div className="v-card v-card--lit home-closing">
+            <span className="v-kicker">Ready when you are</span>
+            <h2 className="v-headline">Start with the person.</h2>
+            <p className="v-lede">
+              Intake takes a few minutes, and every field is optional except the
+              findings you care about.
+            </p>
+            <div className="home-hero-actions">
+              <Link to="/diagnosis" className="v-btn v-btn--primary">
+                Start diagnosis
+                <IconArrowRight size={17} aria-hidden="true" />
+              </Link>
             </div>
-          </Stack>
-        </Container>
+          </div>
+        </div>
       </section>
-
-      <section className="section section-tight">
-        <Container size="lg">
-          <Card radius="lg" padding="lg" className="panel-card">
-            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
-              <Stack gap="md" justify="center">
-                <Title order={3} c={subtleTextColor}>
-                  Get results with confidence.
-                </Title>
-                <Text c={subtleTextColor} size="lg" className="line-height-1-7">
-                  See ranked conditions based on symptoms, labs, and uploads in
-                  a single view, with confidence estimates and key signals
-                  surfaced for quick review.
-                </Text>
-                <Button
-                  variant="light"
-                  rightSection={<IconArrowRight size={16} />}
-                  onClick={handleStartDiagnosis}
-                  color="cyan"
-                  className="btn-hover-lift"
-                  mt="sm"
-                >
-                  Start Diagnosis
-                </Button>
-              </Stack>
-              <Group justify="center">
-                <Image
-                  src={doctors}
-                  alt="Care team illustration"
-                  fit="contain"
-                  className="theme-invert hero-illustration hero-illustration--compact"
-                />
-              </Group>
-            </SimpleGrid>
-          </Card>
-        </Container>
-      </section>
-    </Stack>
+    </div>
   );
 }
 

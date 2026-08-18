@@ -17,16 +17,16 @@ import { useDisclosure } from "@mantine/hooks";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 const Home = lazy(() => import("./pages/Home.jsx"));
-const DiagnosisLayout = lazy(() => import("./pages/Diagnosis.jsx"));
 const Overview = lazy(() => import("./pages/Overview.jsx"));
 const Results = lazy(() => import("./pages/Results.jsx"));
+const DiagnosisIntake = lazy(() => import("./pages/IntakePrototype.jsx"));
 
-function App() {
+function MainApplication() {
   const [navOpened, { toggle: toggleNav, close: closeNav }] =
     useDisclosure(false);
 
   return (
-    <BrowserRouter>
+    <>
       <Notifications />
       <AppShell header={{ height: { xs: 48, sm: 64 } }} footer={{ height: 56 }}>
         <AppShell.Header className="app-header">
@@ -96,23 +96,21 @@ function App() {
         </AppShell.Header>
         <AppShell.Main className="app-main">
           <ErrorBoundary>
-            <Container size="xl">
-              <Suspense
-                fallback={
-                  <Center h={400}>
-                    <Loader type="dots" />
-                  </Center>
-                }
-              >
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/overview" element={<Overview />} />
-                  <Route path="/diagnosis" element={<DiagnosisLayout />} />
-                  <Route path="/results" element={<Results />} />
-                  <Route path="*" element={<Home />} />
-                </Routes>
-              </Suspense>
-            </Container>
+            {/* Pages own their horizontal rhythm via .v-shell, so no Container here. */}
+            <Suspense
+              fallback={
+                <Center h={400}>
+                  <Loader type="dots" />
+                </Center>
+              }
+            >
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/overview" element={<Overview />} />
+                <Route path="/results" element={<Results />} />
+                <Route path="*" element={<Home />} />
+              </Routes>
+            </Suspense>
           </ErrorBoundary>
         </AppShell.Main>
         <AppShell.Footer className="app-footer">
@@ -214,6 +212,30 @@ function App() {
           </Stack>
         </Drawer>
       </AppShell>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/diagnosis"
+          element={
+            <Suspense
+              fallback={
+                <Center h="100vh">
+                  <Loader type="dots" />
+                </Center>
+              }
+            >
+              <DiagnosisIntake />
+            </Suspense>
+          }
+        />
+        <Route path="*" element={<MainApplication />} />
+      </Routes>
     </BrowserRouter>
   );
 }

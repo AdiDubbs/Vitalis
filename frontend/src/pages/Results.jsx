@@ -1,38 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { createSymptomNameMap, formatContribution } from "../utils/symptomHelpers.js";
-import {
-  ActionIcon,
-  Alert,
-  Badge,
-  Box,
-  Button,
-  Center,
-  Divider,
-  Grid,
-  Group,
-  Modal,
-  Paper,
-  Progress,
-  RingProgress,
-  ScrollArea,
-  Stack,
-  Text,
-  ThemeIcon,
-  Title,
-  Tooltip,
-} from "@mantine/core";
+import { Modal, ScrollArea } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import ConfidenceDial from "../components/ConfidenceDial.jsx";
 import {
   IconAlertCircle,
   IconAlertTriangle,
   IconArrowLeft,
   IconChartBar,
   IconChevronDown,
-  IconInfoCircle,
+  IconPrinter,
 } from "@tabler/icons-react";
-import PanelCard from "../components/PanelCard";
-import EvidenceBadge from "../components/EvidenceBadge";
 
 function Results() {
   const location = useLocation();
@@ -324,602 +303,444 @@ function Results() {
     return names[modelType] || "Uploaded evidence";
   };
 
+
+  const notices = [
+    caseFetch.error && {
+      key: "case",
+      tone: "danger",
+      title: "Could not load case",
+      body: `${caseFetch.error} Open a case from the intake flow and try again.`,
+    },
+    data.symptomsError && {
+      key: "symptoms",
+      tone: "warn",
+      title: "Symptom labels unavailable",
+      body: `${data.symptomsError} Symptom IDs may be shown instead of names.`,
+    },
+    data.diseasesError && {
+      key: "diseases",
+      tone: "warn",
+      title: "Disease names unavailable",
+      body: `${data.diseasesError} Internal IDs may be shown for conditions.`,
+    },
+  ].filter(Boolean);
+
+  const visibleConditions = ui.showAllSecondary
+    ? rankedConditions
+    : rankedConditions.slice(0, 3);
+
+  const nextSteps = {
+    high: {
+      title: "Urgent evaluation",
+      items: [
+        "Address red flags immediately",
+        "Consider emergency consultation",
+        "Order tests without delay",
+      ],
+    },
+    medium: {
+      title: "Standard workup",
+      items: [
+        "Order verification tests",
+        "Monitor symptom progression",
+        "Follow-up in 48–72 hours",
+      ],
+    },
+    low: {
+      title: "Routine management",
+      items: [
+        "Tests if clinically indicated",
+        "Provide patient education",
+        "Routine follow-up as needed",
+      ],
+    },
+  }[riskStratification?.level || "low"];
+
   return (
-    <section className="section section-tight results-section">
-      <Stack gap="lg">
-        <Group justify="space-between" align="center" wrap="wrap">
-          <Stack gap={4}>
-              <Title order={1}>Results</Title>
-            <Text c="dimmed">
-              Review ranked differentials and red flag alerts.
-            </Text>
-          </Stack>
-          <Group gap="sm">
-            <Button component={Link} to="/diagnosis" variant="light">
-              Restart diagnosis
-            </Button>
-            <Button
-              component={Link}
-              to="/diagnosis"
-              variant="light"
-              leftSection={<IconArrowLeft size={16} />}
-            >
-              Back to intake
-            </Button>
-            <Button variant="light" onClick={() => window.print()}>
-              Print / PDF
-            </Button>
-          </Group>
-        </Group>
+    <div className="results">
+      <section className="v-section">
+        <div className="v-shell">
+          <header className="results-head">
+            <div>
+              <span className="v-kicker">
+                <IconChartBar size={14} aria-hidden="true" />
+                Case output
+              </span>
+              <h1 className="v-display">Results</h1>
+              <p className="v-lede">
+                Review ranked differentials and red flag alerts.
+              </p>
+            </div>
+            <div className="results-actions">
+              <Link to="/diagnosis" className="v-btn">
+                <IconArrowLeft size={16} aria-hidden="true" />
+                Back to intake
+              </Link>
+              <button
+                type="button"
+                className="v-btn v-btn--quiet"
+                onClick={() => window.print()}
+              >
+                <IconPrinter size={16} aria-hidden="true" />
+                Print / PDF
+              </button>
+            </div>
+          </header>
+        </div>
+      </section>
 
-        {caseFetch.error ? (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            color="gray"
-            title="Could not load case"
-            className="alert-critical"
-          >
-            {caseFetch.error} Open a case from the intake flow and try again.
-          </Alert>
-        ) : null}
+      <section className="v-section">
+        <div className="v-shell">
+          {notices.map((notice) => (
+            <div className="results-notice" data-tone={notice.tone} key={notice.key}>
+              <IconAlertCircle size={17} aria-hidden="true" />
+              <div>
+                <strong>{notice.title}</strong>
+                <p className="v-fine">{notice.body}</p>
+              </div>
+            </div>
+          ))}
 
-        {data.symptomsError ? (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            color="yellow"
-            title="Symptom labels unavailable"
-          >
-            {data.symptomsError} Symptom IDs may be shown instead of names.
-          </Alert>
-        ) : null}
-
-        {data.diseasesError ? (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            color="yellow"
-            title="Disease names unavailable"
-          >
-            {data.diseasesError} Internal IDs may be shown for conditions.
-          </Alert>
-        ) : null}
-
-        {analysis && uploadResults.length ? (
-          <Alert
-            icon={<IconAlertTriangle size={16} />}
-            color={uploadResults.some((result) => result.status === "failed") ? "yellow" : "blue"}
-            title="Uploaded evidence"
-          >
-            <Stack gap={6}>
-              {uploadResults.map((result, index) => (
-                <Group key={`${result.model_type}-${index}`} gap="xs" align="flex-start">
-                  <Badge
-                    size="xs"
-                    color={result.status === "failed" ? "yellow" : result.contributed ? "teal" : "gray"}
-                    variant="light"
+          {analysis && uploadResults.length ? (
+            <div className="v-card--inset results-uploads">
+              <div className="v-section-label">
+                <span>Uploaded evidence</span>
+                <span>{uploadResults.length}</span>
+              </div>
+              <div className="v-tiles">
+                {uploadResults.map((result, index) => (
+                  <div
+                    className="results-upload-row"
+                    key={`${result.model_type}-${index}`}
                   >
-                    {result.status === "failed"
-                      ? "Not analyzed"
-                      : result.contributed
-                      ? "Used in results"
-                      : "Analyzed"}
-                  </Badge>
-                  <Text size="sm">
-                    <Text component="span" fw={600}>{formatModelName(result.model_type)}:</Text>{" "}
-                    {result.message}
-                  </Text>
-                </Group>
-              ))}
-            </Stack>
-          </Alert>
-        ) : null}
+                    <span
+                      className={`v-chip ${
+                        result.status === "failed"
+                          ? "v-chip--danger"
+                          : result.contributed
+                          ? "v-chip--sage"
+                          : ""
+                      }`}
+                    >
+                      {result.status === "failed"
+                        ? "Not analyzed"
+                        : result.contributed
+                        ? "Used in results"
+                        : "Analyzed"}
+                    </span>
+                    <p className="v-fine">
+                      <strong>{formatModelName(result.model_type)}:</strong>{" "}
+                      {result.message}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
 
-        {caseFetch.loading ? (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            color="blue"
-            title="Loading saved case"
-          >
-            Restoring this result from the server.
-          </Alert>
-        ) : !analysis ? (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            color="yellow"
-            title="No results loaded"
-          >
-            Run a diagnosis from the intake screen to generate results, or open a URL with `?case_id=...`.
-          </Alert>
-        ) : (
-          <Grid gutter="lg" align="flex-start">
-            <Grid.Col span={{ base: 12, md: 4 }} order={{ base: 2, md: 1 }} className="results-sidebar">
-              <div className="results-sidebar-wrapper">
-                <Stack gap="md">
-                <Paper p="md" radius="lg" className="panel-card">
-                  <Stack gap="sm">
-                    <Group gap="xs">
-                      <Text fw={600} size="sm">
-                        Case Summary
-                      </Text>
-                      {caseId ? (
-                        <Badge variant="light" size="xs">Case {caseId}</Badge>
-                      ) : null}
-                    </Group>
+          {caseFetch.loading ? (
+            <div className="v-card results-empty">
+              <h2 className="v-title">Loading saved case</h2>
+              <p className="v-body">Restoring this result from the server.</p>
+            </div>
+          ) : !analysis ? (
+            <div className="v-card results-empty">
+              <span className="v-kicker">Nothing to show yet</span>
+              <h2 className="v-title">No results loaded</h2>
+              <p className="v-body">
+                Run a diagnosis from the intake screen to generate results, or
+                open a URL with a <code>case_id</code> parameter.
+              </p>
+              <Link to="/diagnosis" className="v-btn v-btn--primary">
+                Start a diagnosis
+              </Link>
+            </div>
+          ) : (
+            <div className="v-split v-split--sidebar results-body">
+              <div className="results-main">
+                {analysis?.red_flags?.length ? (
+                  <div className="v-card results-flags">
+                    <div className="v-section-label">
+                      <span>
+                        <IconAlertTriangle size={14} aria-hidden="true" /> Red
+                        flag alerts
+                      </span>
+                      <span>{analysis.red_flags.length}</span>
+                    </div>
+                    <ul className="results-flag-list">
+                      {analysis.red_flags.map((flag, index) => {
+                        const label =
+                          typeof flag === "string"
+                            ? flag
+                            : flag?.message ||
+                              flag?.condition ||
+                              flag?.rule_id ||
+                              "Red flag alert";
+                        const key =
+                          typeof flag === "string"
+                            ? flag
+                            : flag?.rule_id || `${label}-${index}`;
+                        return <li key={key}>{label}</li>;
+                      })}
+                    </ul>
+                  </div>
+                ) : null}
 
-                    <Divider />
+                <div className="v-card">
+                  <div className="v-section-label">
+                    <span>Ranked differentials</span>
+                    <span>{rankedConditions.length}</span>
+                  </div>
 
-                    <Stack gap="xs">
-                      <Group justify="space-between">
-                        <Text size="xs" c="dimmed">
-                          Patient
-                        </Text>
-                        <Text size="xs" fw={500}>
-                          {formatDemographics() || "—"}
-                        </Text>
-                      </Group>
+                  {!rankedConditions.length ? (
+                    <p className="v-body">No ranked conditions returned.</p>
+                  ) : (
+                    <>
+                      {visibleConditions.map((dx, index) => {
+                        const { combined } = getReasonData(dx.name);
+                        const isTop = index === 0;
 
-                      <Group justify="space-between">
-                        <Text size="xs" c="dimmed">
-                          Symptoms selected
-                        </Text>
-                        <Badge
-                          size="xs"
-                          variant={selectedSymptoms.length ? "light" : "outline"}
-                          color={selectedSymptoms.length ? "cyan" : "gray"}
+                        if (isTop) {
+                          return (
+                            <div className="results-primary" key={dx.name}>
+                              <div className="results-dial">
+                                <ConfidenceDial value={dx.probability} id="results-dial" />
+                              </div>
+                              <div>
+                                <span className="v-kicker">
+                                  Primary diagnosis
+                                </span>
+                                <h2 className="v-headline results-primary-name">
+                                  {formatDxName(dx.name)}
+                                </h2>
+                                {combined.length ? (
+                                  <div className="results-rank-evidence">
+                                    {combined.map((reason) => (
+                                      <span
+                                        className={`v-chip ${
+                                          reason.category === "objective"
+                                            ? "v-chip--warm"
+                                            : "v-chip--sage"
+                                        }`}
+                                        key={`${dx.name}-top-${reason.featureId}-${reason.source}`}
+                                      >
+                                        {symptomNameMap.get(reason.featureId) ||
+                                          reason.featureId}
+                                        <small>
+                                          {formatContribution(
+                                            reason.contribution
+                                          )}
+                                        </small>
+                                      </span>
+                                    ))}
+                                  </div>
+                                ) : null}
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        return (
+                          <div className="results-rank" key={dx.name}>
+                            <div className="results-rank-head">
+                              <span className="results-rank-name">
+                                {formatDxName(dx.name)}
+                              </span>
+                              <span className="results-rank-value">
+                                {(dx.probability * 100).toFixed(1)}%
+                              </span>
+                            </div>
+                            <div className="v-meter">
+                              <span
+                                style={{
+                                  width: `${Math.min(
+                                    100,
+                                    dx.probability * 100
+                                  )}%`,
+                                }}
+                              />
+                            </div>
+                            {combined.length ? (
+                              <div className="results-rank-evidence">
+                                {combined.map((reason) => (
+                                  <span
+                                    className="v-chip"
+                                    key={`${dx.name}-${reason.featureId}-${reason.source}`}
+                                  >
+                                    {symptomNameMap.get(reason.featureId) ||
+                                      reason.featureId}
+                                    <small>
+                                      {formatContribution(reason.contribution)}
+                                    </small>
+                                  </span>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="v-fine results-rank-empty">
+                                No feature reasons returned.
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      {rankedConditions.length > 3 && (
+                        <button
+                          type="button"
+                          className="v-btn results-more"
+                          onClick={toggleSecondaryDiagnoses}
                         >
-                          {selectedSymptoms.length}
-                        </Badge>
-                      </Group>
+                          {ui.showAllSecondary ? (
+                            "Show less"
+                          ) : (
+                            <>
+                              <IconChevronDown size={16} aria-hidden="true" />
+                              Show {rankedConditions.length - 3} more condition
+                              {rankedConditions.length - 3 > 1 ? "s" : ""}
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
 
-                      <Group justify="space-between">
-                        <Text size="xs" c="dimmed">
-                          Medical history
-                        </Text>
-                        <Badge
-                          size="xs"
-                          variant={doctorNoteProvided ? "light" : "outline"}
-                          color={doctorNoteProvided ? "green" : "gray"}
-                        >
-                          {doctorNoteProvided ? "Provided" : "Missing"}
-                        </Badge>
-                      </Group>
+              <aside className="v-sticky results-aside">
+                <div className="v-card v-card--lit">
+                  <span className="v-kicker">Your case</span>
+                  <h2 className="v-title">Summary</h2>
 
-                      {riskStratification && (
-                        <Group justify="space-between" align="center">
-                          <Group gap={4}>
-                            <Text size="xs" c="dimmed">
-                              Risk Level
-                            </Text>
-                            <Tooltip
-                              label="Risk level based on red flags, confidence, and symptom severity. High risk requires urgent evaluation."
-                              position="top"
-                              withArrow
-                              multiline
-                              w={220}
-                            >
-                              <ActionIcon size="xs" variant="subtle" color="gray">
-                                <IconInfoCircle size={14} />
-                              </ActionIcon>
-                            </Tooltip>
-                          </Group>
-                          <Badge
-                            variant="filled"
-                            color={riskStratification.color}
-                            size="sm"
-                            leftSection={riskStratification.level === 'high' ? <IconAlertTriangle size={14} /> : undefined}
-                            className={`results-risk-badge${riskStratification.badgeClass ? ` ${riskStratification.badgeClass}` : ""}`}
+                  <dl className="v-rows results-summary-rows">
+                    <div className="v-row">
+                      <dt>Patient</dt>
+                      <dd>{formatDemographics() || "Not provided"}</dd>
+                    </div>
+                    <div className="v-row">
+                      <dt>Symptoms</dt>
+                      <dd>{selectedSymptoms.length} selected</dd>
+                    </div>
+                    <div className="v-row">
+                      <dt>History</dt>
+                      <dd>{doctorNoteProvided ? "Provided" : "Not added"}</dd>
+                    </div>
+                    {riskStratification && (
+                      <div className="v-row">
+                        <dt>Risk level</dt>
+                        <dd>
+                          <span
+                            className={`v-chip ${
+                              riskStratification.level === "high"
+                                ? "v-chip--danger"
+                                : riskStratification.level === "medium"
+                                ? "v-chip--warm"
+                                : "v-chip--sage"
+                            }`}
                           >
                             {riskStratification.label}
-                          </Badge>
-                        </Group>
-                      )}
-                    </Stack>
-                  </Stack>
-                </Paper>
+                          </span>
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
 
-                <Paper p="sm" radius="lg" className="panel-card">
-                  <Stack gap="xs">
-                    <Group justify="space-between" align="center">
-                      <Text fw={600} size="sm">
-                        Selected symptoms
-                      </Text>
-                      <Badge
-                        size="xs"
-                        variant={selectedSymptoms.length ? "light" : "outline"}
-                        color={selectedSymptoms.length ? "cyan" : "gray"}
+                  {caseId ? (
+                    <p className="v-fine results-case-id">Case {caseId}</p>
+                  ) : null}
+                </div>
+
+                {selectedSymptoms.length > 0 && !data.symptomsError ? (
+                  <div className="v-card--quiet results-aside-card">
+                    <div className="v-section-label">
+                      <span>Selected symptoms</span>
+                      <span>{selectedSymptoms.length}</span>
+                    </div>
+                    <div className="v-chips">
+                      {selectedSymptoms.slice(0, 8).map((symptomId) => (
+                        <span className="v-chip v-chip--sage" key={symptomId}>
+                          {symptomNameMap.get(symptomId) || symptomId}
+                        </span>
+                      ))}
+                    </div>
+                    {selectedSymptoms.length > 8 && (
+                      <button
+                        type="button"
+                        className="v-btn v-btn--quiet results-view-all"
+                        onClick={toggleSymptomModal}
                       >
-                        {selectedSymptoms.length} selected
-                      </Badge>
-                    </Group>
-
-                    <Divider my="xs" />
-
-                    {data.symptomsError ? (
-                      <Text size="xs" c="dimmed">
-                        Symptom labels unavailable.
-                      </Text>
-                    ) : selectedSymptoms.length === 0 ? (
-                      <Text size="xs" c="dimmed">
-                        No symptoms selected yet.
-                      </Text>
-                    ) : (
-                      <Stack gap={6}>
-                        <Group gap={6} wrap="wrap">
-                          {selectedSymptoms.slice(0, 8).map((symptomId) => (
-                            <Badge
-                              key={symptomId}
-                              size="sm"
-                              radius="sm"
-                              variant="light"
-                              color="cyan"
-                              className="badge-compact"
-                            >
-                              {symptomNameMap.get(symptomId) || symptomId}
-                            </Badge>
-                          ))}
-                        </Group>
-                        {selectedSymptoms.length > 8 && (
-                          <Button
-                            variant="light"
-                            size="xs"
-                            onClick={toggleSymptomModal}
-                          >
-                            View all ({selectedSymptoms.length})
-                          </Button>
-                        )}
-                      </Stack>
+                        View all ({selectedSymptoms.length})
+                      </button>
                     )}
-                  </Stack>
-                </Paper>
+                  </div>
+                ) : null}
 
-                <Paper p="sm" radius="lg" className="panel-card">
-                  <Stack gap="xs">
-                    <Group justify="space-between" align="center" wrap="nowrap">
-                      <Text fw={600} size="sm">
-                        Next Steps
-                      </Text>
+                {nextSteps && (
+                  <div className="v-card--quiet results-aside-card">
+                    <div className="v-section-label">
+                      <span>Next steps</span>
                       {primaryDx ? (
-                        <Badge variant="light" color="teal" size="xs">
-                          {formatDxName(primaryDx.name)}
-                        </Badge>
+                        <span>{formatDxName(primaryDx.name)}</span>
                       ) : null}
-                    </Group>
-
-                    <Divider my="xs" />
-
-                    {riskStratification && (
-                      <Stack gap="xs">
-                        {riskStratification.level === 'high' && (
-                          <Stack gap={4}>
-                            <Text size="xs" fw={600} c="red">Urgent Evaluation</Text>
-                            <Text size="xs" c="dimmed">
-                              • Address red flags immediately
-                              <br />• Consider emergency consultation
-                              <br />• Order tests without delay
-                            </Text>
-                          </Stack>
-                        )}
-
-                        {riskStratification.level === 'medium' && (
-                          <Stack gap={4}>
-                            <Text size="xs" fw={600}>Standard Workup</Text>
-                            <Text size="xs" c="dimmed">
-                              • Order verification tests
-                              <br />• Monitor symptom progression
-                              <br />• Follow-up in 48-72 hours
-                            </Text>
-                          </Stack>
-                        )}
-
-                        {riskStratification.level === 'low' && (
-                          <Stack gap={4}>
-                            <Text size="xs" fw={600}>Routine Management</Text>
-                            <Text size="xs" c="dimmed">
-                              • Tests if clinically indicated
-                              <br />• Provide patient education
-                              <br />• Routine follow-up as needed
-                            </Text>
-                          </Stack>
-                        )}
-                      </Stack>
-                    )}
+                    </div>
+                    <p className="results-next-title">{nextSteps.title}</p>
+                    <ul className="results-next-list">
+                      {nextSteps.items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
 
                     {primaryRecommendedTests.length > 0 && (
                       <>
-                        <Divider my="xs" />
-                        <Stack gap="xs">
-                          <Text size="xs" fw={600}>Verification Tests</Text>
+                        <div className="v-section-label results-tests-label">
+                          <span>Verification tests</span>
+                        </div>
+                        <div className="v-tiles">
                           {primaryRecommendedTests.map((test) => (
-                            <Paper
+                            <div
+                              className="v-card--inset results-test"
                               key={test.test_id}
-                              withBorder
-                              p="xs"
-                              radius="md"
-                              bg="var(--panel-card-bg-deeper)"
-                              className="results-test-card"
                             >
-                              <Stack gap={2}>
-                                <Text size="xs" fw={500}>
-                                  {test.display_name}
-                                </Text>
-                                <Text size="xs" c="dimmed">
-                                  {test.category}
-                                </Text>
-                              </Stack>
-                            </Paper>
+                              <strong>{test.display_name}</strong>
+                              <small>{test.category}</small>
+                            </div>
                           ))}
-                        </Stack>
+                        </div>
                       </>
                     )}
-                  </Stack>
-                </Paper>
-              </Stack>
-              </div>
-            </Grid.Col>
-
-            <Grid.Col span={{ base: 12, md: 8 }} order={{ base: 1, md: 2 }} className="results-main">
-              <Stack gap="lg">
-                  {analysis?.red_flags?.length ? (
-                    <PanelCard className="results-red-flag-card">
-                      <Stack gap="sm">
-                        <Group gap="xs">
-                          <IconAlertCircle size={20} color="var(--mantine-color-red-8)" />
-                          <Text fw={700} c="red.5">Critical Red Flag Alerts</Text>
-                        </Group>
-                        <Divider />
-                        <Stack gap="xs">
-                          {analysis.red_flags.map((flag, index) => {
-                            const label =
-                              typeof flag === "string"
-                                ? flag
-                                : flag?.message || flag?.condition || flag?.rule_id || "Red flag alert";
-                            const key =
-                              typeof flag === "string"
-                                ? flag
-                                : flag?.rule_id || `${label}-${index}`;
-                            return (
-                              <Alert
-                                key={key}
-                                color="gray"
-                                variant="light"
-                                className="alert-critical"
-                              >
-                                {label}
-                              </Alert>
-                            );
-                          })}
-                        </Stack>
-                      </Stack>
-                    </PanelCard>
-                  ) : null}
-
-                  <PanelCard>
-                    <Stack gap="md">
-                      <Stack gap="xs">
-                        <Group gap="xs">
-                          <ThemeIcon variant="light" color="cyan" size="md" radius="lg">
-                            <IconChartBar size={16} />
-                          </ThemeIcon>
-                          <Text className="card-heading">Ranked Differentials</Text>
-                        </Group>
-                        <Text size="sm" c="dimmed">
-                          Conditions ranked by diagnostic confidence. Review evidence and consider verification tests.
-                        </Text>
-                      </Stack>
-                      <Divider />
-                      {rankedConditions.length ? (
-                        <Stack gap="md">
-                          {rankedConditions.map((dx, index) => {
-                            if (index > 0 && index > 2 && !ui.showAllSecondary) {
-                              return null;
-                            }
-
-                            const { combined } = getReasonData(dx.name);
-                            const isTop = index === 0;
-                            const allReasons = combined;
-
-                            return (
-                              <Stack
-                                key={dx.name}
-                                gap="xs"
-                              >
-                                {index > 0 ? <Divider opacity={0.7} /> : null}
-
-                                {isTop ? (
-                                  <Group
-                                    align="center"
-                                    gap="xl"
-                                    wrap="nowrap"
-                                    mb="xs"
-                                  >
-                                    <Tooltip
-                                      label="Diagnostic confidence based on symptom patterns, demographics, and clinical data. Higher % = stronger match."
-                                      position="top"
-                                      withArrow
-                                      multiline
-                                      w={220}
-                                    >
-                                      <RingProgress
-                                        size={160}
-                                        thickness={24}
-                                        roundCaps
-                                        sections={[
-                                          {
-                                            value: dx.probability * 100,
-                                            color: "cyan",
-                                          },
-                                        ]}
-                                        label={
-                                          <Center>
-                                            <Text c="teal" fw={900} size="xl">
-                                              {(dx.probability * 100).toFixed(0)}%
-                                            </Text>
-                                          </Center>
-                                        }
-                                      />
-                                    </Tooltip>
-                                    <Stack gap={4} className="results-primary-stack">
-                                      <Badge
-                                        variant="light"
-                                        color="teal"
-                                        size="lg"
-                                        mb={2}
-                                        w="fit-content"
-                                      >
-                                        Primary Diagnosis
-                                      </Badge>
-                                      <Title
-                                        order={2}
-                                        fw={600}
-                                        className="results-primary-title"
-                                      >
-                                        {formatDxName(dx.name)}
-                                      </Title>
-                                      <Stack gap="xs" mt={4}>
-                                        <Group gap={6} wrap="wrap">
-                                          {allReasons.map((reason) => {
-                                            const featureLabel =
-                                              symptomNameMap.get(reason.featureId) || reason.featureId;
-
-                                            return (
-                                              <EvidenceBadge
-                                                key={`${dx.name}-top-${reason.featureId}-${reason.source}`}
-                                                category={reason.category}
-                                                contribution={reason.contribution}
-                                                label={featureLabel}
-                                              />
-                                            );
-                                          })}
-                                        </Group>
-                                      </Stack>
-                                    </Stack>
-                                  </Group>
-                                ) : (
-                                  <>
-                                    <Group justify="space-between">
-                                      <Text size="sm" fw={600}>
-                                        {formatDxName(dx.name)}
-                                      </Text>
-                                      <Text size="sm" c="dimmed">
-                                        {(dx.probability * 100).toFixed(1)}%
-                                      </Text>
-                                    </Group>
-                                    <Progress
-                                      value={Math.min(
-                                        100,
-                                        dx.probability * 100
-                                      )}
-                                      radius="lg"
-                                    />
-                                  </>
-                                )}
-                                
-                                {!isTop && combined.length ? (
-                                  <Stack gap="xs">
-                                    <Group gap={6} wrap="wrap">
-                                      {allReasons.map((reason) => {
-                                        const categoryClass = `badge-evidence badge-evidence-${reason.category}`;
-                                        const contributionType =
-                                          reason.contribution >= 0
-                                            ? "positive"
-                                            : "negative";
-                                        const featureLabel =
-                                          symptomNameMap.get(reason.featureId) || reason.featureId;
-
-                                        return (
-                                          <Badge
-                                            key={`${dx.name}-${reason.featureId}-${reason.source}`}
-                                            size="md"
-                                            variant="light"
-                                            className={categoryClass}
-                                            data-contribution={contributionType}
-                                            styles={{
-                                              root: {
-                                                textTransform: "none",
-                                                opacity: 0.85,
-                                              },
-                                            }}
-                                          >
-                                            {featureLabel}
-                                            <span style={{ marginLeft: '4px', fontWeight: 500, opacity: 0.6, fontSize: '0.9em' }}>
-                                              {formatContribution(reason.contribution)}
-                                            </span>
-                                          </Badge>
-                                        );
-                                      })}
-                                    </Group>
-                                  </Stack>
-                                ) : !isTop ? (
-                                  <Text size="xs" c="dimmed">
-                                    No feature reasons returned.
-                                  </Text>
-                                ) : null}
-
-                              </Stack>
-                            );
-                          }).filter(Boolean)}
-                          {rankedConditions.length > 3 && !ui.showAllSecondary && (
-                            <Button
-                              variant="light"
-                              size="sm"
-                              leftSection={<IconChevronDown size={16} />}
-                              onClick={toggleSecondaryDiagnoses}
-                              fullWidth
-                            >
-                              Show {rankedConditions.length - 3} more condition{rankedConditions.length - 3 > 1 ? 's' : ''}
-                            </Button>
-                          )}
-                          {rankedConditions.length > 3 && ui.showAllSecondary && (
-                            <Button
-                              variant="light"
-                              size="sm"
-                              onClick={toggleSecondaryDiagnoses}
-                              fullWidth
-                            >
-                              Show less
-                            </Button>
-                          )}
-                        </Stack>
-                      ) : (
-                        <Text size="sm" c="dimmed">
-                          No ranked conditions returned.
-                        </Text>
-                      )}
-                    </Stack>
-                  </PanelCard>
-                </Stack>
-            </Grid.Col>
-          </Grid>
-        )}
-
-        <Modal
-          opened={ui.symptomModalOpen}
-          onClose={toggleSymptomModal}
-          title="Selected Symptoms"
-          centered
-          fullScreen={isMobile}
-          size="md"
-          radius="lg"
-          padding="lg"
-          overlayProps={{ backgroundOpacity: 0.7, blur: 2, color: "var(--bg)" }}
-        >
-          {selectedSymptoms.length === 0 ? (
-            <Text size="sm" c="dimmed">
-              No symptoms selected yet.
-            </Text>
-          ) : (
-            <ScrollArea h={isMobile ? "100%" : 300}>
-              <Stack gap="xs">
-                {selectedSymptoms.map((symptomId) => (
-                  <Text key={symptomId} size="sm">
-                    {symptomNameMap.get(symptomId) || symptomId}
-                  </Text>
-                ))}
-              </Stack>
-            </ScrollArea>
+                  </div>
+                )}
+              </aside>
+            </div>
           )}
-        </Modal>
-      </Stack>
-    </section>
+        </div>
+      </section>
+
+      <Modal
+        opened={ui.symptomModalOpen}
+        onClose={toggleSymptomModal}
+        title="Selected symptoms"
+        centered
+        fullScreen={isMobile}
+        size="md"
+        radius="lg"
+        padding="lg"
+        overlayProps={{ backgroundOpacity: 0.7, blur: 2, color: "var(--bg)" }}
+      >
+        {selectedSymptoms.length === 0 ? (
+          <p className="v-body">No symptoms selected yet.</p>
+        ) : (
+          <ScrollArea h={isMobile ? "100%" : 320}>
+            <div className="v-chips">
+              {selectedSymptoms.map((symptomId) => (
+                <span className="v-chip v-chip--sage" key={symptomId}>
+                  {symptomNameMap.get(symptomId) || symptomId}
+                </span>
+              ))}
+            </div>
+          </ScrollArea>
+        )}
+      </Modal>
+    </div>
   );
 }
 
