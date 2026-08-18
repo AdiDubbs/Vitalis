@@ -155,7 +155,7 @@ function DiagnosisIntake({
   return (
     <>
       <Stack gap="lg">
-        <Grid gutter="lg">
+        <Grid gap="lg">
           <Grid.Col span={{ base: 12, md: 5 }}>
             <Paper
               id="section-demographics"

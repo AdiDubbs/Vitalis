@@ -179,7 +179,7 @@ function DiagnosisLayout() {
           </Text>
         </Stack>
 
-        <Grid gutter="lg" styles={{ root: { display: "flex" } }}>
+        <Grid gap="lg" styles={{ root: { display: "flex" } }}>
           <Grid.Col
             span={{ base: 12, md: 4 }}
             style={{
@@ -237,7 +237,7 @@ function DiagnosisLayout() {
                         {symptomLibrary.error}
                       </Alert>
                     ) : categoryOptions.length > 0 ? (
-                      <Grid gutter={2} columns={2}>
+                      <Grid gap={2} columns={2}>
                         {categoryOptions.map(({ value }) => {
                           const isActive = activeCategory === value;
                           return (

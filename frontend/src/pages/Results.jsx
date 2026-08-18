@@ -430,7 +430,7 @@ function Results() {
             Run a diagnosis from the intake screen to generate results, or open a URL with `?case_id=...`.
           </Alert>
         ) : (
-          <Grid gutter="lg" align="flex-start">
+          <Grid gap="lg" align="flex-start">
             <Grid.Col span={{ base: 12, md: 4 }} order={{ base: 2, md: 1 }} className="results-sidebar">
               <div className="results-sidebar-wrapper">
                 <Stack gap="md">
