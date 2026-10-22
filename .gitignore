@@ -65,3 +65,6 @@ legacy/
 
 # Model outputs
 model_accuracy_report.json
+
+# Model manifest is source, not a generated report
+!models/manifest.json

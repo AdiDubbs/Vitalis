@@ -1,0 +1,227 @@
+# Clinical regression cases for the ranking engine.
+#
+# Each case runs through vitalis_engine.run_case without image uploads.
+# Supported expectations:
+#   top_k:        {dx: k}    dx must be ranked within the top k
+#   not_top_k:    {dx: k}    dx must NOT be ranked within the top k
+#   ranked_above: [a, b]     a must outrank b
+#   max_top_probability: p   the top diagnosis must not exceed p
+#   max_probability: {dx: p} dx probability must not exceed p
+#   red_flags:     [rule_id] these rules must fire
+#   no_red_flags:  [rule_id] these rules must not fire
+#   extracted:     [feature] the note must yield these features
+#   not_extracted: [feature] the note must not yield these features
+#
+# known_failing names the finding in reviews/vitalis-formula-audit.md that
+# currently breaks the case. Those cases run as expected failures, so the
+# suite reports an "unexpected success" once a fix makes them pass. Remove
+# the field at that point.
+
+cases:
+  # --- Chest pain ---------------------------------------------------------
+  - id: acs_chest_pain_diaphoresis
+    age: 60
+    sex: MALE
+    features: [sym_chest_pain, diaphoresis]
+    expect:
+      ranked_above: [ACS, ANXIETY_DISORDER]
+    known_failing: "#1 priors, #7 LRs (Anxiety 86%, ACS 9.6%)"
+
+  - id: acs_chest_pain_diaphoresis_red_flag
+    age: 60
+    sex: MALE
+    features: [sym_chest_pain, diaphoresis]
+    expect:
+      red_flags: [rule_mi_classic]
+    known_failing: "#5 ACS rule needs left-arm radiation"
+
+  - id: acs_classic_presentation
+    age: 60
+    sex: MALE
+    features: [sym_chest_pain, diaphoresis, radiation_left_arm, sym_shortness_of_breath]
+    expect:
+      top_k: {ACS: 1}
+      red_flags: [rule_mi_classic]
+
+  - id: pe_pleuritic_dyspnea_hemoptysis
+    age: 30
+    sex: FEMALE
+    features: [pleuritic_pain, sym_shortness_of_breath, hemoptysis]
+    expect:
+      top_k: {PE: 2}
+    known_failing: "#1 priors, #2 penalties (PE ranks 4th)"
+
+  # --- Neurological -------------------------------------------------------
+  - id: stroke_weakness_speech
+    age: 70
+    sex: MALE
+    features: [unilateral_weakness, difficulty_speaking]
+    expect:
+      top_k: {STROKE: 1}
+
+  - id: meningitis_triad_red_flag
+    age: 25
+    sex: MALE
+    features: [fever, sym_headache, stiff_neck]
+    expect:
+      red_flags: [rule_meningitis]
+
+  - id: meningitis_triad_in_differential
+    age: 25
+    sex: MALE
+    features: [fever, sym_headache, stiff_neck]
+    expect:
+      top_k: {MENINGITIS: 3}
+    known_failing: "#5 meningitis is not a diagnosis"
+
+  - id: headache_vomiting_is_not_sah_alarm
+    age: 30
+    sex: FEMALE
+    features: [sym_headache, sym_nausea_vomiting, sensitivity_light]
+    expect:
+      top_k: {MIGRAINE: 1}
+      no_red_flags: [rule_sah]
+    known_failing: "#5 SAH rule fires on headache + vomiting"
+
+  - id: sepsis_fever_confusion_red_flag
+    age: 75
+    sex: FEMALE
+    features: [fever, confusion]
+    expect:
+      red_flags: [rule_sepsis]
+
+  # --- Abdominal ----------------------------------------------------------
+  - id: appendicitis_rlq_fever
+    age: 20
+    sex: MALE
+    features: [rlq_pain, fever, sym_abdominal_pain]
+    expect:
+      top_k: {APPENDICITIS: 2}
+    known_failing: "#1 priors (Gastroenteritis 66%, Appendicitis 9%)"
+
+  - id: gastroenteritis_vomiting_diarrhea
+    age: 30
+    sex: MALE
+    features: [sym_nausea_vomiting, sym_diarrhea]
+    expect:
+      top_k: {GASTROENTERITIS: 1}
+
+  - id: gerd_heartburn
+    age: 45
+    sex: FEMALE
+    features: [heartburn]
+    expect:
+      top_k: {GERD: 1}
+
+  # --- Infections ---------------------------------------------------------
+  - id: influenza_classic
+    age: 30
+    sex: MALE
+    features: [fever, sym_cough, body_aches, fatigue]
+    expect:
+      top_k: {INFLUENZA: 2}
+
+  - id: common_cold
+    age: 30
+    sex: FEMALE
+    features: [runny_nose, sneezing, pharyngitis, sym_cough]
+    expect:
+      top_k: {COMMON_COLD: 1}
+
+  - id: uti_dysuria_frequency
+    age: 25
+    sex: FEMALE
+    features: [sym_dysuria, sym_urinary_frequency]
+    expect:
+      top_k: {UTI: 1}
+
+  # --- Age and sex plausibility -------------------------------------------
+  - id: toddler_fever_no_cholecystitis
+    age: 2
+    sex: FEMALE
+    features: [fever]
+    expect:
+      not_top_k: {CHOLECYSTITIS: 5}
+    known_failing: "#1 age-invariant priors (Cholecystitis 15%)"
+
+  - id: female_psa_high_no_prostate_cancer
+    age: 70
+    sex: F
+    features: [psa_high]
+    expect:
+      max_probability: {PROSTATE_CANCER: 0.0}
+    known_failing: "#14 sex 'F' falls back to the default prior"
+
+  - id: no_symptoms_no_confident_answer
+    age: 40
+    sex: MALE
+    features: []
+    expect:
+      max_top_probability: 0.5
+    known_failing: "#2 -10 penalty makes OTHER 99%"
+
+  # --- Note extraction ----------------------------------------------------
+  - id: note_negation_scope_ends_at_but
+    age: 40
+    sex: MALE
+    note: "Denies chest pain but reports cough and fever."
+    expect:
+      extracted: [sym_cough, fever]
+      not_extracted: [sym_chest_pain]
+    known_failing: "#9 negation has no scope end"
+
+  - id: note_simple_negation
+    age: 40
+    sex: MALE
+    note: "Patient denies fever."
+    expect:
+      not_extracted: [fever]
+
+  - id: note_generalized_weakness_is_not_stroke_sign
+    age: 50
+    sex: FEMALE
+    note: "Patient has generalized weakness and fatigue."
+    expect:
+      extracted: [fatigue]
+      not_extracted: [unilateral_weakness]
+    known_failing: "#9 'weakness' maps to unilateral_weakness"
+
+  - id: note_microalbumin_is_not_albumin
+    age: 50
+    sex: MALE
+    note: "Microalbumin: 2.5 mg/L"
+    expect:
+      not_extracted: [hypoalbuminemia]
+    known_failing: "#9 lab regexes lack word boundaries"
+
+  - id: note_normal_female_hemoglobin
+    age: 30
+    sex: FEMALE
+    note: "Hemoglobin: 12.5 g/dL"
+    expect:
+      not_extracted: [microcytic_anemia]
+    known_failing: "#8 unisex hemoglobin range, no MCV check"
+
+  - id: note_prediabetic_glucose_is_not_diabetes
+    age: 50
+    sex: MALE
+    note: "Glucose, fasting: 105 mg/dL"
+    expect:
+      not_extracted: [diabetes_uncontrolled]
+    known_failing: "#8 glucose >100 maps to an LR-20 diabetes feature"
+
+  - id: note_creatinine_in_umol
+    age: 50
+    sex: MALE
+    note: "Creatinine: 90 umol/L"
+    expect:
+      not_extracted: [egfr_low]
+    known_failing: "#8 units are guessed, 90 umol/L read as 90 mg/dL"
+
+  - id: note_vitamin_d_in_ng_ml
+    age: 50
+    sex: FEMALE
+    note: "Vitamin D: 35 ng/mL"
+    expect:
+      not_extracted: [vitamin_d_deficiency]
+    known_failing: "#8 range is in nmol/L, US labs report ng/mL"
