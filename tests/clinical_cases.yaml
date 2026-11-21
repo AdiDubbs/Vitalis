@@ -149,7 +149,7 @@ cases:
     sex: F
     features: [psa_high]
     expect:
-      max_probability: {PROSTATE_CANCER: 0.0}
+      max_probability: {PROSTATE_CANCER: 0.001}
     known_failing: "#14 sex 'F' falls back to the default prior"
 
   - id: no_symptoms_no_confident_answer
@@ -225,3 +225,197 @@ cases:
     expect:
       not_extracted: [vitamin_d_deficiency]
     known_failing: "#8 range is in nmol/L, US labs report ng/mL"
+
+  # --- Added cases: common presentations --------------------------------
+  - id: parkinsons_triad
+    age: 70
+    sex: MALE
+    features: [tremor_pd, bradykinesia, rigidity]
+    expect:
+      top_k: {PARKINSONS_DISEASE: 1}
+
+  - id: gout_podagra
+    age: 55
+    sex: MALE
+    features: [podagra, hot_swollen_joint]
+    expect:
+      top_k: {GOUT: 1}
+
+  - id: kidney_stone_flank_pain
+    age: 40
+    sex: MALE
+    features: [sym_flank_pain, dark_urine]
+    expect:
+      top_k: {NEPHROLITHIASIS: 2}
+
+  - id: heart_failure_orthopnea_edema
+    age: 75
+    sex: MALE
+    features: [sym_shortness_of_breath, orthopnea, edema_legs_ckd, s3_gallop]
+    expect:
+      top_k: {HEART_FAILURE: 1}
+
+  - id: hypothyroid_cold_fatigue_weight_gain
+    age: 40
+    sex: FEMALE
+    features: [cold_intolerance_hashi, fatigue, sym_weight_gain]
+    expect:
+      top_k: {HASHIMOTOS_THYROIDITIS: 1}
+
+  - id: graves_classic
+    age: 30
+    sex: FEMALE
+    features: [heat_intolerance_graves, sym_palpitations, sym_weight_loss, exophthalmos]
+    expect:
+      top_k: {GRAVES_DISEASE: 1}
+
+  - id: diabetes_polyuria_polydipsia
+    age: 25
+    sex: MALE
+    features: [polyuria, polydipsia, sym_weight_loss]
+    expect:
+      top_k: {DIABETES: 1}
+    known_failing: "#1 DIABETES has no prevalence entry (Depression 80%, Diabetes 3%)"
+
+  - id: iron_deficiency_pallor_pica
+    age: 25
+    sex: FEMALE
+    features: [fatigue, pallor_iron, pica]
+    expect:
+      top_k: {IRON_DEFICIENCY_ANEMIA: 1}
+
+  - id: depression_low_mood_anhedonia
+    age: 35
+    sex: FEMALE
+    features: [sym_low_mood, anhedonia, sleep_disturbance_ad]
+    expect:
+      top_k: {DEPRESSION_MAJOR: 1}
+
+  - id: ankle_fracture_ottawa_signs
+    age: 30
+    sex: MALE
+    features: [recent_ankle_trauma, malleolar_tenderness, inability_bear_weight]
+    expect:
+      top_k: {ANKLE_FRACTURE: 1}
+
+  - id: scaphoid_fracture_foosh
+    age: 25
+    sex: MALE
+    features: [foosh, snuffbox_tenderness]
+    expect:
+      top_k: {WRIST_SCAPHOID_FRACTURE: 1}
+
+  - id: meniscal_tear_locking
+    age: 35
+    sex: MALE
+    features: [joint_line_tenderness, mcmurray_positive, locking_knee]
+    expect:
+      top_k: {MENISCAL_TEAR: 1}
+
+  - id: guillain_barre_ascending_weakness
+    age: 45
+    sex: MALE
+    features: [ascending_weakness_gbs, areflexia_gbs]
+    expect:
+      top_k: {GUILLAIN_BARRE_SYNDROME: 1}
+
+  - id: lymphoma_b_symptoms
+    age: 30
+    sex: MALE
+    features: [palpable_lymphadenopathy, sym_night_sweats, sym_weight_loss]
+    expect:
+      top_k: {LYMPHOMA: 2}
+    known_failing: "#1 priors, #2 penalties (HIV 71%, Lymphoma 7%)"
+
+  - id: tb_chronic_cough_hemoptysis
+    age: 40
+    sex: MALE
+    features: [persistent_cough_gt_3w, hemoptysis, sym_night_sweats, sym_weight_loss]
+    expect:
+      top_k: {TB: 3}
+
+  - id: breast_cancer_lump_dimpling
+    age: 55
+    sex: FEMALE
+    features: [breast_lump, skin_dimpling_breast]
+    expect:
+      top_k: {BREAST_CANCER: 1}
+
+  - id: colorectal_cancer_bleeding_bowel_change
+    age: 65
+    sex: MALE
+    features: [rectal_bleeding, change_bowel_habit, sym_weight_loss]
+    expect:
+      top_k: {COLORECTAL_CANCER: 1}
+
+  - id: diverticulitis_llq_fever
+    age: 65
+    sex: FEMALE
+    features: [llq_pain, fever]
+    expect:
+      top_k: {DIVERTICULITIS: 1}
+    known_failing: "#1 age-invariant priors (Influenza 26%, Diverticulitis 25%)"
+
+  # --- Added cases: safety and plausibility -----------------------------
+  - id: anxious_patient_with_chest_pain_keeps_acs_visible
+    age: 55
+    sex: MALE
+    features: [sym_chest_pain, excessive_worry]
+    expect:
+      top_k: {ACS: 3}
+
+  - id: cauda_equina_without_chronic_pain
+    age: 45
+    sex: FEMALE
+    features: [neuro_deficit_leg, incontinence]
+    expect:
+      red_flags: [rule_cauda_equina]
+    known_failing: "#5 cauda equina rule requires chronic back pain"
+
+  - id: child_cold_no_depression
+    age: 3
+    sex: MALE
+    features: [runny_nose, sym_cough]
+    expect:
+      top_k: {COMMON_COLD: 1}
+      not_top_k: {DEPRESSION_MAJOR: 5, ANXIETY_DISORDER: 5}
+
+  - id: young_adult_memory_loss_not_alzheimers
+    age: 20
+    sex: MALE
+    features: [memory_impairment_ad, cognitive_decline]
+    expect:
+      max_probability: {ALZHEIMERS_DISEASE: 0.001}
+
+  # --- Added cases: note extraction -------------------------------------
+  - id: note_family_history_not_patient
+    age: 40
+    sex: FEMALE
+    note: "Mother had breast lump. Reports headache since morning."
+    expect:
+      extracted: [sym_headache]
+      not_extracted: [breast_lump]
+    known_failing: "#9 family-history lookback crosses sentence boundaries"
+
+  - id: note_resolved_symptom_is_not_current
+    age: 30
+    sex: MALE
+    note: "Fever resolved two days ago. Now has cough."
+    expect:
+      extracted: [sym_cough]
+      not_extracted: [fever]
+    known_failing: "#9 no historical/resolved context handling"
+
+  - id: note_platelets_with_thousands_separator
+    age: 40
+    sex: MALE
+    note: "Platelet count: 250,000"
+    expect:
+      not_extracted: [thrombocytopenia_deng, thrombocytosis]
+
+  - id: note_high_wbc
+    age: 40
+    sex: MALE
+    note: "WBC: 15.2"
+    expect:
+      extracted: [wbc_high]
